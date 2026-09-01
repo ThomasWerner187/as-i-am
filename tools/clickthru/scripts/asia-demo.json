@@ -1,0 +1,28 @@
+{
+  "name": "asia-demo",
+  "url": "/shop",
+  "viewport": { "width": 1280, "height": 800 },
+  "fps": 8,
+  "quality": 52,
+  "steps": [
+    { "act": "wait", "ms": 2000 },
+    { "act": "caption", "text": "A normal electronics shop — dense, busy, a bit much.", "ms": 2400 },
+    { "act": "scroll", "y": 650, "note": "Browsing the catalog", "settle": 1200 },
+    { "act": "scroll", "y": -650, "settle": 1000 },
+
+    { "act": "caption", "text": "Now the personal agent applies a functional profile.", "ms": 2200 },
+    { "act": "click", "selector": "[data-testid='demo-panel-toggle']", "note": "Open demo profiles", "settle": 900 },
+    { "act": "click", "selector": "[data-testid='apply-precision-reading']", "note": "Agent sends 26 functional preferences — no diagnosis", "settle": 2800 },
+    { "act": "caption", "text": "The page adapts: 3 actions, labels, big prices, no motion.", "ms": 2800 },
+
+    { "act": "scroll", "y": 900, "note": "Product cards: text, targets and prices transformed", "settle": 1500 },
+    { "act": "caption", "text": "The text is still too small, especially the prices.", "ms": 2400 },
+    { "act": "click", "selector": "button:has-text('Measure')", "note": "Agent measures the rendered result again", "settle": 1400 },
+    { "act": "caption", "text": "Every step is atomic and undoable.", "ms": 2200 },
+    { "act": "click", "selector": "[data-testid='undo-button']", "note": "Undo the last refinement", "settle": 1400 },
+
+    { "act": "caption", "text": "Hold to peek: the original view is one press away.", "ms": 2200 },
+    { "act": "hold", "selector": "[data-testid='peek-button']", "note": "Peek the original view", "ms": 1700, "settle": 1200 },
+    { "act": "caption", "text": "One private profile. Every participating website adapts.", "ms": 2800 }
+  ]
+}

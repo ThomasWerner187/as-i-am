@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__ — Click-through</title>
+<style>
+  :root {
+    --bg: #ece9e2;
+    --chrome: #dfdbd2;
+    --chrome-dark: #d3cec4;
+    --ink: #26231c;
+    --ink-soft: #565145;
+    --accent: #b0512b;
+    --line: #c9c3b6;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center;
+    background:
+      radial-gradient(1200px 600px at 20% -10%, #f6f3ec, transparent),
+      var(--bg);
+    font-family: "Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink); padding: 32px 16px;
+  }
+  .stage { width: min(1080px, 96vw); }
+
+  /* Browser mockup */
+  .browser {
+    border-radius: var(--radius);
+    background: var(--chrome);
+    box-shadow:
+      0 1px 2px rgba(38,35,28,.12),
+      0 24px 60px rgba(38,35,28,.25),
+      inset 0 1px 0 rgba(255,255,255,.5);
+    overflow: hidden;
+    border: 1px solid rgba(38,35,28,.18);
+  }
+  .bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px;
+    background: linear-gradient(180deg, var(--chrome), var(--chrome-dark));
+    border-bottom: 1px solid var(--line);
+  }
+  .lights { display: flex; gap: 7px; flex: none; }
+  .lights span { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 1px 1px rgba(255,255,255,.5), 0 0 0 .5px rgba(0,0,0,.15); }
+  .lights .r { background: #ee6a5f; } .lights .y { background: #f5bd4f; } .lights .g { background: #61c454; }
+  .urlbox {
+    flex: 1; display: flex; align-items: center; gap: 8px;
+    background: #f7f5ef; border: 1px solid var(--line); border-radius: 8px;
+    padding: 6px 12px; font-size: 13px; color: var(--ink-soft);
+    box-shadow: inset 0 1px 2px rgba(38,35,28,.05);
+    white-space: nowrap; overflow: hidden;
+  }
+  .urlbox svg { flex: none; }
+  .urlbox .url { overflow: hidden; text-overflow: ellipsis; }
+  .tabtitle { font-size: 12.5px; color: var(--ink-soft); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .screen { position: relative; background: #fff; }
+  .screen canvas, .screen img { display: block; width: 100%; height: auto; }
+  .poster {
+    position: absolute; inset: 0; display: grid; place-items: center; cursor: pointer;
+    background: rgba(20,18,12,.45); backdrop-filter: blur(2px); border: 0; width: 100%;
+  }
+  .poster .play {
+    width: 88px; height: 88px; border-radius: 50%; background: var(--accent);
+    display: grid; place-items: center; box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    transition: transform .2s cubic-bezier(.2,.7,.2,1);
+  }
+  .poster:hover .play { transform: scale(1.06); }
+
+  /* Controls */
+  .controls { display: grid; gap: 10px; padding: 14px 6px 0; }
+  .row { display: flex; align-items: center; gap: 14px; }
+  button.ctl {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 1.5px solid var(--ink); background: var(--ink); color: #f6f3ec;
+    cursor: pointer; transition: transform .18s cubic-bezier(.2,.7,.2,1), background .2s;
+  }
+  button.ctl:hover { transform: translateY(-2px); }
+  button.ctl.ghost { background: transparent; color: var(--ink); width: 40px; height: 40px; }
+  .scrub { position: relative; flex: 1; height: 34px; cursor: pointer; }
+  .scrub .track { position: absolute; left: 0; right: 0; top: 15px; height: 5px; border-radius: 99px; background: var(--line); }
+  .scrub .fill { position: absolute; left: 0; top: 15px; height: 5px; border-radius: 99px; background: var(--accent); width: 0%; }
+  .scrub .tick { position: absolute; top: 12px; width: 2px; height: 11px; background: rgba(38,35,28,.35); border-radius: 2px; }
+  .scrub .knob { position: absolute; top: 9.5px; width: 16px; height: 16px; border-radius: 50%; background: var(--ink); border: 2.5px solid #f6f3ec; box-shadow: 0 1px 4px rgba(0,0,0,.3); margin-left: -8px; }
+  .time { font-variant-numeric: tabular-nums; font-size: 13.5px; color: var(--ink-soft); min-width: 96px; text-align: right; }
+  .speed { border: 1.5px solid var(--ink); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px; border-radius: 99px; padding: 7px 12px; cursor: pointer; }
+
+  .caption {
+    min-height: 54px; display: flex; align-items: center; gap: 10px;
+    font-size: 15.5px; color: var(--ink-soft);
+  }
+  .caption .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+  .caption strong { color: var(--ink); }
+  .foot { margin-top: 14px; text-align: center; font-size: 12.5px; color: #8a8371; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="browser" id="browser">
+    <div class="bar">
+      <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="tabtitle" id="tabtitle">Demo</div>
+      <div class="urlbox">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <span class="url" id="url"></span>
+      </div>
+    </div>
+    <div class="screen">
+      <img id="frame" alt="Recorded page">
+      <button class="poster" id="poster" aria-label="Play demo">
+        <span class="play">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l11-6.5z"/></svg>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="caption"><span class="dot"></span><span id="caption"><strong>Click-through:</strong> ready.</span></div>
+    <div class="row">
+      <button class="ctl" id="playpause" aria-label="Play or pause">
+        <svg id="ic-play" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+        <svg id="ic-pause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+      </button>
+      <button class="ctl ghost" id="restart" aria-label="Restart">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 3v5h-5"/></svg>
+      </button>
+      <div class="scrub" id="scrub">
+        <div class="track"></div><div class="fill" id="fill"></div><div class="knob" id="knob" style="left:0%"></div>
+        <div id="ticks"></div>
+      </div>
+      <span class="time" id="time">0:00 / 0:00</span>
+      <button class="speed" id="speed">1×</button>
+    </div>
+  </div>
+  <div class="foot" id="foot">Recorded with clickthru — Playwright + CDP screencast. Space = play/pause, ←/→ = ±5 s.</div>
+</div>
+
+<script type="application/json" id="ct-payload">__PAYLOAD__</script>
+<script>
+(() => {
+  const data = JSON.parse(document.getElementById("ct-payload").textContent);
+  const { manifest, frames } = data;
+  const framesMeta = manifest.frames;
+  const totalMs = framesMeta.length ? (framesMeta[framesMeta.length - 1].ts - framesMeta[0].ts) * 1000 : manifest.total_ms;
+  const t0 = framesMeta.length ? framesMeta[0].ts : 0;
+
+  const img = document.getElementById("frame");
+  const poster = document.getElementById("poster");
+  const playpause = document.getElementById("playpause");
+  const icPlay = document.getElementById("ic-play");
+  const icPause = document.getElementById("ic-pause");
+  const fill = document.getElementById("fill");
+  const knob = document.getElementById("knob");
+  const timeEl = document.getElementById("time");
+  const captionEl = document.getElementById("caption");
+  const scrub = document.getElementById("scrub");
+  const speedBtn = document.getElementById("speed");
+  document.getElementById("url").textContent = manifest.url;
+  document.getElementById("tabtitle").textContent = manifest.name;
+  if (frames.length) img.src = frames[0];
+
+  // event ticks
+  const ticks = document.getElementById("ticks");
+  for (const ev of manifest.events) {
+    if (!ev.caption) continue;
+    const t = document.createElement("div");
+    t.className = "tick";
+    t.style.left = Math.min(100, (ev.at_ms / manifest.total_ms) * 100) + "%";
+    ticks.appendChild(t);
+  }
+
+  let playing = false, atMs = 0, rate = 1, lastTick = null, framePtr = 0, evPtr = 0;
+
+  const fmt = (ms) => { const s = Math.floor(ms / 1000); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+  const setTime = () => { timeEl.textContent = fmt(atMs) + " / " + fmt(totalMs); };
+  const setBar = () => { const p = Math.min(100, (atMs / totalMs) * 100); fill.style.width = p + "%"; knob.style.left = p + "%"; };
+
+  function showFrameAt(ms) {
+    const t = t0 + ms / 1000;
+    while (framePtr < framesMeta.length - 1 && framesMeta[framePtr + 1].ts <= t) framePtr++;
+    while (framePtr > 0 && framesMeta[framePtr].ts > t) framePtr--;
+    if (img.dataset.i !== String(framePtr)) { img.src = frames[framePtr]; img.dataset.i = String(framePtr); }
+  }
+  function showCaptionAt(ms) {
+    let cap = "";
+    for (const ev of manifest.events) if (ev.caption && ev.at_ms <= ms) cap = ev.caption;
+    while (evPtr < manifest.events.length && manifest.events[evPtr].at_ms <= ms) {
+      if (manifest.events[evPtr].caption) cap = manifest.events[evPtr].caption;
+      evPtr++;
+    }
+    if (cap) captionEl.innerHTML = "<strong>Step:</strong> " + cap.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  }
+
+  function loop(now) {
+    if (!playing) return;
+    if (lastTick == null) lastTick = now;
+    atMs = Math.min(totalMs, atMs + (now - lastTick) * rate);
+    lastTick = now;
+    showFrameAt(atMs); showCaptionAt(atMs); setBar(); setTime();
+    if (atMs >= totalMs) { pause(); return; }
+    requestAnimationFrame(loop);
+  }
+  function play() {
+    if (atMs >= totalMs) { atMs = 0; framePtr = 0; evPtr = 0; }
+    playing = true; lastTick = null;
+    icPlay.style.display = "none"; icPause.style.display = "block";
+    poster.style.display = "none";
+    requestAnimationFrame(loop);
+  }
+  function pause() {
+    playing = false;
+    icPlay.style.display = "block"; icPause.style.display = "none";
+  }
+  playpause.addEventListener("click", () => (playing ? pause() : play()));
+  poster.addEventListener("click", play);
+  document.getElementById("restart").addEventListener("click", () => { atMs = 0; framePtr = 0; evPtr = 0; showFrameAt(0); setBar(); setTime(); play(); });
+  speedBtn.addEventListener("click", () => { rate = rate === 1 ? 1.5 : rate === 1.5 ? 2 : 1; speedBtn.textContent = rate + "×"; });
+  scrub.addEventListener("click", (e) => {
+    const r = scrub.getBoundingClientRect();
+    atMs = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * totalMs;
+    evPtr = 0;
+    while (evPtr < manifest.events.length && manifest.events[evPtr].at_ms <= atMs) evPtr++;
+    showFrameAt(atMs); setBar(); setTime();
+  });
+  addEventListener("keydown", (e) => {
+    if (e.code === "Space") { e.preventDefault(); playing ? pause() : play(); }
+    if (e.code === "ArrowRight") { atMs = Math.min(totalMs, atMs + 5000); showFrameAt(atMs); setBar(); setTime(); }
+    if (e.code === "ArrowLeft") { atMs = Math.max(0, atMs - 5000); showFrameAt(atMs); setBar(); setTime(); }
+  });
+  setTime();
+})();
+</script>
+</body>
+</html>
