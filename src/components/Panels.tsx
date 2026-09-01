@@ -14,6 +14,10 @@ import { activity } from "../data/activityStore";
 import { countPreferences } from "../adaptive-contract/receipts";
 import { webmcpAvailable } from "../webmcp/register";
 import { useEngineState } from "./Primitives";
+import {
+  IconSliders, IconRobot, IconUndo, IconReset, IconRuler, IconReceipt,
+  IconLock, IconClose,
+} from "./Icons";
 import type { FunctionalProfile } from "../adaptive-contract/schema";
 
 const isHarness = new URLSearchParams(location.search).has("agent");
@@ -51,7 +55,7 @@ export function DemoPanel({ route }: { route: string }) {
         aria-expanded={open}
         style={{ insetInlineEnd: "auto", insetInlineStart: "1rem" }}
       >
-        {open ? "✕ Close demo panel" : "🎛 Demo profiles"}
+        {open ? (<><IconClose size={16} /> Close demo panel</>) : (<><IconSliders size={16} /> Demo profiles</>)}
       </button>
 
       {open && (
@@ -63,8 +67,8 @@ export function DemoPanel({ route }: { route: string }) {
         >
           <header>
             <h2>Demo controls — for judges</h2>
-            <button type="button" className="btn btn--small" onClick={() => setOpen(false)}>
-              Close
+            <button type="button" className="btn btn--small" aria-label="Close demo panel" onClick={() => setOpen(false)}>
+              <IconClose size={14} />
             </button>
           </header>
           <div className="body">
@@ -86,7 +90,7 @@ export function DemoPanel({ route }: { route: string }) {
                   disabled={!engine.getUndoInfo().available}
                   onClick={() => void callTool("undo_adaptation")}
                 >
-                  ↩ Undo
+                  <IconUndo size={14} /> Undo
                 </button>
                 <button
                   type="button"
@@ -95,21 +99,21 @@ export function DemoPanel({ route }: { route: string }) {
                   disabled={snap.isBase}
                   onClick={() => void callTool("reset_adaptations")}
                 >
-                  ⟲ Reset all
+                  <IconReset size={14} /> Reset all
                 </button>
                 <button
                   type="button"
                   className="btn btn--small"
                   onClick={() => void callTool("measure_rendered_ui")}
                 >
-                  📐 Measure
+                  <IconRuler size={14} /> Measure
                 </button>
                 <button
                   type="button"
                   className="btn btn--small"
                   onClick={() => void callTool("export_adaptation_receipt")}
                 >
-                  🧾 Receipt
+                  <IconReceipt size={14} /> Receipt
                 </button>
               </div>
             </section>
@@ -120,7 +124,7 @@ export function DemoPanel({ route }: { route: string }) {
                 <div className="demo-bundle" key={b.id} style={{ marginTop: "0.45rem" }} data-bundle={b.id}>
                   <h3>{b.name}</h3>
                   <div className="private">
-                    🔒 Agent knows (never sent):{" "}
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3em", verticalAlign: "-0.15em" }}><IconLock size={13} /></span> Agent knows (never sent):{" "}
                     <button
                       type="button"
                       className="btn btn--small"
@@ -164,7 +168,7 @@ export function DemoPanel({ route }: { route: string }) {
                   ))}
                 </ul>
                 <p className="privacy-pill" style={{ marginTop: "0.5rem" }}>
-                  🔒 Session-only · no diagnosis · no storage · everything undoable
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35em" }}><IconLock size={14} /> Session-only · no diagnosis · no storage · everything undoable</span>
                 </p>
               </section>
             )}
@@ -189,7 +193,7 @@ export function ActivityDrawer({ open, onToggle }: { open: boolean; onToggle: ()
     <>
       {!open && (
         <button type="button" className="aia-fab" onClick={onToggle} aria-expanded={open}>
-          🤖 Agent activity{entries.length > 0 ? ` (${entries.length})` : ""}
+          <IconRobot size={16} /> Agent activity{entries.length > 0 ? ` (${entries.length})` : ""}
         </button>
       )}
       {open && (
@@ -199,8 +203,8 @@ export function ActivityDrawer({ open, onToggle }: { open: boolean; onToggle: ()
             <button type="button" className="btn btn--small" onClick={() => activity.clear()}>
               Clear
             </button>
-            <button type="button" className="btn btn--small" onClick={onToggle}>
-              Close
+            <button type="button" className="btn btn--small" aria-label="Close activity panel" onClick={onToggle}>
+              <IconClose size={14} />
             </button>
           </header>
           <div className="body">

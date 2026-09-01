@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { MainNav, ReadingText } from "../components/SiteChrome";
 import { ProgressLine, StatusPill, useEngineState } from "../components/Primitives";
+import { IconPhone, IconInfo, IconHourglass } from "../components/Icons";
 import { APPOINTMENTS, HELP_TOPICS, PERMIT_FORM_STEPS, REQUESTS, SERVICE_ANNOUNCEMENTS, SERVICE_TASKS } from "../data/services";
 import { focusStore, useFocusedTask } from "../data/shopState";
 import { activity } from "../data/activityStore";
@@ -95,7 +96,7 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
             </ul>
           </nav>
           <div className="gov-aside aia-aside-block">
-            <span>☎ 0800 555 0199 (Mon–Fri 8–18)</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4em" }}><IconPhone size={15} /> 0800 555 0199 (Mon–Fri 8–18)</span>
             <a href="#" onClick={(e) => e.preventDefault()}>My requests ({REQUESTS.length})</a>
             <a href="#" onClick={(e) => e.preventDefault()}>Log in</a>
             <span>Last update: 2026-09-01</span>
@@ -114,7 +115,7 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
           <div className="announcements aia-promo" data-aia-essential="false" aria-label="Announcements">
             {SERVICE_ANNOUNCEMENTS.map((a) => (
               <p className="announcement" key={a.id}>
-                <span aria-hidden="true">ℹ</span> {a.text}
+                <span aria-hidden="true" style={{ display: "inline-flex", flex: "none" }}><IconInfo size={16} /></span> {a.text}
               </p>
             ))}
           </div>
@@ -130,7 +131,9 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
                   <span>Office: {t.office}</span>
                   <span>Fee: {t.fee === null ? "—" : t.fee === 0 ? "free" : `€${t.fee.toFixed(2)}`}</span>
                 </div>
-                <p className="deadline-box">⏳ {t.deadline_note}</p>
+                <p className="deadline-box" style={{ display: "flex", gap: "0.5em", alignItems: "baseline" }}>
+                  <IconHourglass size={15} className="deadline-icon" /> {t.deadline_note}
+                </p>
                 {focused === "permit-form" && t.id === "parking-permit" ? null : (
                   <div data-aia="actions">
                     <button type="button" className="btn btn--small btn--primary" onClick={() => { focusStore.set("permit-form"); setStep(1); window.scroll({ top: 400, behavior: "smooth" }); }}>

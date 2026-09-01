@@ -55,7 +55,7 @@ html { font-size: calc(16px * var(--aia-text-scale)); }
 
 /* Readable typeface */
 [data-aia-font-style="readable"] body {
-  font-family: "Atkinson Hyperlegible", Verdana, Tahoma, system-ui, sans-serif;
+  font-family: var(--font-readable);
   word-spacing: 0.06em;
 }
 
@@ -94,7 +94,6 @@ html { font-size: calc(16px * var(--aia-text-scale)); }
 [data-aia-target] a, [data-aia-target] button { min-block-size: var(--aia-target-min); }
 
 /* Structural helpers used by React components */
-[data-aia-status-labels="on"] .aia-status { border-inline-start-width: 6px; }
 [data-aia-status-labels="on"] .aia-status[data-tone="warn"] { background-image: repeating-linear-gradient(45deg, transparent 0 6px, rgba(0,0,0,0.07) 6px 12px); }
 [data-aia-status-labels="on"] .aia-status[data-tone="danger"] { background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.08) 0 4px, transparent 4px 8px); }
 [data-aia-status-labels="on"] .aia-status[data-tone="ok"] { background-image: repeating-linear-gradient(90deg, transparent 0 8px, rgba(0,0,0,0.05) 8px 10px); }

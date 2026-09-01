@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Artwork } from "../components/Artwork";
+import { IconSearch, IconHeart, IconUser, IconCart, IconSpark } from "../components/Icons";
 import { MainNav, ReadingText } from "../components/SiteChrome";
 import { Price, StatusPill, useEngineState } from "../components/Primitives";
 import { CATEGORIES, money, priceBreakdown, PRODUCTS, findProduct, COUPONS } from "../data/products";
@@ -10,10 +11,10 @@ import { activity } from "../data/activityStore";
 import type { Route } from "../App";
 
 const DEALS = [
-  "🔥 Deal of the day: Aurora H7 — 18% off, only until midnight",
-  "🚚 Free shipping over €50 with code SHIPFREE",
-  "🎧 Noise-cancelling week: extra 10% with QUIET10",
-  "⚡ Flash sale ends in 03:12:44 — up to 40% off selected audio",
+  "Deal of the day: Aurora H7 — 18% off, only until midnight",
+  "Free shipping over €50 with code SHIPFREE",
+  "Noise-cancelling week: extra 10% with QUIET10",
+  "Flash sale ends in 03:12:44 — up to 40% off selected audio",
 ];
 
 function useRotatingDeal(active: boolean) {
@@ -62,7 +63,7 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
       {/* Deal ticker (autoplay media; stopped by disable_autoplay/motion) */}
       <div className="aia-ticker" aria-label="Store announcements" role="marquee">
         <div className="wrap">
-          <span className="ticker-track" aria-hidden="true">{`${deal} · `.repeat(6)}</span>
+          <span className="ticker-track" aria-hidden="true">{`${deal}  ·  `.repeat(6)}</span>
           <span className="visually-hidden">{deal}</span>
         </div>
       </div>
@@ -89,17 +90,17 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
             ]}
           />
           <div className="utility-nav" data-aia="actions">
-            <a href="#" onClick={(e) => e.preventDefault()}>
-              🔍<span className="aia-label-always">Search</span>
+            <a href="#" aria-label="Search" onClick={(e) => e.preventDefault()}>
+              <IconSearch size={16} /><span className="aia-label-always">Search</span>
             </a>
-            <a href="#" onClick={(e) => e.preventDefault()}>
-              ♥<span className="aia-label-always">Wishlist</span>
+            <a href="#" aria-label="Wishlist" onClick={(e) => e.preventDefault()}>
+              <IconHeart size={16} /><span className="aia-label-always">Wishlist</span>
             </a>
-            <a href="#" onClick={(e) => e.preventDefault()}>
-              👤<span className="aia-label-always">Account</span>
+            <a href="#" aria-label="Account" onClick={(e) => e.preventDefault()}>
+              <IconUser size={16} /><span className="aia-label-always">Account</span>
             </a>
             <a href="#" data-testid="cart-button" onClick={(e) => e.preventDefault()}>
-              🛒<span className="aia-label-always">Cart</span> ({shop.cart.length})
+              <IconCart size={16} /><span className="aia-label-always">Cart</span> ({shop.cart.length})
             </a>
           </div>
         </div>
@@ -108,7 +109,7 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
       {/* Promo banner */}
       <div className="aia-promo" data-aia-essential="false">
         <div className="wrap">
-          <span className="deal-flash">⚡ {deal}</span>
+          <span className="deal-flash" style={{ display: "inline-flex", alignItems: "center", gap: "0.4em" }}><IconSpark size={15} /> {deal}</span>
           <span style={{ marginInlineStart: "auto" }}>
             Students save extra 5% · <a href="#" onClick={(e) => e.preventDefault()}>details</a>
           </span>
@@ -259,7 +260,7 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
                       Compare
                     </label>
                     <button type="button" className="btn btn--small btn--primary aia-icon-only" data-testid={`add-${p.id}`} onClick={() => stageAdd(p.id)} aria-label={`Add ${p.name} to cart`}>
-                      🛒<span className="aia-label-always"> Add to cart</span>
+                      <IconCart size={15} /><span className="aia-label-always"> Add to cart</span>
                     </button>
                   </div>
                   <details>

@@ -10,6 +10,7 @@ import { ALL_TOOLS, dispatchTool } from "./adaptive-contract/tools";
 import { registerTools, webmcpAvailable } from "./webmcp/register";
 import { ActivityDrawer, DemoPanel } from "./components/Panels";
 import { LiveRegion } from "./components/Primitives";
+import { IconEye } from "./components/Icons";
 import { activity } from "./data/activityStore";
 import Landing from "./pages/Landing";
 import ShopPage from "./pages/ShopPage";
@@ -172,7 +173,7 @@ export default function App() {
         disabled={engine.getSnapshot().isBase}
         title="Press and hold to peek at the unadapted original view"
       >
-        👁 Hold to peek original
+        <IconEye size={15} /> Hold to peek original
       </button>
     </div>
   );

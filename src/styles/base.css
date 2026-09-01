@@ -19,8 +19,15 @@ body {
   transition: background-color 0.4s ease;
 }
 
-h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.2; margin: 0 0 0.4em; }
-h1 { font-size: 2.2rem; letter-spacing: -0.01em; }
+h1, h2, h3 {
+  font-family: var(--serif);
+  font-weight: 580;
+  font-variation-settings: "opsz" 40;
+  line-height: 1.12;
+  letter-spacing: -0.022em;
+  margin: 0 0 0.45em;
+}
+h1 { font-size: 2.4rem; }
 h2 { font-size: 1.5rem; }
 h3 { font-size: 1.15rem; }
 p { margin: 0 0 0.9em; max-inline-size: var(--aia-max-line); }
@@ -146,6 +153,14 @@ th, td { text-align: start; padding: 0.45rem 0.6rem; border-block-end: 1px solid
 thead th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
 
 .prose { max-inline-size: var(--aia-max-line); }
+
+::selection { background: var(--accent); color: #fffdf8; }
+body { caret-color: var(--accent); }
+
+* { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+*::-webkit-scrollbar { inline-size: 10px; block-size: 10px; }
+*::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; border: 2px solid transparent; background-clip: content-box; }
+*::-webkit-scrollbar-track { background: transparent; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }

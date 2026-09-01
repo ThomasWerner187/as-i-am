@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { engine } from "../engine/adaptationEngine";
+import { IconMail, IconReview, IconHand, IconCheck, IconX, IconHourglass } from "./Icons";
 import type { RequestStatus } from "../data/services";
 
 export function useEngineState() {
@@ -10,15 +11,15 @@ export function useEngineState() {
 
 /** Status pill: icon + text always; colour is never the only carrier. */
 export function StatusPill({ status, label }: { status: RequestStatus["status"] | string; label: string }) {
-  const icons: Record<string, string> = {
-    received: "✉",
-    in_review: "🔍",
-    action_needed: "✋",
-    approved: "✔",
-    rejected: "✖",
-    in_stock: "✔",
-    low_stock: "◐",
-    out_of_stock: "✖",
+  const icons: Record<string, React.ReactNode> = {
+    received: <IconMail size={14} />,
+    in_review: <IconReview size={14} />,
+    action_needed: <IconHand size={14} />,
+    approved: <IconCheck size={14} />,
+    rejected: <IconX size={14} />,
+    in_stock: <IconCheck size={14} />,
+    low_stock: <IconHourglass size={14} />,
+    out_of_stock: <IconX size={14} />,
   };
   const tones: Record<string, string> = {
     received: "info",

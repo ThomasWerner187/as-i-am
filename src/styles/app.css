@@ -16,7 +16,7 @@
   inset-inline-end: 1rem;
 }
 .aia-panel header { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 0.9rem; border-block-end: 1px solid var(--line); }
-.aia-panel header h2 { font-size: 0.95rem; margin: 0; flex: 1; }
+.aia-panel header h2 { font-size: 1rem; margin: 0; flex: 1; font-family: var(--serif); letter-spacing: -0.01em; }
 .aia-panel .body { overflow: auto; padding: 0.8rem 0.9rem; display: grid; gap: 0.7rem; align-content: start; }
 
 .aia-fab {
@@ -24,15 +24,22 @@
   inset-block-end: 1rem;
   inset-inline-end: 1rem;
   z-index: 110;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
   min-block-size: 48px;
   border-radius: 999px;
   border: 1.5px solid var(--ink);
   background: var(--ink);
   color: var(--paper-raised);
-  padding-inline: 1rem;
+  padding-inline: 1.1rem;
+  font-weight: 550;
   cursor: pointer;
-  box-shadow: var(--shadow);
+  box-shadow: 0 2px 4px rgba(38, 35, 28, 0.14), 0 10px 28px rgba(38, 35, 28, 0.22);
+  transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.2s ease;
 }
+.aia-fab:hover { transform: translateY(-2px); box-shadow: 0 3px 6px rgba(38,35,28,0.16), 0 16px 36px rgba(38,35,28,0.28); }
+.aia-fab:disabled { opacity: 0.45; cursor: default; transform: none; }
 
 /* Activity timeline */
 .timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
@@ -69,7 +76,7 @@
   border-radius: 6px; padding: 0.25rem 0.45rem;
 }
 .demo-bundle .sent { font-size: 0.74rem; color: var(--ok); background: var(--ok-soft); border-radius: 6px; padding: 0.25rem 0.45rem; }
-.demo-bundle blockquote { margin: 0.2rem 0 0; font-size: 0.76rem; color: var(--ink-soft); border-inline-start: 3px solid var(--line); padding-inline-start: 0.5rem; }
+.demo-bundle blockquote { margin: 0.2rem 0 0; font-size: 0.76rem; font-style: italic; color: var(--ink-soft); }
 
 /* Applied panel: what the website received */
 .applied-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; font-size: 0.8rem; }
@@ -86,7 +93,7 @@
 .harness-form select { min-block-size: calc(var(--aia-target-min) - 8px); border: 1px solid var(--line); border-radius: 6px; background: var(--paper-raised); }
 
 /* Before/After peek button */
-.peek-wrap { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--paper-raised); }
+.peek-wrap { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--paper-raised); inset-block-end: 4.4rem; }
 html.aia-peek [data-aia], html.aia-peek .aia-status { transition: none !important; }
 
 /* WebMCP status chip */
@@ -100,5 +107,6 @@ html.aia-peek [data-aia], html.aia-peek .aia-status { transition: none !importan
 
 /* Diff view */
 .diff-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; font-size: 0.82rem; }
-.diff-list li { display: grid; gap: 0.15rem; border-inline-start: 3px solid var(--accent); padding-inline-start: 0.55rem; }
+.diff-list li { display: grid; gap: 0.15rem; padding-block: 0.35rem; border-block-start: 1px dashed var(--line); }
+.diff-list li:first-child { border-block-start: 0; }
 .diff-list .from { text-decoration: line-through; color: var(--ink-faint); font-size: 0.76rem; }

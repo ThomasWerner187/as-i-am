@@ -1,0 +1,97 @@
+/* Landing — editorial hero, two demo doors, calm authority. */
+
+.landing { padding-block: clamp(3rem, 8vh, 5.5rem) 4rem; }
+
+.landing-hero h1 {
+  font-size: clamp(3.4rem, 9vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  margin: 0;
+  font-variation-settings: "opsz" 72;
+}
+.landing-tagline {
+  display: block;
+  margin-block-start: 0.35em;
+  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  font-style: italic;
+  font-weight: 480;
+  letter-spacing: -0.01em;
+  color: var(--accent-ink);
+}
+.landing-lede {
+  margin-block-start: 1.6rem;
+  font-size: 1.12rem;
+  color: var(--ink-soft);
+  max-inline-size: 58ch;
+}
+.landing-claim {
+  margin: 2.2rem 0 0;
+  padding: 1.4rem 1.6rem;
+  border-block: 1px solid var(--line);
+  background:
+    linear-gradient(180deg, var(--paper-raised), transparent 70%);
+}
+.landing-claim blockquote {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 2.4vw, 1.55rem);
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  font-style: italic;
+  max-inline-size: 46ch;
+}
+
+.landing-demos { margin-block-start: 3.4rem; }
+.landing-demos h2, .landing-privacy h2, .landing-limits h2 {
+  font-size: 1.45rem;
+  margin-block-end: 1rem;
+}
+.landing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1.1rem;
+}
+.landing-demo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.5rem 1.6rem 1.4rem;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.landing-demo-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 2px 4px rgba(38, 35, 28, 0.06), 0 18px 40px rgba(38, 35, 28, 0.12);
+}
+.landing-demo-card:hover .landing-demo-go { color: var(--accent); }
+.landing-demo-meta {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.landing-demo-title {
+  font-family: var(--serif);
+  font-size: 1.65rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.landing-demo-desc {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  flex-grow: 1;
+}
+.landing-demo-go {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--accent-ink);
+  transition: color 0.2s ease;
+}
+
+.landing-privacy { margin-block-start: 3.2rem; }
+.landing-limits { margin-block-start: 2.6rem; padding-block-end: 2rem; }
+.landing-limits ul { padding-inline-start: 1.2em; display: grid; gap: 0.45em; color: var(--ink-soft); }
+.landing-limits li::marker { color: var(--accent); }
