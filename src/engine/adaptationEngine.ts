@@ -66,7 +66,9 @@ export class AdaptationEngine {
 
   subscribe = (listener: Listener): (() => void) => {
     this.listeners.add(listener);
-    return () => this.listeners.delete(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
   };
 
   getSnapshot = (): EngineSnapshot => ({
@@ -86,6 +88,12 @@ export class AdaptationEngine {
 
   private announce(text: string): void {
     this.announcement = text;
+  }
+
+  /** Public announcement (tools push user-visible status here). */
+  announceNow(text: string): void {
+    this.announce(text);
+    this.emit();
   }
 
   /* ---------------------------------------------------------------- */
@@ -287,6 +295,14 @@ export class AdaptationEngine {
       } else {
         root.removeAttribute(`data-aia-${name}`);
       }
+    }
+    // Enlarged cursor: an honest large-pointer rendering (data-URI SVG).
+    if (flags["cursor-size"] !== undefined) {
+      const size = Number(flags["cursor-size"]) || 32;
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'><circle cx='${size / 2}' cy='${size / 2}' r='${size / 2 - 2}' fill='rgba(176,81,43,0.35)' stroke='%2326231c' stroke-width='2.5'/></svg>`;
+      root.style.cursor = `url("data:image/svg+xml,${svg}") ${size / 2} ${size / 2}, auto`;
+    } else {
+      root.style.cursor = "";
     }
   }
 }

@@ -1,0 +1,104 @@
+/* App chrome: agent activity drawer, demo panel, applied panel, harness,
+   before/after peek. Visualised but calm; obeys motion tokens. */
+
+.aia-panel {
+  position: fixed;
+  z-index: 120;
+  background: var(--paper-raised);
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(38, 35, 28, 0.18);
+  inline-size: min(94vw, 380px);
+  max-block-size: min(78vh, 640px);
+  display: flex;
+  flex-direction: column;
+  inset-block-end: 1rem;
+  inset-inline-end: 1rem;
+}
+.aia-panel header { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 0.9rem; border-block-end: 1px solid var(--line); }
+.aia-panel header h2 { font-size: 0.95rem; margin: 0; flex: 1; }
+.aia-panel .body { overflow: auto; padding: 0.8rem 0.9rem; display: grid; gap: 0.7rem; align-content: start; }
+
+.aia-fab {
+  position: fixed;
+  inset-block-end: 1rem;
+  inset-inline-end: 1rem;
+  z-index: 110;
+  min-block-size: 48px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper-raised);
+  padding-inline: 1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+/* Activity timeline */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.timeline li { position: relative; padding-block: 0.3rem 0.55rem; padding-inline-start: 1.4rem; font-size: 0.86rem; }
+.timeline li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.35rem;
+  inset-block-start: 0.75rem;
+  inline-size: 8px; block-size: 8px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.timeline li::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.72rem;
+  inset-block-start: 1.2rem;
+  inset-block-end: 0;
+  inline-size: 2px;
+  background: var(--line);
+}
+.timeline li:last-child::after { display: none; }
+.timeline .t-note { color: var(--ink-faint); font-size: 0.74rem; display: block; }
+.timeline details { margin-block-start: 0.25rem; font-size: 0.74rem; }
+.timeline details pre { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 0.4rem; overflow: auto; font-size: 0.7rem; }
+
+/* Demo profile picker (judge-facing) */
+.demo-note { font-size: 0.76rem; background: var(--warn-soft); border: 1px solid var(--warn); color: var(--warn); border-radius: 8px; padding: 0.4rem 0.6rem; }
+.demo-bundle { border: 1px solid var(--line); border-radius: 10px; padding: 0.55rem 0.7rem; display: grid; gap: 0.35rem; background: var(--paper); }
+.demo-bundle h3 { margin: 0; font-size: 0.9rem; font-family: var(--sans); }
+.demo-bundle .private {
+  font-size: 0.74rem; color: var(--danger); background: var(--danger-soft);
+  border-radius: 6px; padding: 0.25rem 0.45rem;
+}
+.demo-bundle .sent { font-size: 0.74rem; color: var(--ok); background: var(--ok-soft); border-radius: 6px; padding: 0.25rem 0.45rem; }
+.demo-bundle blockquote { margin: 0.2rem 0 0; font-size: 0.76rem; color: var(--ink-soft); border-inline-start: 3px solid var(--line); padding-inline-start: 0.5rem; }
+
+/* Applied panel: what the website received */
+.applied-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; font-size: 0.8rem; }
+.applied-list li { display: flex; justify-content: space-between; gap: 0.6rem; border-block: 1px dotted var(--line); padding-block: 0.2rem; }
+.applied-list .val { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.privacy-pill { display: flex; gap: 0.5rem; align-items: center; font-size: 0.78rem; background: var(--ok-soft); color: var(--ok); border-radius: 8px; padding: 0.4rem 0.6rem; border: 1px solid currentColor; }
+
+.panel-actions { display: flex; flex-wrap: wrap; gap: var(--aia-target-gap); }
+
+/* Harness (dev) */
+.harness-form { display: grid; gap: 0.45rem; font-size: 0.8rem; }
+.harness-form textarea { font-family: ui-monospace, monospace; font-size: 0.75rem; border: 1px solid var(--line); border-radius: 6px; padding: 0.4rem; min-block-size: 5rem; }
+.harness-form select { min-block-size: calc(var(--aia-target-min) - 8px); border: 1px solid var(--line); border-radius: 6px; background: var(--paper-raised); }
+
+/* Before/After peek button */
+.peek-wrap { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--ink-soft); }
+html.aia-peek [data-aia], html.aia-peek .aia-status { transition: none !important; }
+
+/* WebMCP status chip */
+.mcp-chip {
+  position: fixed; inset-block-start: 0.6rem; inset-inline-end: 0.6rem; z-index: 130;
+  font-size: 0.72rem; border: 1px solid var(--line); background: var(--paper-raised);
+  color: var(--ink-soft); border-radius: 999px; padding: 0.25rem 0.7rem; box-shadow: var(--shadow);
+}
+.mcp-chip[data-state="live"] { border-color: var(--ok); color: var(--ok); }
+.mcp-chip[data-state="none"] { border-color: var(--warn); color: var(--warn); }
+
+/* Diff view */
+.diff-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; font-size: 0.82rem; }
+.diff-list li { display: grid; gap: 0.15rem; border-inline-start: 3px solid var(--accent); padding-inline-start: 0.55rem; }
+.diff-list .from { text-decoration: line-through; color: var(--ink-faint); font-size: 0.76rem; }

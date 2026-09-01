@@ -1,0 +1,85 @@
+/* City of Meridian — Resident Services. Deliberately different layout
+   language from the shop: official, form-led, multi-pane. */
+
+.gov-banner { background: var(--ink); color: var(--paper-raised); font-size: 0.8rem; }
+.gov-banner .wrap { padding-block: 0.35rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+.gov-header { background: var(--paper-raised); border-block-end: 4px solid var(--accent); }
+.gov-header .wrap { display: grid; grid-template-columns: 220px 1fr 260px; gap: 1.4rem; padding-block: 1rem; align-items: start; }
+.coat { display: flex; gap: 0.6rem; align-items: center; }
+.coat .shield { inline-size: 44px; block-size: 52px; flex: none; }
+.gov-title { font-family: var(--serif); }
+.gov-title .site { font-size: 1.15rem; font-weight: 700; }
+.gov-title .sub { font-size: 0.75rem; color: var(--ink-soft); letter-spacing: 0.06em; text-transform: uppercase; }
+
+.gov-nav h2 { font-size: 0.75rem; text-transform: uppercase; color: var(--ink-faint); letter-spacing: 0.1em; margin-block-end: 0.25rem; }
+.gov-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--aia-target-gap); }
+.gov-nav a { text-decoration: none; display: inline-flex; align-items: center; min-block-size: var(--aia-target-min); padding-inline: 0.55em; border: 1px solid transparent; border-radius: 6px; font-size: 0.9rem; color: var(--ink); }
+.gov-nav a:hover { border-color: var(--accent); background: var(--accent-soft); }
+
+.gov-aside { font-size: 0.82rem; color: var(--ink-soft); display: grid; gap: 0.5rem; align-content: start; }
+.gov-aside a { color: var(--accent-ink); }
+
+.services-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.8rem; padding-block: 1.6rem 3rem; align-items: start; }
+
+.announcements { display: grid; gap: 0.5rem; margin-block-end: 1.2rem; }
+.announcement { display: flex; gap: 0.6rem; align-items: center; border: 1px solid var(--info); background: var(--info-soft); color: var(--info); border-radius: 8px; padding: 0.45rem 0.8rem; font-size: 0.85rem; }
+
+.task-list { display: grid; gap: 0.8rem; }
+.task-card { padding: 0.9rem 1rem; display: grid; gap: 0.4rem; }
+.task-card h3 { margin: 0; }
+.task-card .meta { font-size: 0.78rem; color: var(--ink-soft); display: flex; gap: 1em; flex-wrap: wrap; }
+
+.deadline-box { border-inline-start: 4px solid var(--warn); background: var(--warn-soft); padding: 0.6rem 0.9rem; border-radius: 6px; font-size: 0.85rem; }
+
+.panel { padding: 1rem 1.1rem; margin-block-end: 1.1rem; }
+.panel h2 { font-size: 1.05rem; }
+.panel h3 { font-size: 0.95rem; }
+
+.status-table { font-size: 0.85rem; }
+.status-table td, .status-table th { padding-block: 0.5rem; }
+
+/* Multi-step form */
+.form-steps { display: flex; gap: 0.4rem; list-style: none; padding: 0; margin: 0 0 1rem; flex-wrap: wrap; }
+.form-steps li { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--ink-faint); }
+.form-steps li[aria-current="step"] { color: var(--ink); font-weight: 700; }
+.form-steps .step-no { display: inline-grid; place-items: center; inline-size: 1.7em; block-size: 1.7em; border-radius: 999px; border: 1.5px solid currentColor; font-weight: 700; }
+
+.field { display: grid; gap: 0.25rem; margin-block-end: 0.9rem; }
+.field label { font-weight: 600; font-size: 0.9rem; }
+.field .hint { font-size: 0.76rem; color: var(--ink-soft); }
+.field input[type="text"], .field input[type="date"], .field select {
+  min-block-size: var(--aia-target-min);
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  padding-inline: 0.6em;
+  background: var(--paper-raised);
+  inline-size: 100%;
+  max-inline-size: 26rem;
+}
+.field input:focus-visible, .field select:focus-visible { border-color: var(--accent); }
+.field .error { color: var(--danger); font-size: 0.8rem; font-weight: 600; }
+.field input[aria-invalid="true"] { border-color: var(--danger); }
+
+.aia-step-panel { padding: 1rem 1.1rem; }
+.aia-step-nav { display: flex; justify-content: space-between; gap: var(--aia-target-gap); margin-block-start: 1rem; }
+
+.progress-line { display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; color: var(--ink-soft); margin-block-end: 0.8rem; }
+.progress-line .bar { flex: 1; block-size: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.progress-line .bar .fill { block-size: 100%; background: var(--accent); transition: inline-size 0.4s ease; }
+[data-aia-motion="off"] .progress-line .bar .fill { transition: none; }
+
+.appt-list { display: grid; gap: 0.6rem; }
+.appt { display: grid; grid-template-columns: 5.2rem 1fr auto; gap: 0.8rem; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 0.5rem 0.8rem; background: var(--paper-raised); }
+.appt .date { font-weight: 700; font-variant-numeric: tabular-nums; }
+.appt .when { font-size: 0.85rem; color: var(--ink-soft); }
+.appt .loc { font-size: 0.78rem; color: var(--ink-faint); }
+
+.help-accordion details { border: 1px solid var(--line); border-radius: 8px; margin-block-end: 0.5rem; background: var(--paper-raised); }
+.help-accordion summary { cursor: pointer; padding: 0.6rem 0.8rem; font-weight: 600; min-block-size: var(--aia-target-min); display: flex; align-items: center; }
+.help-accordion details[open] summary { border-block-end: 1px solid var(--line); }
+.help-accordion .answer { padding: 0.7rem 0.9rem; font-size: 0.88rem; }
+
+@media (max-width: 980px) {
+  .gov-header .wrap, .services-layout { grid-template-columns: 1fr; }
+}

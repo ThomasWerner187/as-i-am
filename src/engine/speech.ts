@@ -21,7 +21,9 @@ export class SpeechController {
   subscribe(listener: SpeechListener): () => void {
     this.listeners.add(listener);
     listener(this.snapshot());
-    return () => this.listeners.delete(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
   }
 
   snapshot(): SpeechState {

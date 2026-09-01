@@ -35,7 +35,7 @@ export function mergeProfiles(...profiles: FunctionalProfile[]): FunctionalProfi
       for (const [k, v] of Object.entries(inc)) {
         if (v !== undefined && v !== null) cur[k] = v;
       }
-      (out as Record<string, unknown>)[section] = cur;
+      (out as unknown as Record<string, unknown>)[section] = cur;
     }
   }
   return out;
@@ -77,7 +77,7 @@ export function normalizeProfile(profile: FunctionalProfile): {
         }
       }
     }
-    (out as Record<string, unknown>)[section] = sec;
+    (out as unknown as Record<string, unknown>)[section] = sec;
   }
   return { profile: out, clamped };
 }
@@ -158,9 +158,8 @@ export const DEMO_BUNDLES: DemoBundle[] = [
         glare: "low",
         brightness: 0.85,
         max_line_length: 60,
-        focus_strength: "maximum",
       },
-      interaction: { minimum_target_size: 48, target_spacing: 12 },
+      interaction: { minimum_target_size: 48, target_spacing: 12, focus_strength: "maximum" },
       cognitive: { information_density: "reduced", persistent_labels: true },
       motion_media: { disable_autoplay: true },
     },

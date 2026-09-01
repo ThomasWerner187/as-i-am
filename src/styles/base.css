@@ -1,0 +1,153 @@
+/* Base: reset-ish, typography, layout primitives. Semantic HTML first. */
+
+* { box-sizing: border-box; }
+
+html {
+  font-size: calc(16px * var(--aia-text-scale));
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: var(--aia-line-height);
+  letter-spacing: var(--aia-letter-spacing);
+  word-spacing: var(--aia-word-spacing);
+  color: var(--ink);
+  background: var(--paper);
+  transition: background-color 0.4s ease;
+}
+
+h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.2; margin: 0 0 0.4em; }
+h1 { font-size: 2.2rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.15rem; }
+p { margin: 0 0 0.9em; max-inline-size: var(--aia-max-line); }
+
+a { color: var(--accent-ink); text-underline-offset: 2px; }
+a:hover { color: var(--accent); }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--aia-focus);
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: 1rem;
+  inset-block-start: -4rem;
+  z-index: 200;
+  background: var(--ink);
+  color: var(--paper-raised);
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  transition: inset-block-start 0.2s;
+}
+.skip-link:focus { inset-block-start: 0.5rem; }
+
+.wrap { max-inline-size: 1180px; margin-inline: auto; padding-inline: clamp(1rem, 3vw, 2rem); }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  clip-path: inset(50%); overflow: hidden; white-space: nowrap;
+}
+
+/* Buttons — every target honours the interaction tokens. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+  min-inline-size: var(--aia-target-min);
+  min-block-size: var(--aia-target-min);
+  padding: 0.35em 0.9em;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--aia-radius);
+  background: var(--paper-raised);
+  color: var(--ink);
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+.btn:hover { background: var(--accent-soft); }
+.btn:active { transform: translateY(1px); }
+.btn--primary { background: var(--accent); border-color: var(--accent-ink); color: #fff; }
+.btn--primary:hover { background: var(--accent-ink); }
+.btn--small { min-block-size: calc(var(--aia-target-min) - 8px); padding: 0.15em 0.6em; }
+
+/* Interactive gaps between adjacent actions honour --aia-target-gap. */
+[data-aia="actions"] { display: flex; flex-wrap: wrap; gap: var(--aia-target-gap); align-items: center; }
+
+/* Cards */
+.card {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--aia-radius);
+  box-shadow: var(--shadow);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15em 0.55em;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  letter-spacing: 0.02em;
+}
+.badge--deal { background: var(--danger-soft); color: var(--danger); border-color: currentColor; }
+.badge--eco { background: var(--ok-soft); color: var(--ok); border-color: currentColor; }
+.badge--new { background: var(--info-soft); color: var(--info); border-color: currentColor; }
+.badge--low { background: var(--warn-soft); color: var(--warn); border-color: currentColor; }
+
+/* Status pill: icon + text ALWAYS (colour never the only carrier). */
+.aia-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 0.2em 0.6em;
+  border-radius: 6px;
+  border: 1.5px solid currentColor;
+  background: var(--status-bg, transparent);
+}
+.aia-status .status-icon { font-family: var(--sans); font-weight: 700; }
+.aia-status[data-tone="ok"] { color: var(--ok); --status-bg: var(--ok-soft); }
+.aia-status[data-tone="warn"] { color: var(--warn); --status-bg: var(--warn-soft); }
+.aia-status[data-tone="danger"] { color: var(--danger); --status-bg: var(--danger-soft); }
+.aia-status[data-tone="info"] { color: var(--info); --status-bg: var(--info-soft); }
+
+/* Live region for adaptation announcements */
+.aia-live {
+  position: fixed;
+  inset-block-start: 0.5rem;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  background: var(--ink);
+  color: var(--paper-raised);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  max-inline-size: min(92vw, 42rem);
+  text-align: center;
+}
+
+/* Tables */
+table { border-collapse: collapse; inline-size: 100%; }
+th, td { text-align: start; padding: 0.45rem 0.6rem; border-block-end: 1px solid var(--line); }
+thead th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
+
+.prose { max-inline-size: var(--aia-max-line); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+}

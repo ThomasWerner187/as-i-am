@@ -1,0 +1,51 @@
+/* Design tokens & themes. Adaptations NEVER invent CSS — they flip these. */
+
+:root {
+  --paper: #f6f3ec;
+  --paper-raised: #fffdf8;
+  --ink: #26231c;
+  --ink-soft: #565145;
+  --ink-faint: #837d6d;
+  --line: #ddd6c8;
+  --accent: #b0512b;
+  --accent-ink: #8f3f1f;
+  --accent-soft: #f3e2d7;
+  --ok: #3f6b46;
+  --ok-soft: #e2ecdd;
+  --warn: #8a6a1f;
+  --warn-soft: #f1e8cf;
+  --danger: #9c3529;
+  --danger-soft: #f4ded9;
+  --info: #35547d;
+  --info-soft: #e0e8f2;
+  --shadow: 0 1px 2px rgba(38, 35, 28, 0.08), 0 4px 14px rgba(38, 35, 28, 0.06);
+
+  --serif: "Charter", "Iowan Old Style", "Bitstream Charter", Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Adaptation tokens (defaults). See adapt.css for consumers. */
+  --aia-text-scale: 1;
+  --aia-important-scale: 1;
+  --aia-line-height: 1.55;
+  --aia-letter-spacing: 0em;
+  --aia-word-spacing: 0em;
+  --aia-max-line: 72ch;
+  --aia-target-min: 44px;
+  --aia-target-gap: 8px;
+  --aia-focus: 0 0 0 2px var(--paper), 0 0 0 4px var(--accent);
+  --aia-radius: 10px;
+}
+
+/* Route themes: two visibly different sites, one contract. */
+.theme-services {
+  --paper: #eef1ee;
+  --paper-raised: #fbfcfa;
+  --ink: #1f2420;
+  --ink-soft: #4c554d;
+  --ink-faint: #79837a;
+  --line: #d3dad2;
+  --accent: #1f5f5b;
+  --accent-ink: #164744;
+  --accent-soft: #dcebe7;
+  --serif: Georgia, "Times New Roman", serif;
+}

@@ -75,7 +75,10 @@ export function profileToTokenOps(profile: Record<string, Record<string, unknown
   if (mm.enable_transcripts === true) flags["transcripts"] = "on";
   if (mm.static_media_alternatives === true) flags["static-media"] = "on";
 
-  if (typeof vis.brightness === "number") flags["brightness"] = String(vis.brightness);
+  if (typeof vis.brightness === "number") {
+    flags["brightness"] = String(vis.brightness);
+    tokens["--aia-brightness-value"] = String(vis.brightness);
+  }
 
   return { tokens, flags };
 }
