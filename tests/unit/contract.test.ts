@@ -43,6 +43,10 @@ describe("contract validation", () => {
     for (const term of ["diagnos", "condition", "disease", "medical"]) {
       expect(schema.toLowerCase().includes(term)).toBe(false);
     }
+    expect((profileJsonSchema().properties as Record<string, unknown>)).not.toHaveProperty("label");
+    expect(
+      ((profileJsonSchema().properties as Record<string, Record<string, unknown>>).visual),
+    ).toMatchObject({ additionalProperties: false });
   });
 });
 
@@ -104,6 +108,7 @@ describe("privacy", () => {
     });
     expect(receipt.privacy.contains_diagnoses).toBe(false);
     expect(scanForDiagnosisTerms(receipt).ok).toBe(true);
+    expect(receipt.profile).not.toHaveProperty("label");
   });
 
   it("counts preferences for the timeline", () => {
@@ -112,11 +117,15 @@ describe("privacy", () => {
 });
 
 describe("capabilities", () => {
-  it("discovers capabilities for both pages", () => {
+  it("discovers page-specific adaptive and inherent capabilities", () => {
     const a = discoverCapabilities("shop-catalog", "Shop");
     const b = discoverCapabilities("services-portal", "Services");
-    expect(a.capabilities.length).toBeGreaterThan(30);
-    expect(b.capabilities.length).toBe(a.capabilities.length);
+    const landing = discoverCapabilities("landing", "As I Am");
+    expect(a.capabilities.some((capability) => capability.key === "visual.important_text_scale")).toBe(true);
+    expect(b.capabilities.some((capability) => capability.key === "cognitive.plain_error_messages")).toBe(true);
+    expect(a.capabilities.some((capability) => capability.key === "cognitive.plain_error_messages")).toBe(false);
+    expect(landing.unsupported_domains).toEqual(expect.arrayContaining(["cognitive", "reading", "safety"]));
+    expect(a.capabilities.find((capability) => capability.key === "safety.complete_price_totals")?.status).toBe("inherent");
   });
 
   it("requestedKeys flattens profiles", () => {
@@ -156,6 +165,20 @@ describe("fit verification", () => {
     const fit = verifyFit({ "interaction.minimum_target_size": 60 }, m);
     expect(fit.overall).toBe("partially_satisfied");
     expect(fit.suggested_refinements.length).toBeGreaterThan(0);
+  });
+
+  it("never marks unknown or unmeasured values satisfied by default", () => {
+    const fit = verifyFit({
+      "visual.text_scale": 1.5,
+      "visual.not_a_contract_key": true,
+    }, m);
+    expect(fit.partially_satisfied).toEqual(expect.arrayContaining([
+      expect.objectContaining({ key: "visual.text_scale" }),
+    ]));
+    expect(fit.unsupported).toEqual(expect.arrayContaining([
+      expect.objectContaining({ key: "visual.not_a_contract_key" }),
+    ]));
+    expect(fit.overall).toBe("partially_satisfied");
   });
 });
 

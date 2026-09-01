@@ -5,7 +5,7 @@
  */
 
 import type { AdaptationReceipt, FunctionalProfile } from "./schema";
-import { CONTRACT_NAME, CONTRACT_VERSION } from "./schema";
+import { CONTRACT_NAME, CONTRACT_VERSION, functionalPayload } from "./schema";
 import { validateProfile } from "./schema";
 import { scanForDiagnosisTerms } from "./privacy";
 
@@ -17,12 +17,16 @@ export interface ReceiptInput {
 }
 
 export function buildReceipt(input: ReceiptInput): AdaptationReceipt {
+  const validity = validateProfile(input.profile);
+  if (!validity.ok) {
+    throw new Error("receipt profile failed contract validation");
+  }
   const receipt: AdaptationReceipt = {
     contract: CONTRACT_NAME,
     version: CONTRACT_VERSION,
     issued_at: new Date().toISOString(),
     origin_site: input.origin_site,
-    profile: input.profile,
+    profile: functionalPayload(input.profile),
     stats: {
       adaptations_applied: input.adaptations_applied,
       refinements: input.refinements,
@@ -38,10 +42,6 @@ export function buildReceipt(input: ReceiptInput): AdaptationReceipt {
     throw new Error(
       `receipt construction violated privacy policy: ${scan.findings.map((f) => f.term).join(", ")}`,
     );
-  }
-  const validity = validateProfile(receipt.profile);
-  if (!validity.ok) {
-    throw new Error("receipt profile failed contract validation");
   }
   return receipt;
 }

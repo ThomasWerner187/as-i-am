@@ -97,7 +97,11 @@ export interface SafetyPreferences {
 
 export interface FunctionalProfile {
   version: typeof CONTRACT_VERSION;
-  /** Free-form, diagnosis-free label for the session. Optional. */
+  /**
+   * Legacy agent-local display hint. It is accepted for backwards
+   * compatibility, but is not part of the wire schema and is discarded before
+   * a profile is stored, logged or exported.
+   */
   label?: string;
   visual?: VisualPreferences;
   interaction?: InteractionPreferences;
@@ -128,6 +132,8 @@ export interface Capability {
   unit: string;
   /** The values this website can meaningfully apply. */
   supported_values: (string | number | boolean)[] | "continuous";
+  /** Adaptive changes the rendering; inherent means the page already satisfies it. */
+  status: "adaptive" | "inherent";
 }
 
 export interface CapabilityDiscovery {
@@ -199,7 +205,7 @@ export interface AdaptationReceipt {
   issued_at: string;
   /** Which page issued it — for provenance only, no user identity. */
   origin_site: string;
-  profile: FunctionalProfile;
+  profile: Omit<FunctionalProfile, "label">;
   /** Counters only; no page content, no user data. */
   stats: { adaptations_applied: number; refinements: number };
   /** Explicit promise marker consumers can check. */
@@ -323,13 +329,23 @@ export function validateProfile(input: unknown): {
       message: `expected version "${CONTRACT_VERSION}", got "${String(obj.version)}"`,
     });
   }
+  if (
+    obj.label !== undefined &&
+    (typeof obj.label !== "string" || obj.label.length > 80)
+  ) {
+    issues.push({
+      path: "label",
+      code: "bad_type",
+      message: "legacy label must be a string of at most 80 characters (it is ignored on receipt)",
+    });
+  }
   for (const [section, fields] of Object.entries(obj)) {
     if (section === "version" || section === "label") continue;
     if (!SECTIONS.includes(section as (typeof SECTIONS)[number])) {
       issues.push({ path: section, code: "unknown_key", message: `unknown section "${section}"` });
       continue;
     }
-    if (typeof fields !== "object" || fields === null) {
+    if (typeof fields !== "object" || fields === null || Array.isArray(fields)) {
       issues.push({ path: section, code: "bad_type", message: "section must be an object" });
       continue;
     }
@@ -373,8 +389,11 @@ export function profileJsonSchema(): Record<string, unknown> {
     if (ENUMS[key]) return { type: "string", enum: [...ENUMS[key]] };
     return { type: "boolean" };
   };
-  const section = (keys: string[]) =>
-    Object.fromEntries(keys.map((k) => [k.split(".")[1], prop(k)]));
+  const section = (keys: string[]) => ({
+    type: "object",
+    properties: Object.fromEntries(keys.map((k) => [k.split(".")[1], prop(k)])),
+    additionalProperties: false,
+  });
   return {
     $schema: "https://json-schema.org/draft/2020-12/schema",
     $id: "https://as-i-am.demo/schemas/functional-profile-0.1.json",
@@ -383,54 +402,41 @@ export function profileJsonSchema(): Record<string, unknown> {
     required: ["version"],
     properties: {
       version: { const: CONTRACT_VERSION },
-      label: { type: "string", maxLength: 80 },
-      visual: {
-        type: "object",
-        properties: section([
+      visual: section([
           "visual.text_scale", "visual.important_text_scale", "visual.line_height",
           "visual.letter_spacing", "visual.word_spacing", "visual.max_line_length",
           "visual.contrast", "visual.brightness", "visual.glare", "visual.color_mode",
           "visual.color_independent_status", "visual.font_style",
         ]),
-      },
-      interaction: {
-        type: "object",
-        properties: section([
+      interaction: section([
           "interaction.minimum_target_size", "interaction.target_spacing",
           "interaction.keyboard_first", "interaction.focus_strength",
           "interaction.cursor_size", "interaction.drag_alternatives",
           "interaction.double_click_disabled", "interaction.timeout_multiplier",
           "interaction.error_tolerance",
         ]),
-      },
-      cognitive: {
-        type: "object",
-        properties: section([
+      cognitive: section([
           "cognitive.information_density", "cognitive.maximum_primary_actions",
           "cognitive.step_by_step", "cognitive.hide_nonessential",
           "cognitive.persistent_labels", "cognitive.consistent_help",
           "cognitive.progress_indicators", "cognitive.plain_error_messages",
           "cognitive.confirmation_level",
         ]),
-      },
-      motion_media: {
-        type: "object",
-        properties: section([
+      motion_media: section([
           "motion_media.reduce_motion", "motion_media.disable_animation",
           "motion_media.disable_autoplay", "motion_media.disable_parallax",
           "motion_media.mute_nonessential_audio", "motion_media.enable_captions",
           "motion_media.enable_transcripts", "motion_media.static_media_alternatives",
         ]),
-      },
-      reading: {
-        type: "object",
-        properties: section(["reading.mode", "reading.speech_rate"]),
-      },
-      safety: {
-        type: "object",
-        properties: section(["safety.confirm_destructive", "safety.complete_price_totals"]),
-      },
+      reading: section(["reading.mode", "reading.speech_rate"]),
+      safety: section(["safety.confirm_destructive", "safety.complete_price_totals"]),
     },
     additionalProperties: false,
   };
+}
+
+/** Remove legacy/free-form metadata before the website retains or exports a profile. */
+export function functionalPayload(profile: FunctionalProfile): Omit<FunctionalProfile, "label"> {
+  const { label: _ignored, ...functional } = profile;
+  return structuredClone(functional);
 }

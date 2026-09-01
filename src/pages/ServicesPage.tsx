@@ -1,18 +1,22 @@
 /** City of Meridian — Resident Services. A deliberately different layout:
  *  official, form-led, multi-pane — same Adaptive Web Contract underneath. */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MainNav, ReadingText } from "../components/SiteChrome";
 import { ProgressLine, StatusPill, useEngineState } from "../components/Primitives";
 import { IconPhone, IconInfo, IconHourglass } from "../components/Icons";
 import { APPOINTMENTS, HELP_TOPICS, PERMIT_FORM_STEPS, REQUESTS, SERVICE_ANNOUNCEMENTS, SERVICE_TASKS } from "../data/services";
-import { focusStore, useFocusedTask } from "../data/shopState";
+import { FOCUS_TASK_LABELS, focusRegionForTask, focusStore, useFocusedTask } from "../data/shopState";
 import { activity } from "../data/activityStore";
 import type { Route } from "../App";
 
 export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) => void }) {
   const snap = useEngineState();
   const focused = useFocusedTask();
+  const focusRegion = focusRegionForTask(focused);
+  const serviceFocus = focusRegion && ["page", "permit-form", "requests", "appointments"].includes(focusRegion)
+    ? focusRegion
+    : null;
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -21,6 +25,24 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
   const plainErrors = snap.active.cognitive?.plain_error_messages === true;
   const stepsOn = snap.active.cognitive?.step_by_step === true;
   const progressOn = snap.active.cognitive?.progress_indicators === true || stepsOn;
+
+  useEffect(() => {
+    if (focused !== "complete_form") return;
+    requestAnimationFrame(() => {
+      document.querySelector<HTMLElement>('[data-testid="focus-banner"]')?.scrollIntoView({ block: "start" });
+      document.getElementById("form-title")?.focus({ preventScroll: true });
+    });
+  }, [focused]);
+
+  function updateField(id: string, value: string) {
+    setForm((current) => ({ ...current, [id]: value }));
+    setErrors((current) => {
+      if (!current[id]) return current;
+      const nextErrors = { ...current };
+      delete nextErrors[id];
+      return nextErrors;
+    });
+  }
 
   function validateCurrentStep(): boolean {
     const def = PERMIT_FORM_STEPS[step - 1];
@@ -33,13 +55,21 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
       }
     }
     setErrors(errs);
+    const firstInvalid = Object.keys(errs)[0];
+    if (firstInvalid) requestAnimationFrame(() => document.getElementById(firstInvalid)?.focus());
     return Object.keys(errs).length === 0;
+  }
+
+  function moveToStep(nextStep: number) {
+    setStep(nextStep);
+    setErrors({});
+    requestAnimationFrame(() => document.getElementById("form-step-title")?.focus());
   }
 
   function next() {
     if (!validateCurrentStep()) return;
     if (step < PERMIT_FORM_STEPS.length) {
-      setStep(step + 1);
+      moveToStep(step + 1);
       activity.push("ui", `Form: moved to step ${step + 1}.`);
     } else {
       setSubmitted(true);
@@ -47,8 +77,18 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
     }
   }
 
-  const showMain = focused === null || focused === "permit-form";
-  const showSide = focused === null || focused === "requests";
+  const showIntro = serviceFocus === null || serviceFocus === "page";
+  const showTasks = serviceFocus === null;
+  const showForm = serviceFocus === null || serviceFocus === "permit-form";
+  const showHelp = serviceFocus === null || serviceFocus === "page";
+  const showRequests = serviceFocus === null || serviceFocus === "requests";
+  const showAppointments = serviceFocus === null || serviceFocus === "appointments";
+  const showAside = showRequests || showAppointments;
+  const focusedLayoutClass = serviceFocus === "requests" || serviceFocus === "appointments"
+    ? " services-layout--focused-aside"
+    : serviceFocus !== null
+      ? " services-layout--focused-main"
+      : "";
 
   return (
     <div id="main" tabIndex={-1}>
@@ -104,15 +144,28 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
         </div>
       </header>
 
-      <div className="wrap services-layout">
-        <div>
-          <h1 style={{ fontSize: "1.9rem" }}>Your city services online</h1>
-          <p className="prose" style={{ color: "var(--ink-soft)" }}>
-            Apply, track and manage resident services. Processing times and fees are stated
-            before you submit anything.
-          </p>
+      {focused && serviceFocus && serviceFocus !== "page" && (
+        <div className="wrap" data-testid="focus-banner">
+          <div className="card focus-banner">
+            <span data-aia="focus-note">
+              Focused on task: <strong>{FOCUS_TASK_LABELS[focused]}</strong> — unrelated portal sections are temporarily collapsed, never deleted.
+            </span>
+            <button type="button" className="btn btn--small" onClick={() => focusStore.set(null)}>Exit focus</button>
+          </div>
+        </div>
+      )}
 
-          <div className="announcements aia-promo" data-aia-essential="false" aria-label="Announcements">
+      <div className={`wrap services-layout${focusedLayoutClass}`}>
+        <div>
+          <div hidden={!showIntro}>
+            <h1 style={{ fontSize: "1.9rem" }}>Your city services online</h1>
+            <p className="prose" style={{ color: "var(--ink-soft)" }}>
+              Apply, track and manage resident services. Processing times and fees are stated
+              before you submit anything.
+            </p>
+          </div>
+
+          <div className="announcements aia-promo" data-aia-essential="false" aria-label="Announcements" hidden={!showIntro}>
             {SERVICE_ANNOUNCEMENTS.map((a) => (
               <p className="announcement" key={a.id}>
                 <span aria-hidden="true" style={{ display: "inline-flex", flex: "none" }}><IconInfo size={16} /></span> {a.text}
@@ -121,7 +174,7 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
           </div>
 
           {/* Service tasks */}
-          <section className="task-list" aria-labelledby="tasks-title" hidden={!showMain} data-testid="service-tasks">
+          <section className="task-list" aria-labelledby="tasks-title" hidden={!showTasks} data-testid="service-tasks">
             <h2 id="tasks-title">Popular services</h2>
             {SERVICE_TASKS.map((t) => (
               <article className="card task-card" key={t.id}>
@@ -134,9 +187,13 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
                 <p className="deadline-box" style={{ display: "flex", gap: "0.5em", alignItems: "baseline" }}>
                   <IconHourglass size={15} className="deadline-icon" /> {t.deadline_note}
                 </p>
-                {focused === "permit-form" && t.id === "parking-permit" ? null : (
+                {focused === "complete_form" && t.id === "parking-permit" ? null : (
                   <div data-aia="actions">
-                    <button type="button" className="btn btn--small btn--primary" onClick={() => { focusStore.set("permit-form"); setStep(1); window.scroll({ top: 400, behavior: "smooth" }); }}>
+                    <button type="button" className="btn btn--small btn--primary" onClick={() => {
+                      focusStore.set("complete_form");
+                      setStep(1);
+                      setErrors({});
+                    }}>
                       Start application
                     </button>
                     <button type="button" className="btn btn--small" onClick={() => activity.push("ui", `Opened details for ${t.title} (demo).`)}>
@@ -153,18 +210,18 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
             className="aia-step-panel card"
             id="permit-form"
             aria-labelledby="form-title"
-            hidden={focused !== null && focused !== "permit-form"}
+            hidden={!showForm}
             data-testid="permit-form"
             style={{ marginTop: "1.4rem" }}
           >
-            <h2 id="form-title">Apply: resident parking permit (zone B)</h2>
+            <h2 id="form-title" tabIndex={-1}>Apply: resident parking permit (zone B)</h2>
             {progressOn && <ProgressLine current={submitted ? PERMIT_FORM_STEPS.length : step} total={PERMIT_FORM_STEPS.length} label="Application progress" />}
             {submitted ? (
               <div className="deadline-box" data-testid="form-success" role="status">
                 ✔ Application received (simulation). Reference: <strong>REQ-20455</strong>. You can find it under “My requests”.
               </div>
             ) : (
-              <form onSubmit={(e) => { e.preventDefault(); next(); }}>
+              <form noValidate onSubmit={(e) => { e.preventDefault(); next(); }}>
                 <ol className="form-steps">
                   {PERMIT_FORM_STEPS.map((s, i) => (
                     <li key={s.id} aria-current={step === i + 1 ? "step" : undefined}>
@@ -172,53 +229,72 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
                     </li>
                   ))}
                 </ol>
-                <h3>{PERMIT_FORM_STEPS[step - 1].title}</h3>
+                <p className="required-note">Every field marked “(required)” must be completed before you continue.</p>
+                <h3 id="form-step-title" tabIndex={-1}>{PERMIT_FORM_STEPS[step - 1].title}</h3>
                 {PERMIT_FORM_STEPS[step - 1].fields.map((f) => {
                   if (f.type === "select") {
+                    const errorId = `${f.id}-error`;
                     return (
                       <div className="field" key={f.id}>
-                        <label htmlFor={f.id}>{f.label}{f.required ? " *" : ""}</label>
-                        <select id={f.id} value={form[f.id] ?? ""} onChange={(e) => setForm({ ...form, [f.id]: e.target.value })}>
+                        <label htmlFor={f.id}>{f.label}{f.required && <span className="required-marker"> (required)</span>}</label>
+                        <select
+                          id={f.id}
+                          value={form[f.id] ?? ""}
+                          required={f.required}
+                          aria-invalid={errors[f.id] ? "true" : "false"}
+                          aria-describedby={errors[f.id] ? errorId : undefined}
+                          onChange={(e) => updateField(f.id, e.target.value)}
+                        >
                           <option value="">Please choose…</option>
                           {f.options.map((o) => <option key={o}>{o}</option>)}
                         </select>
-                        {errors[f.id] && <span className="error" role="alert">{errors[f.id]}</span>}
+                        {errors[f.id] && <span className="error" id={errorId} role="alert">{errors[f.id]}</span>}
                       </div>
                     );
                   }
                   if (f.type === "checkbox") {
+                    const hintId = `${f.id}-hint`;
+                    const errorId = `${f.id}-error`;
                     return (
                       <div className="field" key={f.id}>
-                        <label style={{ display: "flex", gap: "0.5em", alignItems: "center" }}>
+                        <label className="checkbox-label" htmlFor={f.id}>
                           <input
+                            id={f.id}
                             type="checkbox"
                             checked={form[f.id] === "yes"}
-                            onChange={(e) => setForm({ ...form, [f.id]: e.target.checked ? "yes" : "" })}
+                            required={f.required}
+                            aria-invalid={errors[f.id] ? "true" : "false"}
+                            aria-describedby={`${hintId}${errors[f.id] ? ` ${errorId}` : ""}`}
+                            onChange={(e) => updateField(f.id, e.target.checked ? "yes" : "")}
                           />
-                          {f.label} *
+                          <span>{f.label}{f.required && <span className="required-marker"> (required)</span>}</span>
                         </label>
-                        {errors[f.id] && <span className="error" role="alert">{errors[f.id]}</span>}
+                        <span className="hint" id={hintId}>{f.hint}</span>
+                        {errors[f.id] && <span className="error" id={errorId} role="alert">{errors[f.id]}</span>}
                       </div>
                     );
                   }
+                  const hintId = `${f.id}-hint`;
+                  const errorId = `${f.id}-error`;
                   return (
                     <div className="field" key={f.id}>
-                      <label htmlFor={f.id}>{f.label}{f.required ? " *" : ""}</label>
+                      <label htmlFor={f.id}>{f.label}{f.required && <span className="required-marker"> (required)</span>}</label>
                       <input
                         id={f.id}
                         type={f.type}
                         value={form[f.id] ?? ""}
-                        aria-invalid={errors[f.id] ? "true" : undefined}
-                        aria-describedby={`${f.id}-hint`}
-                        onChange={(e) => setForm({ ...form, [f.id]: e.target.value })}
+                        required={f.required}
+                        aria-invalid={errors[f.id] ? "true" : "false"}
+                        aria-describedby={`${hintId}${errors[f.id] ? ` ${errorId}` : ""}`}
+                        onChange={(e) => updateField(f.id, e.target.value)}
                       />
-                      <span className="hint" id={`${f.id}-hint`}>{f.hint}</span>
-                      {errors[f.id] && <span className="error" role="alert">{errors[f.id]}</span>}
+                      <span className="hint" id={hintId}>{f.hint}</span>
+                      {errors[f.id] && <span className="error" id={errorId} role="alert">{errors[f.id]}</span>}
                     </div>
                   );
                 })}
                 <div className="aia-step-nav" data-aia="actions">
-                  <button type="button" className="btn" disabled={step === 1} onClick={() => setStep(step - 1)}>
+                  <button type="button" className="btn" disabled={step === 1} onClick={() => moveToStep(step - 1)}>
                     ← Back
                   </button>
                   <button type="submit" className="btn btn--primary" data-testid="form-next">
@@ -233,7 +309,7 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
           </section>
 
           {/* Help */}
-          <section className="help-accordion aia-aside-block" aria-labelledby="help-title" style={{ marginTop: "1.4rem" }} hidden={!showMain}>
+          <section className="help-accordion aia-aside-block" aria-labelledby="help-title" style={{ marginTop: "1.4rem" }} hidden={!showHelp}>
             <h2 id="help-title">Help &amp; common questions</h2>
             {HELP_TOPICS.map((h) => (
               <details key={h.id}>
@@ -247,8 +323,8 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
         </div>
 
         {/* Right aside */}
-        <aside aria-label="My requests and appointments" hidden={!showSide}>
-          <section className="card panel" data-testid="requests" aria-labelledby="requests-title">
+        <aside aria-label="My requests and appointments" hidden={!showAside}>
+          <section className="card panel" data-testid="requests" aria-labelledby="requests-title" hidden={!showRequests}>
             <h2 id="requests-title">My requests</h2>
             <div className="status-table">
               <table>
@@ -273,7 +349,7 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
             </div>
           </section>
 
-          <section className="card panel aia-aside-block" data-testid="appointments" aria-labelledby="appt-title">
+          <section className="card panel aia-aside-block" data-testid="appointments" aria-labelledby="appt-title" hidden={!showAppointments}>
             <h2 id="appt-title">Appointments</h2>
             <div className="appt-list">
               {APPOINTMENTS.map((a) => (
@@ -292,7 +368,7 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
             </div>
           </section>
 
-          <section className="card panel aia-aside-block" aria-labelledby="hours-title">
+          <section className="card panel aia-aside-block" aria-labelledby="hours-title" hidden={serviceFocus !== null}>
             <h2 id="hours-title">Opening hours</h2>
             <p style={{ fontSize: "0.84rem", margin: 0 }}>
               Citizen Centre: Mon–Thu 8–18, Fri 8–13.
@@ -303,7 +379,7 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
         </aside>
       </div>
 
-      <footer className="site-footer">
+      <footer className="site-footer" hidden={serviceFocus !== null && serviceFocus !== "page"}>
         <div className="wrap cols">
           <div>
             <h3>Portal</h3>
@@ -323,7 +399,7 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
           </div>
         </div>
       </footer>
-      {density === "minimal" && (
+      {density === "minimal" && serviceFocus === null && (
         <p className="wrap" style={{ fontSize: "0.76rem", color: "var(--ink-faint)" }}>
           Reduced view: secondary navigation areas and promotional announcements are hidden (restorable any time).
         </p>

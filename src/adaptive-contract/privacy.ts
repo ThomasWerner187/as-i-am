@@ -2,13 +2,18 @@
  * Adaptive Web Contract — privacy.ts
  *
  * Enforces the privacy model:
- * - tool arguments are scanned for diagnosis-like terms before execution
+ * - a closed functional schema is the primary data boundary
+ * - tool arguments are additionally screened for known diagnosis-like terms
  * - nothing is persisted (session state only, in memory)
  * - receipts contain functional parameters only
  */
 
-/** Common medical diagnoses / condition names. Functional descriptions
- *  ("larger text", "one-handed") are always allowed; these are not. */
+/**
+ * A deliberately finite, defence-in-depth screen for common diagnosis-like
+ * terms. It is not a medical classifier and must never be presented as proof
+ * that arbitrary free text is diagnosis-free. The closed schema and removal
+ * of free-form metadata are the actual privacy boundary.
+ */
 const DIAGNOSIS_TERMS: string[] = [
   "parkinson",
   "alzheimer",
@@ -112,12 +117,12 @@ export class SessionOnlyStore<T> {
 }
 
 export const PRIVACY_RULES = [
-  "No diagnosis parameters exist in any tool schema.",
-  "Tool arguments are scanned and rejected if they contain diagnosis-like terms.",
-  "The tool log shows functional parameters only.",
+  "The accepted profile schema contains functional parameters only; free-form labels are discarded.",
+  "Known diagnosis-like terms are screened as defence in depth, not as a medical classifier.",
+  "The tool log shows validated functional parameters only.",
   "Nothing is persisted: session memory only, no cookies, no localStorage.",
   "No external analytics, no third-party requests for adaptation logic.",
   "Profiles never appear in URLs or share links.",
-  "Export is a diagnosis-free functional receipt.",
-  "The website shows exactly which functional values it received.",
+  "Export contains only values accepted by the closed functional schema.",
+  "The website shows the accepted functional values after validation and metadata removal.",
 ] as const;

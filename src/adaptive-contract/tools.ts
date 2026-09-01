@@ -8,11 +8,20 @@
  * Responses are produced AFTER the UI change actually happened.
  */
 
-import { CONTRACT_NAME, CONTRACT_VERSION, type FunctionalProfile } from "./schema";
+import {
+  CONTRACT_NAME,
+  CONTRACT_VERSION,
+  functionalPayload,
+  profileJsonSchema,
+  type AdaptationResult,
+  type FunctionalProfile,
+  type UnmetRequest,
+} from "./schema";
 import { discoverCapabilities, requestedKeys } from "./capabilities";
 import { scanForDiagnosisTerms } from "./privacy";
 import { buildReceipt, countPreferences } from "./receipts";
-import { collectMeasurements, verifyFit } from "./measurements";
+import { collectMeasurements, verifyFit, waitForRenderedCommit } from "./measurements";
+import { validateToolInput } from "./inputValidation";
 import { engine } from "../engine/adaptationEngine";
 import { speech } from "../engine/speech";
 import { activity } from "../data/activityStore";
@@ -23,7 +32,15 @@ import {
 import {
   APPOINTMENTS, HELP_TOPICS, PERMIT_FORM_STEPS, REQUESTS, SERVICE_TASKS,
 } from "../data/services";
-import { filteredProducts, focusStore, shopStore } from "../data/shopState";
+import {
+  FOCUS_TASK_LABELS,
+  filteredProducts,
+  focusRegionForTask,
+  focusStore,
+  normalizeFocusTask,
+  shopStore,
+  type FocusTaskId,
+} from "../data/shopState";
 
 const j = (v: unknown): string => JSON.stringify(v);
 const err = (code: string, message: string): string =>
@@ -53,6 +70,136 @@ function currentRoute(): string {
 function activePageId(): string {
   const route = currentRoute();
   return route === "services" ? "services-portal" : route === "shop" ? "shop-catalog" : "landing";
+}
+
+const PROFILE_INPUT_SCHEMA = profileJsonSchema();
+const PARTIAL_PROFILE_INPUT_SCHEMA: Record<string, unknown> = {
+  ...PROFILE_INPUT_SCHEMA,
+  required: [],
+};
+
+function profileValue(profile: Record<string, unknown>, key: string): unknown {
+  const [section, field] = key.split(".");
+  const values = profile[section];
+  return values && typeof values === "object" && !Array.isArray(values)
+    ? (values as Record<string, unknown>)[field]
+    : undefined;
+}
+
+function requestedMap(profile: Record<string, unknown>): Record<string, number | string | boolean> {
+  const requested: Record<string, number | string | boolean> = {};
+  for (const key of requestedKeys(profile)) {
+    const value = profileValue(profile, key);
+    if (typeof value === "number" || typeof value === "string" || typeof value === "boolean") {
+      requested[key] = value;
+    }
+  }
+  return requested;
+}
+
+interface PartitionedProfile {
+  adaptive: FunctionalProfile;
+  requested: Record<string, number | string | boolean>;
+  inherent: string[];
+  unsupported: UnmetRequest[];
+}
+
+/** Keep only values this concrete page can actually adapt. */
+function partitionProfile(profile: FunctionalProfile, pageId: string): PartitionedProfile {
+  const payload = functionalPayload(profile) as Record<string, unknown>;
+  const capabilities = new Map(
+    discoverCapabilities(pageId, "").capabilities.map((capability) => [capability.key, capability]),
+  );
+  const adaptive: Record<string, unknown> = { version: CONTRACT_VERSION };
+  const inherent: string[] = [];
+  const unsupported: UnmetRequest[] = [];
+  const requested = requestedMap(payload);
+  for (const [key, value] of Object.entries(requested)) {
+    const capability = capabilities.get(key);
+    if (!capability) {
+      unsupported.push({ key, reason: "unsupported", detail: "This page does not implement this contract key." });
+      continue;
+    }
+    if (
+      capability.supported_values !== "continuous" &&
+      !capability.supported_values.includes(value)
+    ) {
+      unsupported.push({
+        key,
+        reason: "unsupported",
+        detail: `This page does not support the requested value ${String(value)}.`,
+      });
+      continue;
+    }
+    if (capability.status === "inherent") {
+      inherent.push(key);
+      continue;
+    }
+    const [section, field] = key.split(".");
+    const values = (adaptive[section] ?? {}) as Record<string, unknown>;
+    values[field] = value;
+    adaptive[section] = values;
+  }
+  return {
+    adaptive: adaptive as unknown as FunctionalProfile,
+    requested,
+    inherent,
+    unsupported,
+  };
+}
+
+function applyProfileOnPage(
+  profile: FunctionalProfile,
+  pageId: string,
+  operationLabel: string,
+): { result: AdaptationResult; partition: PartitionedProfile } {
+  const partition = partitionProfile(profile, pageId);
+  const result = engine.applyProfile(partition.adaptive, operationLabel);
+  const warnings = [...result.warnings];
+  if (partition.inherent.length > 0) {
+    warnings.push(`Already satisfied by this page: ${partition.inherent.join(", ")}.`);
+  }
+  const unmet = [...result.unmet, ...partition.unsupported];
+  return {
+    partition,
+    result: {
+      ...result,
+      ok: result.ok && (result.applied.length > 0 || partition.inherent.length > 0 || unmet.length === 0),
+      unmet,
+      warnings,
+    },
+  };
+}
+
+async function measuredAdaptation(
+  pageId: string,
+  result: AdaptationResult,
+  requested: Record<string, number | string | boolean>,
+) {
+  engine.syncDom();
+  await waitForRenderedCommit();
+  const measurements = collectMeasurements();
+  const capabilities = discoverCapabilities(pageId, "").capabilities;
+  const verification = verifyFit(requested, measurements, { capabilities });
+  const measuredUnmet: UnmetRequest[] = [
+    ...verification.partially_satisfied.map(({ key, detail }) => ({
+      key,
+      reason: "conflict" as const,
+      detail,
+    })),
+    ...verification.unsupported.map(({ key, reason }) => ({
+      key,
+      reason: "unsupported" as const,
+      detail: reason,
+    })),
+  ];
+  const unmetByKey = new Map([...result.unmet, ...measuredUnmet].map((item) => [item.key, item]));
+  return {
+    ...result,
+    unmet: [...unmetByKey.values()],
+    measurements,
+    verification,
+  };
 }
 
 function productSummary(p: Product) {
@@ -148,13 +295,18 @@ const universalTools: ToolDef[] = [
       "Discover which visual, interaction, cognitive, motion/media, reading and safety adaptations this page supports (Adaptive Web Contract 0.1). Call before applying a profile.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
     annotations: { readOnlyHint: true, idempotentHint: true },
-    run: () => {
-      const disc = discoverCapabilities(activePageId(), PAGE_DESCRIPTORS[currentRoute()].site_name);
+    run: (pageId) => {
+      const disc = discoverCapabilities(pageId, PAGE_DESCRIPTORS[currentRoute()].site_name);
       return j({
         ok: true, contract: disc.contract, version: disc.version,
         page_id: disc.page_id, site_name: disc.site_name,
         capability_count: disc.capabilities.length,
-        capabilities: disc.capabilities.map((c) => ({ key: c.key, domain: c.domain, values: c.supported_values })),
+        capabilities: disc.capabilities.map((c) => ({
+          key: c.key,
+          domain: c.domain,
+          status: c.status,
+          values: c.supported_values,
+        })),
         unsupported_domains: disc.unsupported_domains,
       });
     },
@@ -187,27 +339,33 @@ const universalTools: ToolDef[] = [
       "Apply a functional preference profile (diagnosis-free, Adaptive Web Contract 0.1 schema) as one atomic, undoable operation. Only functional parameters are accepted; diagnosis terms are rejected.",
     inputSchema: {
       type: "object",
-      properties: { profile: { type: "object", description: "Functional profile per contract 0.1" } },
+      properties: { profile: PROFILE_INPUT_SCHEMA },
       required: ["profile"],
       additionalProperties: false,
     },
-    run: (_pageId, args) => {
+    run: async (pageId, args) => {
       const profile = args.profile as FunctionalProfile | undefined;
       if (!profile) return err("missing_argument", "profile is required");
       const scan = scanForDiagnosisTerms(profile);
       if (!scan.ok) {
-        activity.push("apply_adaptation_profile", "Blocked: payload contained protected health terms.");
+        activity.push("apply_adaptation_profile", "Blocked by the demo privacy screen.");
         return j({
           ok: false, code: "privacy_violation",
-          error: "Profile contains protected health terms. Send functional parameters only, e.g. text_scale, minimum_target_size.",
+          error: "Profile matched a diagnosis-like term in the demo safety screen. Send functional parameters only, e.g. text_scale or minimum_target_size.",
           findings: scan.findings.map((f) => f.where),
         });
       }
-      const result = engine.applyProfile(profile, profile.label ?? "Agent profile");
-      engine.syncDom();
-      const m = collectMeasurements();
-      activity.push("apply_adaptation_profile", result.ok ? `Applied ${result.applied.length} functional preferences (v${result.adaptation_version}).` : "Profile rejected — invalid contract values.", j(profile));
-      return j({ ...result, measurements: m });
+      const { result, partition } = applyProfileOnPage(profile, pageId, "Agent profile");
+      const rendered = await measuredAdaptation(pageId, result, partition.requested);
+      const accepted = functionalPayload(partition.adaptive);
+      activity.push(
+        "apply_adaptation_profile",
+        rendered.ok
+          ? `Applied ${rendered.applied.length} page-supported functional preferences (v${rendered.adaptation_version}); verified ${rendered.verification.overall}.`
+          : "Profile could not be applied on this page.",
+        j(accepted),
+      );
+      return j(rendered);
     },
   },
   {
@@ -220,8 +378,19 @@ const universalTools: ToolDef[] = [
       required: ["task"],
       additionalProperties: false,
     },
-    run: (_pageId, args) => {
+    run: async (pageId, args) => {
       const task = String(args.task ?? "");
+      const allowedTasks: Record<string, readonly string[]> = {
+        landing: ["understand_page", "find_information"],
+        "shop-catalog": ["compare_products", "understand_page", "review_price", "find_information"],
+        "services-portal": ["understand_page", "complete_form", "find_information"],
+      };
+      if (!allowedTasks[pageId]?.includes(task)) {
+        return err(
+          "wrong_page_task",
+          `Task "${task}" is not available on ${pageId}. Supported here: ${(allowedTasks[pageId] ?? []).join(", ")}.`,
+        );
+      }
       const presets: Record<string, FunctionalProfile> = {
         compare_products: {
           version: CONTRACT_VERSION, label: "Task: compare products",
@@ -256,12 +425,12 @@ const universalTools: ToolDef[] = [
       };
       const preset = presets[task];
       if (!preset) return err("bad_task", `Unknown task "${task}".`);
-      const result = engine.applyProfile(preset, `Task adaptation: ${task}`);
-      engine.syncDom();
-      if (task === "complete_form") focusStore.set("permit-form");
-      if (task === "compare_products") focusStore.set("comparison");
-      activity.push("adapt_for_task", `Adapted the page for task "${task}" (v${result.adaptation_version}).`);
-      return j({ ...result, task });
+      const { result, partition } = applyProfileOnPage(preset, pageId, `Task adaptation: ${task}`);
+      if (task === "complete_form") focusStore.set("complete_form");
+      if (task === "compare_products") focusStore.set("compare_products");
+      const rendered = await measuredAdaptation(pageId, result, partition.requested);
+      activity.push("adapt_for_task", `Adapted the page for task "${task}" (v${rendered.adaptation_version}); verified ${rendered.verification.overall}.`);
+      return j({ ...rendered, task });
     },
   },
   {
@@ -286,11 +455,12 @@ const universalTools: ToolDef[] = [
       },
       additionalProperties: false,
     },
-    run: (_pageId, args) => {
-      const result = engine.tuneSection("visual", args, "Visual tuning");
-      engine.syncDom();
-      activity.push("tune_visual_presentation", `Visual tuning applied (${result.applied.length} changes).`, j(args));
-      return j({ ...result });
+    run: async (pageId, args) => {
+      const profile = { version: CONTRACT_VERSION, visual: args } as unknown as FunctionalProfile;
+      const { result, partition } = applyProfileOnPage(profile, pageId, "Visual tuning");
+      const rendered = await measuredAdaptation(pageId, result, partition.requested);
+      activity.push("tune_visual_presentation", `Visual tuning applied (${rendered.applied.length} changes); verified ${rendered.verification.overall}.`, j(args));
+      return j(rendered);
     },
   },
   {
@@ -312,11 +482,12 @@ const universalTools: ToolDef[] = [
       },
       additionalProperties: false,
     },
-    run: (_pageId, args) => {
-      const result = engine.tuneSection("interaction", args, "Interaction tuning");
-      engine.syncDom();
-      activity.push("tune_interaction", `Interaction tuning applied (${result.applied.length} changes).`, j(args));
-      return j({ ...result });
+    run: async (pageId, args) => {
+      const profile = { version: CONTRACT_VERSION, interaction: args } as unknown as FunctionalProfile;
+      const { result, partition } = applyProfileOnPage(profile, pageId, "Interaction tuning");
+      const rendered = await measuredAdaptation(pageId, result, partition.requested);
+      activity.push("tune_interaction", `Interaction tuning applied (${rendered.applied.length} changes); verified ${rendered.verification.overall}.`, j(args));
+      return j(rendered);
     },
   },
   {
@@ -338,11 +509,12 @@ const universalTools: ToolDef[] = [
       },
       additionalProperties: false,
     },
-    run: (_pageId, args) => {
-      const result = engine.tuneSection("cognitive", args, "Cognitive tuning");
-      engine.syncDom();
-      activity.push("tune_cognitive_support", `Cognitive support tuned (${result.applied.length} changes).`, j(args));
-      return j({ ...result });
+    run: async (pageId, args) => {
+      const profile = { version: CONTRACT_VERSION, cognitive: args } as unknown as FunctionalProfile;
+      const { result, partition } = applyProfileOnPage(profile, pageId, "Cognitive tuning");
+      const rendered = await measuredAdaptation(pageId, result, partition.requested);
+      activity.push("tune_cognitive_support", `Cognitive support tuned (${rendered.applied.length} changes); verified ${rendered.verification.overall}.`, j(args));
+      return j(rendered);
     },
   },
   {
@@ -363,11 +535,12 @@ const universalTools: ToolDef[] = [
       },
       additionalProperties: false,
     },
-    run: (_pageId, args) => {
-      const result = engine.tuneSection("motion_media", args, "Motion & media tuning");
-      engine.syncDom();
-      activity.push("tune_motion_and_media", `Motion/media tuned (${result.applied.length} changes).`, j(args));
-      return j({ ...result });
+    run: async (pageId, args) => {
+      const profile = { version: CONTRACT_VERSION, motion_media: args } as unknown as FunctionalProfile;
+      const { result, partition } = applyProfileOnPage(profile, pageId, "Motion & media tuning");
+      const rendered = await measuredAdaptation(pageId, result, partition.requested);
+      activity.push("tune_motion_and_media", `Motion/media tuned (${rendered.applied.length} changes); verified ${rendered.verification.overall}.`, j(args));
+      return j(rendered);
     },
   },
   {
@@ -383,13 +556,14 @@ const universalTools: ToolDef[] = [
       required: ["mode"],
       additionalProperties: false,
     },
-    run: (_pageId, args) => {
+    run: async (pageId, args) => {
       const patch: Record<string, unknown> = { mode: args.mode };
       if (typeof args.speech_rate === "number") patch.speech_rate = args.speech_rate;
-      const result = engine.tuneSection("reading", patch, `Reading mode: ${String(args.mode)}`);
-      engine.syncDom();
+      const profile = { version: CONTRACT_VERSION, reading: patch } as unknown as FunctionalProfile;
+      const { result, partition } = applyProfileOnPage(profile, pageId, `Reading mode: ${String(args.mode)}`);
+      const rendered = await measuredAdaptation(pageId, result, partition.requested);
       activity.push("set_reading_mode", `Reading mode set to "${String(args.mode).replace(/_/g, " ")}".`, j(args));
-      return j({ ...result });
+      return j(rendered);
     },
   },
   {
@@ -398,7 +572,8 @@ const universalTools: ToolDef[] = [
       "Measure the REAL rendered page: smallest text, price sizes, smallest click target, action gaps, min contrast, visible primary actions, running animations, horizontal overflow, occluded focusables. Use after adapting, then refine.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
     annotations: { readOnlyHint: true, idempotentHint: true },
-    run: () => {
+    run: async () => {
+      await waitForRenderedCommit();
       const m = collectMeasurements();
       activity.push("measure_rendered_ui", "Measured the rendered page.", j(m));
       return j({ ok: true, measurements: m });
@@ -410,21 +585,18 @@ const universalTools: ToolDef[] = [
       "Compare requested functional preferences with the actually rendered page. Reports satisfied / partially_satisfied / unsupported, conflicts and suggested_refinements for an observe→adapt→measure→refine loop.",
     inputSchema: {
       type: "object",
-      properties: { profile: { type: "object", description: "Optional profile to verify; defaults to the active one" } },
+      properties: { profile: PARTIAL_PROFILE_INPUT_SCHEMA },
       additionalProperties: false,
     },
     annotations: { readOnlyHint: true },
-    run: (_pageId, args) => {
-      const src = (args.profile as Record<string, Record<string, unknown>> | undefined) ?? engine.getSnapshot().active;
-      const keys = requestedKeys(src);
-      const requested: Record<string, number | string | boolean> = {};
-      for (const key of keys) {
-        const [section, field] = key.split(".");
-        const v = (src[section] as Record<string, unknown> | undefined)?.[field];
-        if (v !== undefined) requested[key] = v as number | string | boolean;
-      }
+    run: async (pageId, args) => {
+      const src = (args.profile as Record<string, unknown> | undefined) ?? engine.getSnapshot().active;
+      const requested = requestedMap(src);
+      await waitForRenderedCommit();
       const m = collectMeasurements();
-      const fit = verifyFit(requested, m);
+      const fit = verifyFit(requested, m, {
+        capabilities: discoverCapabilities(pageId, "").capabilities,
+      });
       activity.push("verify_profile_fit", `Profile fit: ${fit.overall} (${fit.partially_satisfied.length} partial).`);
       return j({ ok: true, fit, measurements: m });
     },
@@ -433,21 +605,30 @@ const universalTools: ToolDef[] = [
     name: "undo_adaptation",
     description: "Undo the last adaptation operation and restore the previous state exactly.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
-    run: () => {
+    run: async () => {
       const result = engine.undo();
+      const focusRestored = focusStore.undo();
       engine.syncDom();
-      activity.push("undo_adaptation", result.restored ? "Undid the last adaptation." : "Nothing to undo.");
-      return j(result);
+      await waitForRenderedCommit();
+      const restored = result.restored || focusRestored;
+      activity.push("undo_adaptation", restored ? "Undid the last adaptation/focus change." : "Nothing to undo.");
+      return j({
+        ...result,
+        restored,
+        adaptation_restored: result.restored,
+        focus_restored: focusRestored,
+      });
     },
   },
   {
     name: "reset_adaptations",
     description: "Remove ALL adaptations and restore the normal base view. Still reversible via undo.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
-    run: () => {
+    run: async () => {
       const result = engine.reset();
       engine.syncDom();
-      focusStore.set(null);
+      focusStore.reset();
+      await waitForRenderedCommit();
       activity.push("reset_adaptations", "Reset to the normal base view.");
       return j(result);
     },
@@ -466,7 +647,7 @@ const universalTools: ToolDef[] = [
         adaptation_version: snap.adaptationVersion,
         last_operation: snap.lastOp ?? null,
         changes: explanations,
-        privacy_note: "Only functional preferences were received. No diagnosis was shared.",
+        privacy_note: "Only accepted functional fields were retained; free-form metadata is not stored or exported.",
       });
     },
   },
@@ -653,16 +834,36 @@ const semanticTools: ToolDef[] = [
       required: ["task_id"],
       additionalProperties: false,
     },
-    run: (_pageId, args) => {
-      const id = args.task_id === null ? null : String(args.task_id);
-      focusStore.set(id);
+    run: async (_pageId, args) => {
+      const requested = args.task_id === null ? null : String(args.task_id);
+      const normalized = normalizeFocusTask(requested);
+      if (normalized === undefined) {
+        return err("unknown_task", `Unknown focus task "${String(requested)}". Call list_available_tasks first.`);
+      }
       const page = PAGE_DESCRIPTORS[currentRoute()];
-      const task = page.tasks.find((t) => t.id === id);
-      engine.announceNow(`Focused on task: ${task?.description ?? id ?? "none"}`);
-      activity.push("focus_task", id ? `Focused the page on task "${id}".` : "Removed task focus.");
+      if (normalized !== null && !page.tasks.some((task) => task.id === normalized)) {
+        return err(
+          "wrong_page_task",
+          `Task "${normalized}" is not available on ${page.site_name}. Use one of: ${page.tasks.map((task) => task.id).join(", ")}.`,
+        );
+      }
+      if (currentRoute() === "home" && normalized !== null) {
+        return err("focus_not_supported", "The project landing page does not expose a reduced task region.");
+      }
+      if (!focusStore.set(normalized)) {
+        return err("focus_failed", `Could not focus task "${String(normalized)}".`);
+      }
+      await waitForRenderedCommit();
+      const region = focusRegionForTask(normalized as FocusTaskId | null);
+      const label = normalized ? FOCUS_TASK_LABELS[normalized] : "none";
+      engine.announceNow(`Focused on task: ${label}`);
+      activity.push("focus_task", normalized ? `Focused the page on task "${normalized}".` : "Removed task focus.");
       return j({
-        ok: true, focused_task: id, known: Boolean(task),
-        effect: id ? "Page reduced to the task's essential areas; everything else is collapsed but kept." : "Full page restored.",
+        ok: true,
+        focused_task: normalized,
+        normalized_region: region,
+        normalized_from: requested !== normalized ? requested : null,
+        effect: normalized ? "Page reduced to the task's explicit region; everything else is collapsed but kept." : "Full page restored.",
         reversible: "undo_adaptation / reset_adaptations / focus_task(null)",
       });
     },
@@ -683,7 +884,6 @@ const domainTools: ToolDef[] = [
       required: ["query"],
       additionalProperties: false,
     },
-    annotations: { readOnlyHint: true },
     run: (_pageId, args) => {
       const query = String(args.query ?? "");
       shopStore.setQuery(query);
@@ -940,6 +1140,25 @@ const domainTools: ToolDef[] = [
 
 export const ALL_TOOLS: ToolDef[] = [...universalTools, ...semanticTools, ...domainTools];
 
+const CLAMPING_ADAPTATION_TOOLS = new Set([
+  "apply_adaptation_profile",
+  "tune_visual_presentation",
+  "tune_interaction",
+  "tune_cognitive_support",
+  "tune_motion_and_media",
+  "set_reading_mode",
+]);
+
+function validationView(name: string, args: Record<string, unknown>): Record<string, unknown> {
+  if (name !== "apply_adaptation_profile") return args;
+  const profile = args.profile;
+  if (!profile || typeof profile !== "object" || Array.isArray(profile)) return args;
+  // Legacy benign labels remain accepted through the old harness/API, but the
+  // public schema omits them and the handler never stores or exports them.
+  const { label: _ignored, ...functional } = profile as Record<string, unknown>;
+  return { ...args, profile: functional };
+}
+
 /** Dispatch used by BOTH the WebMCP bridge and the dev harness. */
 export async function dispatchTool(
   name: string,
@@ -948,13 +1167,31 @@ export async function dispatchTool(
 ): Promise<string> {
   const def = ALL_TOOLS.find((t) => t.name === name);
   if (!def) return err("unknown_tool", `Unknown tool "${name}".`);
-  const scan = scanForDiagnosisTerms(args);
+  const safeArgs = args ?? {};
+  const scan = scanForDiagnosisTerms(safeArgs);
   if (!scan.ok) {
-    activity.push(name, "Blocked: arguments contained protected health terms.");
-    return j({ ok: false, code: "privacy_violation", error: "Arguments contain protected health terms; refused. Send functional parameters only.", findings: scan.findings.map((f) => f.where) });
+    activity.push(name, "Blocked by the demo privacy screen.");
+    return j({
+      ok: false,
+      code: "privacy_violation",
+      error: "Arguments matched a diagnosis-like term in the demo safety screen; refused. Send functional parameters only.",
+      findings: scan.findings.map((f) => f.where),
+    });
+  }
+  const inputIssues = validateToolInput(validationView(name, safeArgs), def.inputSchema, {
+    allowOutOfRangeNumbers: CLAMPING_ADAPTATION_TOOLS.has(name),
+  });
+  if (inputIssues.length > 0) {
+    activity.push(name, "Rejected invalid tool arguments at the contract boundary.");
+    return j({
+      ok: false,
+      code: "invalid_arguments",
+      error: "Arguments do not match this tool's input schema.",
+      issues: inputIssues,
+    });
   }
   try {
-    return await def.run(pageId ?? activePageId(), args ?? {});
+    return await def.run(pageId ?? activePageId(), safeArgs);
   } catch (e) {
     return err("internal_error", `Tool "${name}" failed: ${e instanceof Error ? e.message : String(e)}`);
   }

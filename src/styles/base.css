@@ -1,6 +1,7 @@
 /* Base: reset-ish, typography, layout primitives. Semantic HTML first. */
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 html {
   font-size: calc(16px * var(--aia-text-scale));
@@ -33,9 +34,23 @@ h3 { font-size: 1.15rem; }
 p { margin: 0 0 0.9em; max-inline-size: var(--aia-max-line); }
 
 a { color: var(--accent-ink); text-underline-offset: 2px; }
+a[href] {
+  display: inline-flex;
+  align-items: center;
+  min-inline-size: var(--aia-target-min);
+  min-block-size: var(--aia-target-min);
+}
 a:hover { color: var(--accent); }
 
 button, input, select, textarea { font: inherit; color: inherit; }
+button, select, textarea, input:not([type="checkbox"]):not([type="radio"]), summary {
+  min-block-size: var(--aia-target-min);
+}
+button, summary { min-inline-size: var(--aia-target-min); }
+label:has(> input[type="checkbox"]),
+label:has(> input[type="radio"]) {
+  min-block-size: var(--aia-target-min);
+}
 
 :focus-visible {
   outline: none;
@@ -84,10 +99,63 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .btn:active { transform: translateY(1px); }
 .btn--primary { background: var(--accent); border-color: var(--accent-ink); color: #fff; }
 .btn--primary:hover { background: var(--accent-ink); }
-.btn--small { min-block-size: calc(var(--aia-target-min) - 8px); padding: 0.15em 0.6em; }
+.btn--small { min-block-size: var(--aia-target-min); padding: 0.15em 0.6em; }
 
 /* Interactive gaps between adjacent actions honour --aia-target-gap. */
 [data-aia="actions"] { display: flex; flex-wrap: wrap; gap: var(--aia-target-gap); align-items: center; }
+
+/* Shared adaptive navigation. The disclosure is a peer list item so its
+   keyboard order and requested action spacing match the visual order. */
+.main-nav-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--aia-target-gap);
+  margin: 0;
+  padding: 0;
+}
+.main-nav-item { display: flex; align-items: center; }
+.main-nav-link { padding-inline: 0.55em; text-decoration: none; }
+.main-nav-overflow { position: relative; }
+.main-nav-overflow > summary {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  padding-inline: 0.55em;
+}
+.main-nav-overflow > ul {
+  list-style: none;
+  position: absolute;
+  inset-inline-end: 0;
+  min-inline-size: 13rem;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin: 0;
+  z-index: 60;
+  box-shadow: var(--shadow);
+}
+.main-nav-overflow > ul .main-nav-link { inline-size: 100%; }
+
+.reading-text > p { margin-block-end: 0.35rem; }
+.reading-text details,
+.reading-text__original { color: var(--accent-ink); }
+.reading-text summary,
+.reading-text__original summary { cursor: pointer; inline-size: fit-content; }
+.reading-text details p,
+.reading-text__original p { color: var(--ink-soft); margin: 0.35rem 0 0; }
+
+.focus-banner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--aia-target-gap);
+  margin-block: 1rem;
+  padding: 0.75rem 1rem;
+  border-color: var(--accent);
+}
+.focus-banner > button { margin-inline-start: auto; }
 
 /* Cards */
 .card {

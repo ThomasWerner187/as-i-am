@@ -47,7 +47,14 @@ test.describe("demo 1 — combination profile + granular refinement", () => {
       },
     });
     expect(applied.ok).toBe(true);
-    expect(applied.applied.length).toBeGreaterThan(15);
+    expect(applied.applied.length).toBeGreaterThanOrEqual(12);
+    expect(applied.applied.map((change: { key: string }) => change.key)).toEqual(expect.arrayContaining([
+      "visual.text_scale",
+      "interaction.minimum_target_size",
+      "cognitive.maximum_primary_actions",
+      "motion_media.disable_animation",
+    ]));
+    expect(applied).toHaveProperty("verification.overall");
 
     // The rendered page actually changed
     await expect(page.locator("html")).toHaveAttribute("data-aia-motion", "off");
@@ -108,6 +115,8 @@ test.describe("demo 1 — combination profile + granular refinement", () => {
     expect(r.ok).toBe(false);
     expect(r.code).toBe("privacy_violation");
     // The activity log never shows the terms.
+    await page.getByRole("button", { name: /Agent activity/ }).click();
+    await expect(page.getByTestId("activity-drawer")).toBeVisible();
     const logText = await page.getByTestId("activity-drawer").innerText();
     expect(logText.toLowerCase()).not.toContain("parkinson");
     expect(logText.toLowerCase()).not.toContain("tremor");

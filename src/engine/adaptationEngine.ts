@@ -32,6 +32,8 @@ export interface EngineSnapshot {
   announcement: string;
   /** True when the current state is the unmodified base. */
   isBase: boolean;
+  /** True while the base rendering is previewed without mutating adaptation state. */
+  isPreviewingBase: boolean;
   /** Stats for the receipt. */
   stats: { adaptations_applied: number; refinements: number };
 }
@@ -63,6 +65,7 @@ export class AdaptationEngine {
   private version = 0;
   private lastOp?: { id: string; label: string };
   private snapshotCache: EngineSnapshot | null = null;
+  private previewingBase = false;
 
   subscribe = (listener: Listener): (() => void) => {
     this.listeners.add(listener);
@@ -76,12 +79,13 @@ export class AdaptationEngine {
     if (!this.snapshotCache) {
       this.snapshotCache = {
         adaptationVersion: this.version,
-        active: this.current,
+        active: this.previewingBase ? {} : this.current,
         applied: this.appliedAll,
         undoDepth: this.undoStack.length,
         lastOp: this.lastOp,
         announcement: this.announcement,
         isBase: Object.keys(this.current).length === 0,
+        isPreviewingBase: this.previewingBase,
         stats: { ...this.stats },
       };
     }
@@ -101,6 +105,28 @@ export class AdaptationEngine {
   announceNow(text: string): void {
     this.announce(text);
     this.emit();
+  }
+
+  /**
+   * Render the exact base view temporarily. This does not touch the active
+   * profile, version, stats or undo history; React subscribers still receive a
+   * base snapshot so structural adaptations are previewed truthfully too.
+   */
+  startPreviewBase(): boolean {
+    if (this.previewingBase || Object.keys(this.current).length === 0) return false;
+    this.previewingBase = true;
+    this.emit();
+    this.syncDom();
+    return true;
+  }
+
+  /** Resume the exact adapted state that was active before the preview. */
+  endPreviewBase(): boolean {
+    if (!this.previewingBase) return false;
+    this.previewingBase = false;
+    this.emit();
+    this.syncDom();
+    return true;
   }
 
   /* ---------------------------------------------------------------- */
@@ -142,6 +168,22 @@ export class AdaptationEngine {
       { version: CONTRACT_VERSION, ...this.current } as unknown as FunctionalProfile,
       normalized,
     ) as unknown as Record<string, Record<string, unknown>>;
+
+    const before = flatten(this.current);
+    const after = flatten(merged);
+    const unchanged = before.size === after.size && [...after].every(
+      ([key, value]) => before.has(key) && before.get(key) === value,
+    );
+    if (unchanged) {
+      return {
+        ok: true,
+        operation_id: newOpId(),
+        adaptation_version: this.version,
+        applied: [],
+        unmet: [],
+        warnings: [...warnings, "No functional rendering change was needed."],
+      };
+    }
 
     const changes = this.diffInto(merged, label);
     this.stats.adaptations_applied += 1;
@@ -288,7 +330,8 @@ export class AdaptationEngine {
   syncDom(): void {
     if (typeof document === "undefined") return;
     const root = document.documentElement;
-    const { tokens, flags } = profileToTokenOps(this.current);
+    const renderedProfile = this.previewingBase ? {} : this.current;
+    const { tokens, flags } = profileToTokenOps(renderedProfile);
     // Clear previously set tokens first, then write the active ones — so
     // undo/reset truly restores the base view.
     for (const k of Object.keys(BASE_TOKENS)) root.style.removeProperty(k);

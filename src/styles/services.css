@@ -21,6 +21,9 @@
 .gov-aside a { color: var(--accent-ink); }
 
 .services-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.8rem; padding-block: 1.6rem 3rem; align-items: start; }
+.services-layout--focused-main { grid-template-columns: minmax(0, 54rem); justify-content: center; }
+.services-layout--focused-aside { grid-template-columns: minmax(0, 46rem); justify-content: center; }
+.services-layout--focused-aside > div { display: none; }
 
 .announcements { display: grid; gap: 0.5rem; margin-block-end: 1.2rem; }
 .announcement { display: flex; gap: 0.6rem; align-items: center; border: 1px solid var(--info); background: var(--info-soft); color: var(--info); border-radius: 8px; padding: 0.45rem 0.8rem; font-size: 0.85rem; }
@@ -47,6 +50,7 @@
 
 .field { display: grid; gap: 0.25rem; margin-block-end: 0.9rem; }
 .field label { font-weight: 600; font-size: 0.9rem; }
+.field .checkbox-label { display: flex; gap: 0.6rem; align-items: center; min-block-size: var(--aia-target-min); cursor: pointer; }
 .field .hint { font-size: 0.76rem; color: var(--ink-soft); }
 .field input[type="text"], .field input[type="date"], .field select {
   min-block-size: var(--aia-target-min);
@@ -59,7 +63,10 @@
 }
 .field input:focus-visible, .field select:focus-visible { border-color: var(--accent); }
 .field .error { color: var(--danger); font-size: 0.8rem; font-weight: 600; }
-.field input[aria-invalid="true"] { border-color: var(--danger); }
+.field :is(input, select)[aria-invalid="true"] { border-color: var(--danger); background: var(--danger-soft); }
+.required-note { color: var(--ink-soft); font-size: 0.82rem; }
+.required-marker { color: var(--danger); font-weight: 700; }
+#form-title, #form-step-title { scroll-margin-block-start: 1rem; }
 
 .aia-step-panel { padding: 1rem 1.1rem; }
 .aia-step-nav { display: flex; justify-content: space-between; gap: var(--aia-target-gap); margin-block-start: 1rem; }

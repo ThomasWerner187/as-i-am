@@ -7,7 +7,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { ALL_TOOLS, dispatchTool } from "../../src/adaptive-contract/tools";
 import { engine } from "../../src/engine/adaptationEngine";
-import { shopStore } from "../../src/data/shopState";
+import { focusStore, shopStore } from "../../src/data/shopState";
 import { DEMO_BUNDLES } from "../../src/adaptive-contract/profile";
 import { CONTRACT_VERSION } from "../../src/adaptive-contract/schema";
 
@@ -35,12 +35,25 @@ describe("tool registry integrity", () => {
     expect(TOOL_NAMES).toContain("search_products");
     expect(TOOL_NAMES).toContain("prepare_cart_change");
   });
+
+  it("exposes the complete profile schema and truthful mutation annotations", () => {
+    const apply = ALL_TOOLS.find((tool) => tool.name === "apply_adaptation_profile")!;
+    const profile = (apply.inputSchema.properties as Record<string, Record<string, unknown>>).profile;
+    const properties = profile.properties as Record<string, Record<string, unknown>>;
+    expect(properties).toHaveProperty("visual");
+    expect(properties.visual.properties).toHaveProperty("text_scale");
+    expect(properties).not.toHaveProperty("label");
+    expect(properties.visual.additionalProperties).toBe(false);
+    expect(ALL_TOOLS.find((tool) => tool.name === "search_products")?.annotations?.readOnlyHint).not.toBe(true);
+  });
 });
 
 describe("per-tool smoke", () => {
   beforeEach(() => {
+    window.history.replaceState({}, "", "/shop");
     engine.reset();
     engine.syncDom();
+    focusStore.reset();
     shopStore.clearCart();
     shopStore.setActiveCoupon(null);
     shopStore.setCategory(null);
@@ -53,7 +66,15 @@ describe("per-tool smoke", () => {
   it("capability discovery returns capabilities", async () => {
     const r = JSON.parse(await dispatchTool("get_adaptation_capabilities", {}));
     expect(r.ok).toBe(true);
-    expect(r.capability_count).toBeGreaterThan(30);
+    expect(r.page_id).toBe("shop-catalog");
+    expect(r.capability_count).toBeGreaterThan(20);
+    expect(r.capabilities).toEqual(expect.arrayContaining([
+      expect.objectContaining({ key: "visual.important_text_scale", status: "adaptive" }),
+      expect.objectContaining({ key: "safety.complete_price_totals", status: "inherent" }),
+    ]));
+    expect(r.capabilities).not.toEqual(expect.arrayContaining([
+      expect.objectContaining({ key: "cognitive.plain_error_messages" }),
+    ]));
   });
 
   it("state starts clean", async () => {
@@ -95,10 +116,20 @@ describe("per-tool smoke", () => {
     expect(document.documentElement.style.getPropertyValue("--aia-text-scale")).toBe("2.2");
   });
 
+  it("validates tool input types and enums before handlers run", async () => {
+    const badEnum = JSON.parse(await dispatchTool("tune_visual_presentation", { contrast: "ultra" }));
+    expect(badEnum).toMatchObject({ ok: false, code: "invalid_arguments" });
+    expect(badEnum.issues[0].path).toBe("contrast");
+
+    const badType = JSON.parse(await dispatchTool("search_products", { query: 42 }));
+    expect(badType).toMatchObject({ ok: false, code: "invalid_arguments" });
+  });
+
   it("adapt_for_task presets apply", async () => {
     const r = JSON.parse(await dispatchTool("adapt_for_task", { task: "review_price" }));
     expect(r.ok).toBe(true);
-    expect(r.applied.some((c: { key: string }) => c.key === "safety.complete_price_totals")).toBe(true);
+    expect(r.applied.some((c: { key: string }) => c.key === "visual.important_text_scale")).toBe(true);
+    expect(r.verification.satisfied).toContain("safety.complete_price_totals");
   });
 
   it("all tune_* tools work and record applied changes", async () => {
@@ -150,6 +181,7 @@ describe("per-tool smoke", () => {
     const r = JSON.parse(await dispatchTool("export_adaptation_receipt", {}));
     expect(r.receipt.privacy.contains_diagnoses).toBe(false);
     expect(r.receipt.profile.visual.text_scale).toBe(1.5);
+    expect(r.receipt.profile).not.toHaveProperty("label");
   });
 
   it("semantic tools explain the page and its tasks", async () => {
@@ -164,6 +196,15 @@ describe("per-tool smoke", () => {
     expect(rc.text.length).toBeGreaterThan(20);
     const f = JSON.parse(await dispatchTool("focus_task", { task_id: "compare_products" }));
     expect(f.ok).toBe(true);
+    expect(f).toMatchObject({ focused_task: "compare_products", normalized_region: "comparison" });
+  });
+
+  it("focus_task rejects unknown and wrong-page task ids", async () => {
+    const unknown = JSON.parse(await dispatchTool("focus_task", { task_id: "invented" }));
+    expect(unknown).toMatchObject({ ok: false, code: "unknown_task" });
+    window.history.replaceState({}, "", "/services");
+    const wrongPage = JSON.parse(await dispatchTool("focus_task", { task_id: "compare_products" }));
+    expect(wrongPage).toMatchObject({ ok: false, code: "wrong_page_task" });
   });
 
   it("domain tools: search, filter, details, compare, price, coupons, cart", async () => {

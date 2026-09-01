@@ -1,8 +1,9 @@
 /**
  * Adaptive Web Contract — capabilities.ts
- * Capability discovery: what each page can meaningfully adapt.
- * Pages declare capabilities; tools serve them. No CSS selectors —
- * only semantic keys of the contract.
+ *
+ * Capability discovery is page-specific. A key is advertised only when the
+ * current page either adapts its rendered UI for it or already satisfies the
+ * requested outcome by construction (`inherent`).
  */
 
 import type { Capability, CapabilityDiscovery, AdaptationDomain } from "./schema";
@@ -15,10 +16,10 @@ function cap(
   unit: string,
   supported_values: Capability["supported_values"],
 ): Capability {
-  return { key, domain, description, unit, supported_values };
+  return { key, domain, description, unit, supported_values, status: "adaptive" };
 }
 
-const VISUAL: Capability[] = [
+const CAPABILITIES: Capability[] = [
   cap("visual.text_scale", "visual", "Scale body and UI text", "×", "continuous"),
   cap("visual.important_text_scale", "visual", "Extra scale for prices and key facts", "×", "continuous"),
   cap("visual.line_height", "visual", "Line height of paragraphs", "×", "continuous"),
@@ -33,9 +34,7 @@ const VISUAL: Capability[] = [
   ]),
   cap("visual.color_independent_status", "visual", "Status never encoded by colour alone", "", [true]),
   cap("visual.font_style", "visual", "Typeface style", "", ["default", "readable"]),
-];
 
-const INTERACTION: Capability[] = [
   cap("interaction.minimum_target_size", "interaction", "Minimum interactive target size", "px", "continuous"),
   cap("interaction.target_spacing", "interaction", "Minimum gap between targets", "px", "continuous"),
   cap("interaction.keyboard_first", "interaction", "Keyboard-first navigation aids", "", [true]),
@@ -45,9 +44,7 @@ const INTERACTION: Capability[] = [
   cap("interaction.double_click_disabled", "interaction", "No double-click required anywhere", "", [true]),
   cap("interaction.timeout_multiplier", "interaction", "Extend session timeouts", "×", "continuous"),
   cap("interaction.error_tolerance", "interaction", "Forgiving input correction", "", ["normal", "high"]),
-];
 
-const COGNITIVE: Capability[] = [
   cap("cognitive.information_density", "cognitive", "Page information density", "", ["normal", "reduced", "minimal"]),
   cap("cognitive.maximum_primary_actions", "cognitive", "Visible primary actions in header", "count", "continuous"),
   cap("cognitive.step_by_step", "cognitive", "Guided steps with progress", "", [true]),
@@ -57,9 +54,7 @@ const COGNITIVE: Capability[] = [
   cap("cognitive.progress_indicators", "cognitive", "Show progress and remaining steps", "", [true]),
   cap("cognitive.plain_error_messages", "cognitive", "Errors in plain language", "", [true]),
   cap("cognitive.confirmation_level", "cognitive", "Confirmation before risky actions", "", ["normal", "confirm-risky", "confirm-all"]),
-];
 
-const MOTION_MEDIA: Capability[] = [
   cap("motion_media.reduce_motion", "motion_media", "Respect reduced motion", "", [true]),
   cap("motion_media.disable_animation", "motion_media", "Stop all animation", "", [true]),
   cap("motion_media.disable_autoplay", "motion_media", "Stop autoplay media and tickers", "", [true]),
@@ -68,48 +63,154 @@ const MOTION_MEDIA: Capability[] = [
   cap("motion_media.enable_captions", "motion_media", "Captions on all media", "", [true]),
   cap("motion_media.enable_transcripts", "motion_media", "Text transcripts for media", "", [true]),
   cap("motion_media.static_media_alternatives", "motion_media", "Static alternatives for motion", "", [true]),
-];
 
-const READING: Capability[] = [
   cap("reading.mode", "reading", "Content presentation mode", "", [
     "original", "plain_language", "key_points", "step_by_step", "read_aloud", "bilingual_or_explained",
   ]),
   cap("reading.speech_rate", "reading", "Speech rate for read-aloud", "×", "continuous"),
-];
 
-const SAFETY: Capability[] = [
   cap("safety.confirm_destructive", "safety", "Explicit confirm for destructive actions", "", [true]),
   cap("safety.complete_price_totals", "safety", "Prices always as complete totals", "", [true]),
 ];
 
-/** Build the discovery document for a page. */
+const BY_KEY = new Map(CAPABILITIES.map((capability) => [capability.key, capability]));
+
+const GLOBAL_ADAPTIVE = [
+  "visual.text_scale",
+  "visual.line_height",
+  "visual.letter_spacing",
+  "visual.word_spacing",
+  "visual.max_line_length",
+  "visual.contrast",
+  "visual.brightness",
+  "visual.glare",
+  "visual.color_mode",
+  "visual.font_style",
+  "interaction.keyboard_first",
+  "interaction.focus_strength",
+  "interaction.cursor_size",
+  "motion_media.reduce_motion",
+  "motion_media.disable_animation",
+] as const;
+
+interface PageSupport {
+  adaptive: readonly string[];
+  inherent: readonly string[];
+  valueOverrides?: Record<string, Capability["supported_values"]>;
+}
+
+const PAGE_SUPPORT: Record<string, PageSupport> = {
+  landing: {
+    adaptive: GLOBAL_ADAPTIVE,
+    inherent: [
+      "interaction.drag_alternatives",
+      "interaction.double_click_disabled",
+      "motion_media.disable_parallax",
+      "motion_media.mute_nonessential_audio",
+    ],
+  },
+  "shop-catalog": {
+    adaptive: [
+      ...GLOBAL_ADAPTIVE,
+      "visual.important_text_scale",
+      "visual.color_independent_status",
+      "interaction.minimum_target_size",
+      "interaction.target_spacing",
+      "cognitive.information_density",
+      "cognitive.maximum_primary_actions",
+      "cognitive.step_by_step",
+      "cognitive.hide_nonessential",
+      "cognitive.persistent_labels",
+      "cognitive.confirmation_level",
+      "motion_media.disable_autoplay",
+      "reading.mode",
+    ],
+    inherent: [
+      "interaction.drag_alternatives",
+      "interaction.double_click_disabled",
+      "interaction.timeout_multiplier",
+      "motion_media.disable_parallax",
+      "motion_media.mute_nonessential_audio",
+      "safety.confirm_destructive",
+      "safety.complete_price_totals",
+    ],
+    valueOverrides: {
+      "reading.mode": ["original", "plain_language", "key_points", "step_by_step"],
+    },
+  },
+  "services-portal": {
+    adaptive: [
+      ...GLOBAL_ADAPTIVE,
+      "visual.color_independent_status",
+      "interaction.minimum_target_size",
+      "interaction.target_spacing",
+      "cognitive.information_density",
+      "cognitive.maximum_primary_actions",
+      "cognitive.step_by_step",
+      "cognitive.hide_nonessential",
+      "cognitive.progress_indicators",
+      "cognitive.plain_error_messages",
+      "reading.mode",
+    ],
+    inherent: [
+      "interaction.drag_alternatives",
+      "interaction.double_click_disabled",
+      "interaction.timeout_multiplier",
+      "cognitive.persistent_labels",
+      "motion_media.disable_autoplay",
+      "motion_media.disable_parallax",
+      "motion_media.mute_nonessential_audio",
+      "safety.confirm_destructive",
+      "safety.complete_price_totals",
+    ],
+    valueOverrides: {
+      "reading.mode": ["original", "plain_language"],
+    },
+  },
+};
+
+const DOMAINS: AdaptationDomain[] = ["visual", "interaction", "cognitive", "motion_media", "reading", "safety"];
+
+/** Build the honest discovery document for one concrete page context. */
 export function discoverCapabilities(pageId: string, siteName: string): CapabilityDiscovery {
-  const all: Capability[] = [
-    ...VISUAL,
-    ...INTERACTION,
-    ...COGNITIVE,
-    ...MOTION_MEDIA,
-    ...READING,
-    ...SAFETY,
-  ];
+  const support = PAGE_SUPPORT[pageId];
+  const capabilities: Capability[] = support
+    ? [
+        ...support.adaptive.map((key) => ({ ...BY_KEY.get(key)!, status: "adaptive" as const })),
+        ...support.inherent.map((key) => ({ ...BY_KEY.get(key)!, status: "inherent" as const })),
+      ].map((capability) => ({
+        ...capability,
+        supported_values: support.valueOverrides?.[capability.key] ?? capability.supported_values,
+      }))
+    : [];
+  const presentDomains = new Set(capabilities.map((capability) => capability.domain));
   return {
     contract: CONTRACT_NAME,
     version: CONTRACT_VERSION,
     site_name: siteName,
     page_id: pageId,
-    capabilities: all,
-    unsupported_domains: [],
+    capabilities,
+    unsupported_domains: DOMAINS.filter((domain) => !presentDomains.has(domain)),
   };
 }
 
-export const ALL_CAPABILITY_KEYS: string[] = discoverCapabilities("x", "x").capabilities.map((c) => c.key);
+export function capabilityForPage(pageId: string, key: string): Capability | undefined {
+  return discoverCapabilities(pageId, "").capabilities.find((capability) => capability.key === key);
+}
+
+export function isKnownCapabilityKey(key: string): boolean {
+  return BY_KEY.has(key);
+}
+
+export const ALL_CAPABILITY_KEYS: string[] = CAPABILITIES.map((capability) => capability.key);
 
 /** Which capability keys does a profile request? */
-export function requestedKeys(profile: Record<string, Record<string, unknown>>): string[] {
+export function requestedKeys(profile: Record<string, unknown>): string[] {
   const keys: string[] = [];
   for (const [section, fields] of Object.entries(profile)) {
     if (section === "version" || section === "label") continue;
-    for (const field of Object.keys(fields ?? {})) keys.push(`${section}.${field}`);
+    if (!fields || typeof fields !== "object" || Array.isArray(fields)) continue;
+    for (const field of Object.keys(fields)) keys.push(`${section}.${field}`);
   }
   return keys;
 }

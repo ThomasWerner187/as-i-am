@@ -5,8 +5,16 @@ import { Artwork } from "../components/Artwork";
 import { IconSearch, IconHeart, IconUser, IconCart, IconSpark } from "../components/Icons";
 import { MainNav, ReadingText } from "../components/SiteChrome";
 import { Price, StatusPill, useEngineState } from "../components/Primitives";
-import { CATEGORIES, money, priceBreakdown, PRODUCTS, findProduct, COUPONS } from "../data/products";
-import { shopStore, useShopState, useFocusedTask, focusStore } from "../data/shopState";
+import { CATEGORIES, money, priceBreakdown, findProduct, COUPONS } from "../data/products";
+import {
+  FOCUS_TASK_LABELS,
+  filteredProducts,
+  focusRegionForTask,
+  focusStore,
+  shopStore,
+  useFocusedTask,
+  useShopState,
+} from "../data/shopState";
 import { activity } from "../data/activityStore";
 import type { Route } from "../App";
 
@@ -24,24 +32,70 @@ function useRotatingDeal(active: boolean) {
     const t = setInterval(() => setI((v) => (v + 1) % DEALS.length), 3500);
     return () => clearInterval(t);
   }, [active]);
-  return active ? DEALS[i] : DEALS[0];
+  return DEALS[i];
+}
+
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(() => (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ));
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  return reduced;
 }
 
 export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => void }) {
   const snap = useEngineState();
   const shop = useShopState();
   const focused = useFocusedTask();
+  const focusRegion = focusRegionForTask(focused);
+  const shopFocus = focusRegion && ["catalog", "comparison", "cart", "coupons"].includes(focusRegion)
+    ? focusRegion
+    : null;
   const autoplayOff = snap.active.motion_media?.disable_autoplay === true || snap.active.motion_media?.reduce_motion === true;
-  const deal = useRotatingDeal(!autoplayOff);
+  const systemReducedMotion = usePrefersReducedMotion();
+  const [tickerManuallyPaused, setTickerManuallyPaused] = useState(false);
+  const tickerMotionLocked = autoplayOff || systemReducedMotion;
+  const tickerPaused = tickerMotionLocked || tickerManuallyPaused;
+  const deal = useRotatingDeal(!tickerPaused);
   const stepsOn = snap.active.cognitive?.step_by_step === true;
   const [step, setStep] = useState(1);
   const [confirmSecond, setConfirmSecond] = useState(false);
   const confirmAll = snap.active.cognitive?.confirmation_level === "confirm-all";
 
   const stagedProduct = shop.staged ? findProduct(shop.staged.product_id) : null;
+  const activeCoupon = shop.active_coupon ? COUPONS.find((coupon) => coupon.code === shop.active_coupon) : undefined;
+  const stagedBreakdown = shop.staged && stagedProduct
+    ? priceBreakdown(stagedProduct, activeCoupon, shop.staged.qty)
+    : null;
+  const cartLines = shop.cart.flatMap((item) => {
+    const product = findProduct(item.product_id);
+    return product ? [{ item, product, breakdown: priceBreakdown(product, activeCoupon, item.qty) }] : [];
+  });
+  const cartQuantity = shop.cart.reduce((sum, item) => sum + item.qty, 0);
+  const cartTotals = cartLines.reduce(
+    (totals, line) => ({
+      items: totals.items + line.breakdown.item_price,
+      shipping: totals.shipping + line.breakdown.shipping,
+      fees: totals.fees + line.breakdown.fees,
+      coupon: totals.coupon + line.breakdown.coupon_savings,
+      total: totals.total + line.breakdown.total,
+    }),
+    { items: 0, shipping: 0, fees: 0, coupon: 0, total: 0 },
+  );
   const compareProducts = shop.compare.map((id) => findProduct(id)).filter(Boolean);
+  const visibleProducts = filteredProducts(shop);
   const density = snap.active.cognitive?.information_density;
-  const labelsOn = snap.active.cognitive?.persistent_labels === true;
+  const hasFilters = Boolean(shop.query || shop.category || shop.max_price !== null || shop.tag || shop.sort !== "relevance");
+  const showCatalog = shopFocus === null || shopFocus === "catalog" || focused === "add_to_cart";
+  const showComparison = shopFocus === null || shopFocus === "comparison";
+  const showCoupons = shopFocus === null || shopFocus === "coupons";
+  const showCart = shopFocus === null || shopFocus === "cart" || shopFocus === "coupons";
 
   function stageAdd(id: string, qty = 1) {
     const staged = shopStore.stageAdd(id, qty);
@@ -60,13 +114,30 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
 
   return (
     <div id="main" tabIndex={-1}>
-      {/* Deal ticker (autoplay media; stopped by disable_autoplay/motion) */}
-      <div className="aia-ticker" aria-label="Store announcements" role="marquee">
+      {/* Deal ticker: pause is always visible; OS and contract motion settings win. */}
+      <section
+        className={`aia-ticker${tickerPaused ? " is-paused" : ""}`}
+        aria-labelledby="ticker-title"
+        hidden={shopFocus !== null}
+      >
+        <h2 id="ticker-title" className="visually-hidden">Store announcements</h2>
         <div className="wrap">
-          <span className="ticker-track" aria-hidden="true">{`${deal}  ·  `.repeat(6)}</span>
-          <span className="visually-hidden">{deal}</span>
+          <button
+            type="button"
+            className="ticker-toggle"
+            data-testid="ticker-toggle"
+            aria-pressed={tickerPaused}
+            disabled={tickerMotionLocked}
+            onClick={() => setTickerManuallyPaused((paused) => !paused)}
+          >
+            {tickerMotionLocked ? "Paused by motion preference" : tickerManuallyPaused ? "Resume announcements" : "Pause announcements"}
+          </button>
+          <div className="ticker-viewport" aria-live="off">
+            <span className="ticker-track" aria-hidden="true">{`${deal}  ·  `.repeat(6)}</span>
+            <span className="visually-hidden">{deal}</span>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* Masthead */}
       <header className="masthead">
@@ -90,7 +161,7 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
             ]}
           />
           <div className="utility-nav" data-aia="actions">
-            <a href="#" aria-label="Search" onClick={(e) => e.preventDefault()}>
+            <a href="#shop-search" aria-label="Search products">
               <IconSearch size={16} /><span className="aia-label-always">Search</span>
             </a>
             <a href="#" aria-label="Wishlist" onClick={(e) => e.preventDefault()}>
@@ -99,15 +170,15 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
             <a href="#" aria-label="Account" onClick={(e) => e.preventDefault()}>
               <IconUser size={16} /><span className="aia-label-always">Account</span>
             </a>
-            <a href="#" data-testid="cart-button" onClick={(e) => e.preventDefault()}>
-              <IconCart size={16} /><span className="aia-label-always">Cart</span> ({shop.cart.length})
+            <a href={cartQuantity > 0 ? "#cart-preview" : "#catalog"} data-testid="cart-button" aria-label={`Cart, ${cartQuantity} ${cartQuantity === 1 ? "item" : "items"}`}>
+              <IconCart size={16} /><span className="aia-label-always">Cart</span> ({cartQuantity})
             </a>
           </div>
         </div>
       </header>
 
       {/* Promo banner */}
-      <div className="aia-promo" data-aia-essential="false">
+      <div className="aia-promo" data-aia-essential="false" hidden={shopFocus !== null}>
         <div className="wrap">
           <span className="deal-flash" style={{ display: "inline-flex", alignItems: "center", gap: "0.4em" }}><IconSpark size={15} /> {deal}</span>
           <span style={{ marginInlineStart: "auto" }}>
@@ -117,7 +188,7 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
       </div>
 
       {/* Hero */}
-      <section className="wrap hero" aria-labelledby="hero-title">
+      <section className="wrap hero" aria-labelledby="hero-title" hidden={shopFocus !== null}>
         <div>
           <h1 id="hero-title">Sound you can measure. Service you can feel.</h1>
           <p className="lede">
@@ -132,19 +203,27 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
         <div className="hero-art card" data-aia-essential="false">
           <Artwork id="headphones-1" title="Aurora H7 headphones" />
           <p className="autoplay-note">
-            {autoplayOff ? "Autoplay stopped by your preferences — static view shown." : "Rotating deals every few seconds."}
+            {tickerPaused ? "Announcements are paused — a static view is shown." : "Announcements rotate every few seconds and can be paused above."}
           </p>
         </div>
       </section>
 
-      {shop.staged && stagedProduct && (
-        <div className="wrap" data-testid="staged-preview">
-          <div className="card" style={{ padding: "0.8rem 1rem", display: "flex", gap: "1rem", alignItems: "center", flexWrap: "wrap", borderColor: "var(--accent)" }}>
-            <strong>Staged:</strong>
-            <span>
-              {shop.staged.qty}× {stagedProduct.name} — {money(shop.staged.total)} + shipping
-            </span>
-            <div className="panel-actions" style={{ marginInlineStart: "auto" }}>
+      {shop.staged && stagedProduct && stagedBreakdown && (
+        <div className="wrap staged-cart" data-testid="staged-preview" aria-live="polite">
+          <div className="card cart-confirmation">
+            <div>
+              <span className="cart-eyebrow">Waiting for your confirmation</span>
+              <h2>Review this cart change</h2>
+              <p>{shop.staged.qty}× {stagedProduct.name}</p>
+              <dl className="price-breakdown" aria-label="Staged price breakdown">
+                <div><dt>Items</dt><dd>{money(stagedBreakdown.item_price)}</dd></div>
+                <div><dt>Shipping</dt><dd>{stagedBreakdown.shipping === 0 ? "Free" : money(stagedBreakdown.shipping)}</dd></div>
+                <div><dt>Handling fee</dt><dd>{stagedBreakdown.fees === 0 ? "None" : money(stagedBreakdown.fees)}</dd></div>
+                <div><dt>Coupon{stagedBreakdown.coupon_code ? ` (${stagedBreakdown.coupon_code})` : ""}</dt><dd>{stagedBreakdown.coupon_savings > 0 ? `−${money(stagedBreakdown.coupon_savings)}` : "None"}</dd></div>
+                <div className="price-breakdown__total"><dt>Total</dt><dd data-aia="price">{money(stagedBreakdown.total)}</dd></div>
+              </dl>
+            </div>
+            <div className="panel-actions cart-confirmation__actions">
               <button type="button" className="btn btn--small btn--primary" data-testid="confirm-staged" onClick={confirmStaged}>
                 {confirmAll && !confirmSecond ? "Confirm add to cart" : confirmAll ? "Really confirm?" : "Confirm add to cart"}
               </button>
@@ -156,13 +235,13 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
         </div>
       )}
 
-      {focused && (
+      {focused && shopFocus && (
         <div className="wrap" data-testid="focus-banner">
-          <div className="card" style={{ padding: "0.7rem 1rem", borderColor: "var(--accent)", display: "flex", gap: "1rem", alignItems: "center", flexWrap: "wrap" }}>
+          <div className="card focus-banner">
             <span data-aia="focus-note">
-              Focused on task: <strong>{focused === "comparison" ? "compare products" : focused}</strong> — everything else is temporarily collapsed (nothing deleted).
+              Focused on task: <strong>{FOCUS_TASK_LABELS[focused]}</strong> — unrelated sections are temporarily collapsed, never deleted.
             </span>
-            <button type="button" className="btn btn--small" style={{ marginInlineStart: "auto" }} onClick={() => focusStore.set(null)}>
+            <button type="button" className="btn btn--small" onClick={() => focusStore.set(null)}>
               Exit focus
             </button>
           </div>
@@ -170,7 +249,7 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
       )}
 
       {/* Catalog */}
-      <main className="wrap catalog-layout" aria-labelledby="catalog-title" hidden={focused === "comparison"}>
+      <main className="wrap catalog-layout" aria-labelledby="catalog-title" hidden={!showCatalog}>
         <aside className="filters" aria-labelledby="filters-title" data-aia-essential={density === "minimal" ? "false" : "true"}>
           <h2 id="filters-title" className="visually-hidden">Filters</h2>
           <form onSubmit={(e) => e.preventDefault()}>
@@ -216,8 +295,25 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
         <section id="catalog" aria-labelledby="catalog-title">
           <div className="toolbar">
             <h2 id="catalog-title" style={{ margin: 0, fontSize: "1.3rem" }}>Catalog</h2>
-            <span className="count">{PRODUCTS.length} products · free returns 30 days</span>
-            <label className="visually-hidden" htmlFor="sort">Sort</label>
+            <output className="count" data-testid="product-count" aria-live="polite">
+              {visibleProducts.length} {visibleProducts.length === 1 ? "product" : "products"} shown · free returns 30 days
+            </output>
+            <form className="catalog-search" role="search" onSubmit={(event) => event.preventDefault()}>
+              <label htmlFor="shop-search">Search</label>
+              <input
+                id="shop-search"
+                type="search"
+                value={shop.query}
+                placeholder="Name, category or feature"
+                onChange={(event) => shopStore.setQuery(event.target.value)}
+              />
+            </form>
+            {hasFilters && (
+              <button type="button" className="btn btn--small" onClick={() => shopStore.clearFilters()}>
+                Clear filters
+              </button>
+            )}
+            <label htmlFor="sort">Sort</label>
             <select id="sort" value={shop.sort} onChange={(e) => shopStore.setSort(e.target.value as never)}>
               <option value="relevance">Relevance</option>
               <option value="price_asc">Price ↑</option>
@@ -227,7 +323,7 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
           </div>
 
           <div className="product-grid" data-testid="product-grid">
-            {PRODUCTS.map((p) => {
+            {visibleProducts.map((p) => {
               const b = priceBreakdown(p, shop.active_coupon ? COUPONS.find((c) => c.code === shop.active_coupon) : undefined);
               const delta = p.original_price ? `−${Math.round((1 - p.price / p.original_price) * 100)}%` : undefined;
               return (
@@ -277,6 +373,13 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
                 </article>
               );
             })}
+            {visibleProducts.length === 0 && (
+              <div className="card empty-catalog" role="status">
+                <h3>No matching products</h3>
+                <p>Try a different search or clear the current filters. Nothing has been removed from the catalog.</p>
+                <button type="button" className="btn" onClick={() => shopStore.clearFilters()}>Show all products</button>
+              </div>
+            )}
           </div>
         </section>
       </main>
@@ -285,7 +388,7 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
       <section
         id="comparison"
         className="wrap compare-section aia-step-panel"
-        hidden={(stepsOn && step < 2) || (focused !== null && focused !== "comparison")}
+        hidden={!showComparison || (stepsOn && step < 2 && shopFocus !== "comparison")}
         aria-labelledby="compare-title"
         data-testid="comparison"
       >
@@ -343,7 +446,7 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
       {/* Coupons */}
       <section
         className="wrap aia-step-panel"
-        hidden={(stepsOn && step < 3) || focused === "comparison"}
+        hidden={!showCoupons || (stepsOn && step < 3 && shopFocus !== "coupons")}
         aria-labelledby="coupons-title"
         data-testid="coupons"
       >
@@ -356,39 +459,121 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
                 <button
                   type="button"
                   className="btn btn--small"
-                  style={{ marginInlineStart: "0.5em" }}
+                  aria-pressed={shop.active_coupon === c.code}
                   onClick={() => { shopStore.setActiveCoupon(c.code); activity.push("ui", `Coupon ${c.code} applied.`); }}
                 >
-                  Apply
+                  {shop.active_coupon === c.code ? "Applied" : "Apply"}
                 </button>
               )}
             </span>
           ))}
         </div>
-        {stepsOn && step < 3 && (
-          <button type="button" className="btn" onClick={() => setStep(3)}>
-            Next: coupons (step 3 of 3)
-          </button>
-        )}
       </section>
 
-      {stepsOn && (
-        <section className="wrap" aria-label="Guided steps" style={{ paddingBlockEnd: "3rem" }}>
-          <div className="progress-line">
-            <span>Guided mode: step {Math.min(step + 1, 3)} of 3</span>
-            <span className="bar" role="progressbar" aria-valuemin={1} aria-valuemax={3} aria-valuenow={step + 1}>
-              <span className="fill" style={{ width: `${(Math.min(step + 1, 3) / 3) * 100}%` }} />
-            </span>
+      {(shop.cart.length > 0 || shopFocus === "cart" || shopFocus === "coupons") && (
+        <section
+          id="cart-preview"
+          className="wrap cart-preview"
+          aria-labelledby="cart-preview-title"
+          data-testid="cart-preview"
+          hidden={!showCart}
+        >
+          <div className="cart-preview__heading">
+            <div>
+              <span className="cart-eyebrow">Transparent cart simulation</span>
+              <h2 id="cart-preview-title">Cart preview</h2>
+            </div>
+            {shop.cart.length > 0 && (
+              <button
+                type="button"
+                className="btn btn--small"
+                onClick={() => {
+                  const removed = shopStore.undoLastCartChange();
+                  activity.push("ui", removed ? `Undid ${removed.qty}× ${findProduct(removed.product_id)?.name ?? "item"}.` : "Nothing to undo in the cart.");
+                }}
+              >
+                Undo last cart change
+              </button>
+            )}
           </div>
-          {step === 1 && (
-            <button type="button" className="btn btn--primary" onClick={() => setStep(2)} data-testid="guide-next">
-              Next: comparison (step 2 of 3)
-            </button>
+
+          {cartLines.length === 0 ? (
+            <div className="card empty-cart" role="status">
+              <h3>Your cart is empty</h3>
+              <p>Choose a product above. Every change is staged for your confirmation before it appears here.</p>
+            </div>
+          ) : (
+            <div className="cart-preview__layout">
+              <div className="cart-lines">
+                {cartLines.map(({ item, product, breakdown }) => (
+                  <article className="card cart-line" key={product.id}>
+                    <div>
+                      <span className="cart-eyebrow">{product.category}</span>
+                      <h3>{product.name}</h3>
+                      <p data-testid={`cart-qty-${product.id}`}>{item.qty} × {money(product.price)}</p>
+                    </div>
+                    <dl className="price-breakdown" aria-label={`${product.name} price breakdown`}>
+                      <div><dt>Items</dt><dd>{money(breakdown.item_price)}</dd></div>
+                      <div><dt>Shipping</dt><dd>{breakdown.shipping === 0 ? "Free" : money(breakdown.shipping)}</dd></div>
+                      <div><dt>Handling fee</dt><dd>{breakdown.fees === 0 ? "None" : money(breakdown.fees)}</dd></div>
+                      <div><dt>Coupon{breakdown.coupon_code ? ` (${breakdown.coupon_code})` : ""}</dt><dd>{breakdown.coupon_savings > 0 ? `−${money(breakdown.coupon_savings)}` : "None"}</dd></div>
+                      <div className="price-breakdown__total"><dt>Line total</dt><dd data-aia="price">{money(breakdown.total)}</dd></div>
+                    </dl>
+                  </article>
+                ))}
+              </div>
+              <aside className="card cart-summary" aria-label="Cart total">
+                <h3>Complete total</h3>
+                <dl className="price-breakdown">
+                  <div><dt>Items</dt><dd>{money(cartTotals.items)}</dd></div>
+                  <div><dt>Shipping</dt><dd>{cartTotals.shipping === 0 ? "Free" : money(cartTotals.shipping)}</dd></div>
+                  <div><dt>Handling fees</dt><dd>{cartTotals.fees === 0 ? "None" : money(cartTotals.fees)}</dd></div>
+                  <div><dt>Coupon{shop.active_coupon ? ` (${shop.active_coupon})` : ""}</dt><dd>{cartTotals.coupon > 0 ? `−${money(cartTotals.coupon)}` : "None"}</dd></div>
+                  <div className="price-breakdown__total"><dt>Grand total</dt><dd data-aia="price" data-testid="cart-grand-total">{money(cartTotals.total)}</dd></div>
+                </dl>
+                {shop.active_coupon && cartTotals.coupon === 0 && (
+                  <p className="coupon-note">Coupon {shop.active_coupon} is active but does not apply to the current cart.</p>
+                )}
+                <p className="cart-safety">Demo only. No checkout exists and no payment can be made.</p>
+              </aside>
+            </div>
           )}
         </section>
       )}
 
-      <footer className="site-footer">
+      {stepsOn && (
+        <section className="wrap guided-shop" aria-label="Guided shop steps" hidden={shopFocus !== null}>
+          <div className="progress-line">
+            <span data-testid="guide-progress">Guided mode: step {step} of 3</span>
+            <span className="bar" role="progressbar" aria-label="Guided shop progress" aria-valuemin={1} aria-valuemax={3} aria-valuenow={step}>
+              <span className="fill" style={{ width: `${(step / 3) * 100}%` }} />
+            </span>
+          </div>
+          <p>
+            {step === 1 && "Step 1: search, filter and select products."}
+            {step === 2 && "Step 2: compare the selected products side by side."}
+            {step === 3 && "Step 3: review only valid coupon codes and your complete cart total."}
+          </p>
+          <div data-aia="actions">
+            {step > 1 && (
+              <button type="button" className="btn" onClick={() => setStep((current) => current - 1)}>
+                Back to step {step - 1}
+              </button>
+            )}
+            {step < 3 ? (
+              <button type="button" className="btn btn--primary" onClick={() => setStep((current) => current + 1)} data-testid="guide-next">
+                {step === 1 ? "Next: comparison (step 2 of 3)" : "Next: coupons (step 3 of 3)"}
+              </button>
+            ) : (
+              <button type="button" className="btn" onClick={() => setStep(1)}>
+                Start guided flow again
+              </button>
+            )}
+          </div>
+        </section>
+      )}
+
+      <footer className="site-footer" hidden={shopFocus !== null}>
         <div className="wrap cols">
           <div>
             <h3>Shop</h3>

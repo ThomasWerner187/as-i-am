@@ -27,7 +27,6 @@ export function mergeProfiles(...profiles: FunctionalProfile[]): FunctionalProfi
   const out: FunctionalProfile = { version: CONTRACT_VERSION };
   for (const p of profiles) {
     if (!p || typeof p !== "object") continue;
-    if (p.label) out.label = p.label;
     for (const section of SECTIONS) {
       const inc = p[section] as Record<string, unknown> | undefined;
       if (!inc) continue;
@@ -62,7 +61,9 @@ export function normalizeProfile(profile: FunctionalProfile): {
     "reading.speech_rate": [0.5, 2.0],
   };
   const clamped: { key: string; from: number; to: number }[] = [];
-  const out: FunctionalProfile = { ...profile };
+  // Free-form labels are agent-local display metadata, never retained as part
+  // of the website's functional profile.
+  const out: FunctionalProfile = { version: CONTRACT_VERSION };
   for (const section of SECTIONS) {
     const inc = profile[section] as Record<string, unknown> | undefined;
     if (!inc) continue;
