@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.key
+*.pid
+*.db
+*.sqlite
+*.sqlite3
+node_modules/
+.venv/
+venv/
+dist/
+build/
+.next/
+DerivedData/
