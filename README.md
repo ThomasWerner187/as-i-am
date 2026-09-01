@@ -89,8 +89,14 @@ npm run dev        # http://localhost:5173
 
 Routes: `/` (pitch) · `/shop` (electronics comparison shop) · `/services` (city resident portal).
 
-**With a real agent:** Chrome 149+ and `chrome://flags/#enable-webmcp-testing` enabled.
-The page registers all 31 tools via `document.modelContext.registerTool(...)`.
+**With a real agent:** Chrome 149+ and `chrome://flags/#enable-webmcp-testing` enabled
+(equivalently: launch Chrome with `--enable-features=WebMCP`). The page registers all 31
+tools via `document.modelContext.registerTool(...)`.
+
+**Verified in real Chrome 152** with `--enable-features=WebMCP`:
+`document.modelContext.getTools()` lists all 31 tools, and
+`mc.executeTool(tool, args)` applied a profile that measurably transformed the page
+(`--aia-text-scale: 1.6`, `data-aia-motion="off"`). See `docs/demo-script.md`.
 
 **Without WebMCP:** the page says so honestly and stays fully usable; append `?agent=1`
 for the tool harness (same handlers the WebMCP bridge uses).
@@ -117,6 +123,10 @@ faithful `document.modelContext` shim.
 - The agent simulator in the demo panel is a stand-in for a real personal agent.
 - Read-aloud uses the local Web Speech API (browser-dependent); a text alternative always exists.
 - Ticker/carousel autoplay exists in the *normal* view on purpose — the demo shows it being removed.
+
+**Demo video:** `docs/demo-clickthru.mp4` — recorded with our own
+[clickthru recorder](tools/clickthru/README.md) (Playwright + animated cursor, packaged
+in a browser-mockup player; reusable in any project).
 
 More: [docs/accessibility-model.md](docs/accessibility-model.md) ·
 [docs/adaptive-web-contract.md](docs/adaptive-web-contract.md) ·
