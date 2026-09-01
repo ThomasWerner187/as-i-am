@@ -15,7 +15,7 @@ import type {
 import { CONTRACT_VERSION } from "../adaptive-contract/schema";
 import { mergeProfiles, normalizeProfile } from "../adaptive-contract/profile";
 import { validateProfile } from "../adaptive-contract/schema";
-import { changeKind, explainChange, profileToTokenOps } from "./tokens";
+import { BASE_TOKENS, changeKind, explainChange, profileToTokenOps } from "./tokens";
 
 export interface EngineSnapshot {
   /** Version counter, increments with every applied operation. */
@@ -282,6 +282,10 @@ export class AdaptationEngine {
     if (typeof document === "undefined") return;
     const root = document.documentElement;
     const { tokens, flags } = profileToTokenOps(this.current);
+    // Clear previously set tokens first, then write the active ones — so
+    // undo/reset truly restores the base view.
+    for (const k of Object.keys(BASE_TOKENS)) root.style.removeProperty(k);
+    root.style.removeProperty("--aia-brightness-value");
     for (const [k, v] of Object.entries(tokens)) root.style.setProperty(k, v);
     for (const name of [
       "contrast", "glare", "color-mode", "font-style", "status-labels", "focus",

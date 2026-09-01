@@ -5,7 +5,7 @@ import { Artwork } from "../components/Artwork";
 import { MainNav, ReadingText } from "../components/SiteChrome";
 import { Price, StatusPill, useEngineState } from "../components/Primitives";
 import { CATEGORIES, money, priceBreakdown, PRODUCTS, findProduct, COUPONS } from "../data/products";
-import { shopStore, useShopState, useFocusedTask } from "../data/shopState";
+import { shopStore, useShopState, useFocusedTask, focusStore } from "../data/shopState";
 import { activity } from "../data/activityStore";
 import type { Route } from "../App";
 
@@ -161,7 +161,7 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
             <span data-aia="focus-note">
               Focused on task: <strong>{focused === "comparison" ? "compare products" : focused}</strong> — everything else is temporarily collapsed (nothing deleted).
             </span>
-            <button type="button" className="btn btn--small" style={{ marginInlineStart: "auto" }} onClick={() => import("../data/shopState").then((m) => m.focusStore.set(null))}>
+            <button type="button" className="btn btn--small" style={{ marginInlineStart: "auto" }} onClick={() => focusStore.set(null)}>
               Exit focus
             </button>
           </div>

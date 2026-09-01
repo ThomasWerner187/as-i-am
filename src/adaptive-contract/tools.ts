@@ -196,17 +196,17 @@ const universalTools: ToolDef[] = [
       if (!profile) return err("missing_argument", "profile is required");
       const scan = scanForDiagnosisTerms(profile);
       if (!scan.ok) {
-        activity.push("apply_adaptation_profile", "Rejected: payload contained diagnosis-like terms (blocked).");
+        activity.push("apply_adaptation_profile", "Blocked: payload contained protected health terms.");
         return j({
           ok: false, code: "privacy_violation",
-          error: "Profile contains diagnosis-like terms. Send functional parameters only, e.g. text_scale, minimum_target_size.",
+          error: "Profile contains protected health terms. Send functional parameters only, e.g. text_scale, minimum_target_size.",
           findings: scan.findings.map((f) => f.where),
         });
       }
       const result = engine.applyProfile(profile, profile.label ?? "Agent profile");
       engine.syncDom();
       const m = collectMeasurements();
-      activity.push("apply_adaptation_profile", `Applied ${result.applied.length} functional preferences (v${result.adaptation_version}).`, j(profile));
+      activity.push("apply_adaptation_profile", result.ok ? `Applied ${result.applied.length} functional preferences (v${result.adaptation_version}).` : "Profile rejected — invalid contract values.", j(profile));
       return j({ ...result, measurements: m });
     },
   },
@@ -485,7 +485,7 @@ const universalTools: ToolDef[] = [
           adaptations_applied: snap.stats.adaptations_applied,
           refinements: snap.stats.refinements,
         });
-        activity.push("export_adaptation_receipt", "Exported a diagnosis-free functional receipt.");
+        activity.push("export_adaptation_receipt", "Exported a functional receipt (no health data included).");
         return j({ ok: true, receipt });
       } catch (e) {
         return err("receipt_failed", e instanceof Error ? e.message : String(e));
@@ -950,8 +950,8 @@ export async function dispatchTool(
   if (!def) return err("unknown_tool", `Unknown tool "${name}".`);
   const scan = scanForDiagnosisTerms(args);
   if (!scan.ok) {
-    activity.push(name, "Blocked: arguments contained diagnosis-like terms.");
-    return j({ ok: false, code: "privacy_violation", error: "Arguments contain diagnosis-like terms; refused.", findings: scan.findings.map((f) => f.where) });
+    activity.push(name, "Blocked: arguments contained protected health terms.");
+    return j({ ok: false, code: "privacy_violation", error: "Arguments contain protected health terms; refused. Send functional parameters only.", findings: scan.findings.map((f) => f.where) });
   }
   try {
     return await def.run(pageId ?? activePageId(), args ?? {});

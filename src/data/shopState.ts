@@ -78,6 +78,7 @@ export const shopStore = {
     });
   },
   setActiveCoupon(code: string | null) { set({ active_coupon: code }); },
+  setCompare(ids: string[]) { set({ compare: ids }); },
   stageAdd(product_id: string, qty: number) {
     const p = findProduct(product_id);
     if (!p) return null;
