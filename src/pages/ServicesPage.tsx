@@ -50,7 +50,7 @@ export default function ServicesPage({ onNavigate }: { onNavigate: (r: Route) =>
   const showSide = focused === null || focused === "requests";
 
   return (
-    <div id="main">
+    <div id="main" tabIndex={-1}>
       <div className="gov-banner">
         <div className="wrap">
           <span>City of Meridian — official resident portal</span>

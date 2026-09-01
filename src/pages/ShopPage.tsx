@@ -58,7 +58,7 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
   }
 
   return (
-    <div id="main">
+    <div id="main" tabIndex={-1}>
       {/* Deal ticker (autoplay media; stopped by disable_autoplay/motion) */}
       <div className="aia-ticker" aria-label="Store announcements" role="marquee">
         <div className="wrap">

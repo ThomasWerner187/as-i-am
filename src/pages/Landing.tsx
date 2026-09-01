@@ -4,7 +4,7 @@ import type { Route } from "../App";
 
 export default function Landing({ onNavigate }: { onNavigate: (r: Route) => void }) {
   return (
-    <div className="wrap" id="main">
+    <div className="wrap" id="main" tabIndex={-1}>
       <header style={{ paddingBlock: "3.5rem 2rem", maxWidth: "58rem" }}>
         <p style={{ letterSpacing: "0.22em", textTransform: "uppercase", fontSize: "0.75rem", color: "var(--ink-faint)", margin: 0 }}>
           OpenAI WebMCP Challenge 2026 · Demo

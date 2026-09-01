@@ -116,3 +116,21 @@ html { font-size: calc(16px * var(--aia-text-scale)); }
 html.aia-morph [data-aia] { animation: aia-settle 0.5s ease; }
 @keyframes aia-settle { from { opacity: 0.85; } to { opacity: 1; } }
 [data-aia-motion="off"] .aia-morph * { animation: none !important; }
+
+/* Minimum target size: enforced on every interactive element when the
+   interaction profile requests it — measured, not promised. */
+html[data-aia-min-target="on"] :is(button, select, summary, input[type="checkbox"], input[type="radio"]),
+html[data-aia-min-target="on"] nav a,
+html[data-aia-min-target="on"] [data-aia="actions"] a,
+html[data-aia-min-target="on"] .utility-nav a,
+html[data-aia-min-target="on"] .gov-nav a,
+html[data-aia-min-target="on"] footer a {
+  min-inline-size: var(--aia-target-min);
+  min-block-size: var(--aia-target-min);
+}
+html[data-aia-min-target="on"] input[type="checkbox"],
+html[data-aia-min-target="on"] input[type="radio"] {
+  inline-size: min(var(--aia-target-min), 32px);
+  block-size: min(var(--aia-target-min), 32px);
+  accent-color: var(--accent);
+}

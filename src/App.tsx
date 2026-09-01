@@ -17,6 +17,8 @@ import ServicesPage from "./pages/ServicesPage";
 
 export type Route = "home" | "shop" | "services";
 
+let registrationStarted = false;
+
 function parseRoute(): Route {
   const path = location.pathname.replace(/\/+$/, "");
   if (path.endsWith("/shop")) return "shop";
@@ -78,7 +80,10 @@ export default function App() {
   }, []);
 
   // WebMCP registration (feature-detected; harness works without it).
+  // Runs exactly once per page load, even under React StrictMode.
   useEffect(() => {
+    if (registrationStarted) return;
+    registrationStarted = true;
     void (async () => {
       const outcome = await registerTools(ALL_TOOLS, (name, args) => dispatchTool(name, args));
       setMcp({
@@ -86,6 +91,14 @@ export default function App() {
         count: outcome.registered,
       });
     })();
+  }, []);
+
+  // Dev harness bridge (?agent=1): same dispatch path as WebMCP.
+  useEffect(() => {
+    if (!new URLSearchParams(location.search).has("agent")) return;
+    (window as unknown as Record<string, unknown>).__aia = {
+      run: (name: string, args: Record<string, unknown>) => dispatchTool(name, args),
+    };
   }, []);
 
   // Open the activity drawer whenever the agent does something.

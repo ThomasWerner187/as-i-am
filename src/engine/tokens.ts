@@ -41,7 +41,10 @@ export function profileToTokenOps(profile: Record<string, Record<string, unknown
   if (vis.font_style) flags["font-style"] = String(vis.font_style);
   if (vis.color_independent_status === true) flags["status-labels"] = "on";
 
-  if (typeof act.minimum_target_size === "number") tokens["--aia-target-min"] = `${act.minimum_target_size}px`;
+  if (typeof act.minimum_target_size === "number") {
+    tokens["--aia-target-min"] = `${act.minimum_target_size}px`;
+    flags["min-target"] = "on";
+  }
   if (typeof act.target_spacing === "number") tokens["--aia-target-gap"] = `${act.target_spacing}px`;
   if (act.focus_strength) {
     flags["focus"] = String(act.focus_strength);

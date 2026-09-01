@@ -62,7 +62,7 @@ export class AdaptationEngine {
   private current: Record<string, Record<string, unknown>> = {};
   private version = 0;
   private lastOp?: { id: string; label: string };
-  private readOnlyApiCheck?: () => void;
+  private snapshotCache: EngineSnapshot | null = null;
 
   subscribe = (listener: Listener): (() => void) => {
     this.listeners.add(listener);
@@ -71,18 +71,25 @@ export class AdaptationEngine {
     };
   };
 
-  getSnapshot = (): EngineSnapshot => ({
-    adaptationVersion: this.version,
-    active: this.current,
-    applied: this.appliedAll,
-    undoDepth: this.undoStack.length,
-    lastOp: this.lastOp,
-    announcement: this.announcement,
-    isBase: Object.keys(this.current).length === 0,
-    stats: { ...this.stats },
-  });
+  /** Stable snapshot for useSyncExternalStore — rebuilt only when state changes. */
+  getSnapshot = (): EngineSnapshot => {
+    if (!this.snapshotCache) {
+      this.snapshotCache = {
+        adaptationVersion: this.version,
+        active: this.current,
+        applied: this.appliedAll,
+        undoDepth: this.undoStack.length,
+        lastOp: this.lastOp,
+        announcement: this.announcement,
+        isBase: Object.keys(this.current).length === 0,
+        stats: { ...this.stats },
+      };
+    }
+    return this.snapshotCache;
+  };
 
   private emit(): void {
+    this.snapshotCache = null;
     for (const l of this.listeners) l();
   }
 
@@ -289,7 +296,7 @@ export class AdaptationEngine {
     for (const [k, v] of Object.entries(tokens)) root.style.setProperty(k, v);
     for (const name of [
       "contrast", "glare", "color-mode", "font-style", "status-labels", "focus",
-      "keyboard-first", "no-drag", "no-dblclick", "cursor-size", "density",
+      "keyboard-first", "no-drag", "no-dblclick", "cursor-size", "min-target", "density",
       "hide-nonessential", "labels", "steps", "progress", "help", "plain-errors",
       "motion", "autoplay", "parallax", "captions", "transcripts", "static-media",
       "brightness",

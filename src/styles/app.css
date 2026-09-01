@@ -86,7 +86,7 @@
 .harness-form select { min-block-size: calc(var(--aia-target-min) - 8px); border: 1px solid var(--line); border-radius: 6px; background: var(--paper-raised); }
 
 /* Before/After peek button */
-.peek-wrap { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--ink-soft); }
+.peek-wrap { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--paper-raised); }
 html.aia-peek [data-aia], html.aia-peek .aia-status { transition: none !important; }
 
 /* WebMCP status chip */
