@@ -342,8 +342,8 @@ export default function EveningShell() {
   const transport = ready[site]
     ? native[site] && document.modelContext?.executeTool
       ? "Native WebMCP ready"
-      : "Fallback demo · no native WebMCP"
-    : "Connecting the example sites";
+      : "Guided demo · fallback"
+    : "Connecting…";
 
   return (
     <div className="evening-shell">
@@ -353,9 +353,7 @@ export default function EveningShell() {
         </span>
         <div className="experience-links">
           <span className="connection-status">{transport}</span>
-          <button onClick={() => setAgentOpen(!agentOpen)}>
-            Use your agent ↗
-          </button>
+          <button onClick={() => setAgentOpen(!agentOpen)}>Use WebMCP ↗</button>
         </div>
       </header>
       <section className="experience-intro" aria-labelledby="experience-title">
@@ -364,18 +362,14 @@ export default function EveningShell() {
           <br />
           <em>You don’t have to.</em>
         </h1>
-        <p>
-          One evening. Two websites. Tell your agent how you like things—then
-          keep being you.
-        </p>
+        <p>Two tickets. Dinner before the film. Less hassle.</p>
       </section>
       {agentOpen && (
         <section className="agent-details">
-          <h2>Bring your own agent.</h2>
+          <h2>Try it with your agent.</h2>
           <p>
-            Open this page in a WebMCP-enabled browser and give your agent this
-            request. The buttons below are a guided demonstration with preset
-            requests, not an embedded language model.
+            Give your agent this request in a WebMCP-enabled browser. The guided
+            demo uses preset requests, not an embedded AI.
           </p>
           <pre>{AGENT_PROMPT}</pre>
           <button
@@ -418,7 +412,7 @@ export default function EveningShell() {
             disabled={busy}
             onClick={() => void perform(() => switchSite("cinema"))}
           >
-            <b>01</b> Cinema tickets
+            <b>01</b> Cinema
           </button>
           <span className="journey-divider" aria-hidden="true">
             →
@@ -429,7 +423,7 @@ export default function EveningShell() {
             disabled={busy}
             onClick={() => void perform(() => switchSite("restaurant"))}
           >
-            <b>02</b> A table before the film
+            <b>02</b> Dinner
           </button>
         </nav>
         <div className="site-frame">
@@ -466,26 +460,19 @@ export default function EveningShell() {
             ✳
           </span>
           <div>
-            <p className="eyebrow">
-              {hasFit
-                ? site === "cinema"
-                  ? "SAME YOU. NEXT WEBSITE."
-                  : "YOUR PREFERENCES ARRIVED."
-                : "TRY THIS REQUEST"}
-            </p>
             <p className="agent-request">
               {hasFit
                 ? site === "cinema"
-                  ? "“Now a table before the film. Keep it this easy.”"
-                  : "Different website. Already feels like you."
+                  ? "“Dinner next. Keep it this simple.”"
+                  : "No need to explain it all again."
                 : site === "cinema"
-                  ? "“The tiny seats are hard to click. Show me two seats together.”"
-                  : "“Make the choices larger. One step at a time, please.”"}
+                  ? "“Bigger buttons. Two seats together, please.”"
+                  : "“Bigger choices. One step at a time.”"}
             </p>
             <small>
               {hasFit && site === "cinema"
-                ? "Shares only interface preferences with OLIVA. No seats, identity, or personal reasons."
-                : "Guided demo · Real page changes · You make the final choice"}
+                ? "Share preferences, not booking details."
+                : "You choose. You confirm."}
             </small>
           </div>
           <button
@@ -503,16 +490,16 @@ export default function EveningShell() {
             }
           >
             {busy
-              ? "Working on it…"
+              ? "One moment…"
               : hasFit
                 ? site === "cinema"
-                  ? "Share preferences with OLIVA →"
+                  ? "Use my preferences at dinner →"
                   : textScale[site] >= 2.2
-                    ? "Maximum text size reached"
+                    ? "Text size: maximum"
                     : textScale[site] > 1
-                      ? "Make text larger again"
-                      : "A little larger, please"
-                : "Make it work for me →"}
+                      ? "Larger again"
+                      : "A little larger"
+                : "Make it easier →"}
           </button>
         </section>
         <div className="proof-footer">
@@ -529,14 +516,10 @@ export default function EveningShell() {
                   </b>
                 </span>
                 <span>
-                  {after.horizontal_overflow
-                    ? "Layout needs attention"
-                    : "No horizontal overflow"}
+                  {after.horizontal_overflow ? "Layout needs attention" : ""}
                 </span>
               </>
-            ) : (
-              <span>Your preferences travel. Your personal reasons don’t.</span>
-            )}
+            ) : null}
           </div>
           <div className="proof-controls">
             {hasFit && (
@@ -555,7 +538,7 @@ export default function EveningShell() {
                     })
                   }
                 >
-                  {preview ? "Back to my view" : "Compare with original"}
+                  {preview ? "My view" : "Original"}
                 </button>
                 <button
                   className="shell-link"
@@ -592,12 +575,12 @@ export default function EveningShell() {
               className="shell-link"
               onClick={() => setProofOpen(!proofOpen)}
             >
-              Under the hood {trace.length > 0 ? `(${trace.length})` : ""}
+              How it works
             </button>
           </div>
         </div>
         {status && (
-          <p className="shell-note" role="status">
+          <p className="sr-only" role="status">
             {status}
           </p>
         )}
@@ -612,7 +595,7 @@ export default function EveningShell() {
       </main>
       {proofOpen && (
         <section className="proof-details">
-          <h2>The proof, not the pitch.</h2>
+          <h2>Your preferences. Each site’s design.</h2>
           <p>
             {crossOrigin
               ? "Three separate origins: this demo controller, LUNA, and OLIVA. Each site has its own document and adaptation engine."
@@ -626,12 +609,12 @@ export default function EveningShell() {
             accessibility audit.
           </p>
           <details>
-            <summary>Preset preferences for this guided example</summary>
+            <summary>Demo preferences</summary>
             <pre>{JSON.stringify(DEMO_PROFILE, null, 2)}</pre>
           </details>
           {receipt && (
             <details>
-              <summary>Receipt carried to OLIVA</summary>
+              <summary>Shared with OLIVA</summary>
               <pre>{JSON.stringify(receipt, null, 2)}</pre>
             </details>
           )}
@@ -664,9 +647,7 @@ export default function EveningShell() {
         </section>
       )}
       <p className="shell-note">
-        A working accessibility contract for participating websites. Cinema and
-        restaurant data are fictional. Your agent adapts the interface; you stay
-        in control.
+        WebMCP hackathon prototype · No real bookings.
       </p>
     </div>
   );

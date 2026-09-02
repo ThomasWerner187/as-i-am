@@ -16,6 +16,17 @@ html[data-evening="shell"] {
   background: var(--paper);
   font-family: var(--sans);
 }
+.evening-shell .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
 .experience-top {
   height: 60px;
   display: flex;

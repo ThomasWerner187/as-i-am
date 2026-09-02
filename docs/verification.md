@@ -58,5 +58,14 @@ do not replace assistive-technology testing or research with people who use adap
 ## Still outside this verification
 
 Public deployment, production headers, independent third-party interoperability, full assistive-
-technology testing, a final recorded video, and submission have not been completed by this build.
+technology testing, YouTube publication, and submission have not been completed by this build.
 Re-verify native/fallback mode and all measurements in the actual presentation browser.
+
+## Recorded demonstration
+
+The [68-second click-through](recording.md) was captured from the working controller after the
+copy changes, including both synthetic bookings and the preference receipt. The exported MP4
+decoded without errors and played in the browser. English narration using the owner's existing
+ElevenLabs voice and speech-aligned captions are included; the silent and earlier guide-voice
+versions are preserved. All six voice sections fit without a speed change. This recording shows the
+labelled guided fallback, not autonomous native agent execution.

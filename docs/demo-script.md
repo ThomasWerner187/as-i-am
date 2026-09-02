@@ -14,7 +14,7 @@ The baseline is keyboard-operable; it simply uses a dense seat-map layout.
 
 ## 0:15–0:40 — The first reveal
 
-Click **Make it work for me →**. Hold on the three large seat-pair choices.
+Click **Make it easier →**. Hold on the three large seat-pair choices.
 
 > I ask for larger targets, less clutter, and one step at a time. LUNA keeps its own design,
 > but now I can choose a pair instead of hunting for tiny seats.
@@ -28,7 +28,7 @@ Click **Review selection**, pause on the total, then **Confirm demo tickets**.
 
 ## 0:40–1:05 — The second reveal
 
-Click **Share preferences with OLIVA →**. Hold on the cream-and-olive restaurant.
+Click **Use my preferences at dinner →**. Hold on the cream-and-olive restaurant.
 Select **18:30 · Table for two**.
 
 > Now a different website. I don’t explain my preferences again. OLIVA receives a functional
@@ -39,7 +39,7 @@ Click **Review selection**, then **Confirm demo table**.
 
 ## 1:05–1:30 — Make WebMCP concrete
 
-Open **Under the hood**. Briefly show one actual call and the transferred receipt.
+Open **How it works**. Briefly show one actual call and the transferred receipt.
 
 > This is WebMCP as a live contract: discover, adapt, measure, refine, and carry forward.
 > Each site exposes typed adaptation and booking tools. The site owns the rendering;
@@ -59,7 +59,7 @@ fallback button clicks into footage presented as autonomous native agent executi
 ## 1:30–1:50 — Keep control
 
 Return to cinema. For a visible map comparison, use a fresh take before confirmation:
-**Compare with original** → **Back to my view**. Use **Larger text**, then **Undo**.
+**Original** → **My view**. Use **Larger text**, then **Undo**.
 The selected seats remain unchanged.
 
 > Preferences are reversible. Your choices are preserved. And the website gets only the

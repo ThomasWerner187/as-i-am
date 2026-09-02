@@ -2,7 +2,7 @@
 
 The opening must communicate the task without explaining the protocol. A small, believable
 seat map becomes three obvious pairs; a recognizable restaurant becomes three clear dinner
-choices. Technical evidence is progressively disclosed under “Under the hood.”
+choices. Technical evidence is progressively disclosed under “How it works.”
 
 The frontend-design approach preserves distinct site identities: charcoal/amber LUNA,
 cream/olive OLIVA, and a quiet paper/sage controller. Fraunces and Instrument Sans continue

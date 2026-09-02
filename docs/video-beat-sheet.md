@@ -1,5 +1,8 @@
 # Recording beat sheet
 
+The current [68-second recording](recording.md) follows a shorter version of this optional
+two-minute outline.
+
 | Time | Screen | The audience should understand |
 | --- | --- | --- |
 | 0:00–0:15 | LUNA seat map | “I want two seats together.” |
@@ -28,5 +31,5 @@
 - Check narrated measurements against that take, rather than quoting a fixed benchmark.
 - Preserve the synthetic-booking disclosure.
 - Review the final video before publishing; verify submitted links in a logged-out browser.
-- The old `demo-clickthru.mp4` and shop/services screenshots are legacy materials. A new final
-  video of the cinema/restaurant experience still needs to be recorded.
+- The old `demo-clickthru.mp4` and shop/services screenshots are legacy materials. Use the new
+  cinema/restaurant [recording](recording.md); owner review and public upload remain.

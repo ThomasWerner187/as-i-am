@@ -76,7 +76,7 @@ separately and expose a truthful fallback instead of claiming native execution e
 
 ## What’s next
 
-Deploy and verify the three public origins; record the final English demonstration. Then extract
+Deploy and verify the three public origins; review and publish the recorded English demonstration. Then extract
 a small integration kit and conformance fixture, test with people who use adaptive interfaces,
 and add agent-side consent, minimisation, receipt expiry and integrity protection.
 
@@ -85,7 +85,8 @@ and add agent-side consent, minimisation, receipt expiry and integrity protectio
 - [ ] Verify public controller, cinema and restaurant URLs and actual origin topology.
 - [ ] Run both booking flows twice in the intended presentation browser.
 - [ ] Verify native tool discovery/execution and keep fallback language accurate.
-- [ ] Record a new English video; review audio, captions, runtime and synthetic-data disclosure.
+- [x] Record a new English video with guide narration, captions and synthetic-data disclosure.
+- [ ] Owner reviews the [recording](recording.md) and approves the final voice and publication.
 - [ ] Obtain the owner’s approval for any repository visibility change and publication.
 - [ ] Review secrets, personal data, license, assets and source links before release.
 - [ ] Verify all submission links logged out and recheck the current official deadline/rules.

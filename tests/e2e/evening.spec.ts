@@ -25,7 +25,7 @@ test("first action is visible on a short desktop and the fallback completes both
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");
   const action = page.getByRole("button", {
-    name: "Make it work for me →",
+    name: "Make it easier →",
     exact: true,
   });
   await expect(action).toBeEnabled();
@@ -35,8 +35,11 @@ test("first action is visible on a short desktop and the fallback completes both
   await expect(cinema.getByTestId("seat-map")).toBeVisible();
   await action.click();
   await expect(cinema.getByTestId("seat-pair-list")).toBeVisible();
+  const statusBox = await page.locator("p.sr-only[role=status]").boundingBox();
+  expect(statusBox?.width).toBe(1);
+  expect(statusBox?.height).toBe(1);
   await expect(
-    page.getByText("Fallback demo · no native WebMCP", { exact: true }),
+    page.getByText("Guided demo · fallback", { exact: true }),
   ).toBeVisible();
   await cinema.getByRole("button", { name: /Row F · Seats 6 \+ 7/ }).click();
   await cinema
@@ -49,7 +52,7 @@ test("first action is visible on a short desktop and the fallback completes both
   await expect(cinema.getByText("See you under the moon.")).toBeVisible();
   await page
     .getByRole("button", {
-      name: "Share preferences with OLIVA →",
+      name: "Use my preferences at dinner →",
       exact: true,
     })
     .click();
@@ -62,7 +65,7 @@ test("first action is visible on a short desktop and the fallback completes both
     .click();
   await restaurant.getByRole("button", { name: /Confirm demo table/ }).click();
   await expect(restaurant.getByText("We’ll save you a table.")).toBeVisible();
-  await page.getByRole("button", { name: /Under the hood/ }).click();
+  await page.getByRole("button", { name: /How it works/ }).click();
   await expect(page.getByText(/Three separate origins/)).toBeVisible();
   await expect(
     page.getByText("import_adaptation_receipt", { exact: true }),
@@ -78,15 +81,15 @@ test("first action is visible on a short desktop and the fallback completes both
 
 test("preview and undo preserve the person's selection", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Make it work for me →" }).click();
+  await page.getByRole("button", { name: "Make it easier →" }).click();
   const cinema = page.frameLocator('iframe[title="LUNA Cinema"]');
   await cinema.getByRole("button", { name: /Row H · Seats 5 \+ 6/ }).click();
-  await page.getByRole("button", { name: "Compare with original" }).click();
+  await page.getByRole("button", { name: "Original" }).click();
   await expect(cinema.getByTestId("seat-map")).toBeVisible();
   await expect(
     cinema.getByRole("button", { name: "Row H, seat 5, €12", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: "Back to my view" }).click();
+  await page.getByRole("button", { name: "My view" }).click();
   await expect(
     cinema.getByRole("button", { name: /Row H · Seats 5 \+ 6/ }),
   ).toHaveAttribute("aria-pressed", "true");
@@ -163,7 +166,7 @@ for (const site of ["cinema", "restaurant"] as const) {
 test("new shell has no serious accessibility violations", async ({ page }) => {
   await page.goto("/");
   await expect(
-    page.getByRole("button", { name: "Make it work for me →" }),
+    page.getByRole("button", { name: "Make it easier →" }),
   ).toBeEnabled();
   const result = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
@@ -212,7 +215,7 @@ test("the fallback bridge ignores messages from a different source", async ({
 }) => {
   await page.goto("/");
   await expect(
-    page.getByRole("button", { name: "Make it work for me →" }),
+    page.getByRole("button", { name: "Make it easier →" }),
   ).toBeEnabled();
   await page.evaluate(() => {
     const untrusted = document.createElement("iframe");
@@ -256,9 +259,9 @@ test("adaptation keeps an earlier table choice visible, not just stored", async 
 test("the complete controller remains usable on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.getByRole("button", { name: "Make it work for me →" }).click();
+  await page.getByRole("button", { name: "Make it easier →" }).click();
   await page
-    .getByRole("button", { name: "Share preferences with OLIVA →" })
+    .getByRole("button", { name: "Use my preferences at dinner →" })
     .click();
   await expect(
     page

@@ -23,11 +23,11 @@ will not stop existing servers. Run one server manually with `npm run dev:site -
 | LUNA Cinema | http://localhost:5274/cinema |
 | OLIVA Restaurant | http://localhost:5275/restaurant |
 
-1. Notice the working seat map. Click **Make it work for me →**.
+1. Notice the working seat map. Click **Make it easier →**.
 2. The map becomes three large adjacent-pair choices. Choose one; review and confirm the demo tickets yourself.
-3. Click **Share preferences with OLIVA →**. Only the functional receipt crosses the boundary.
+3. Click **Use my preferences at dinner →**. Only the functional receipt crosses the boundary.
 4. OLIVA presents large dinner-time choices in its own design. Select and confirm a demo table.
-5. Try **Larger text**, **Compare with original**, **Undo**, and **Under the hood**.
+5. Try **Larger text**, **Original**, **Undo**, and **How it works**.
 
 All bookings are fictional. There is no payment, real reservation or personal-data collection.
 
@@ -43,7 +43,7 @@ The guided buttons run preset requests, not an embedded language model. They use
 explicitly labelled, source-and-origin-checked demo bridge to the same validated handlers.
 Native failures are surfaced, not silently retried through the fallback.
 
-Use **Use your agent ↗** for the English request and direct site links. Some browsers expose
+Use **Use WebMCP ↗** for the English request and direct site links. Some browsers expose
 native WebMCP only to top-level documents. In that case, use the direct links for native calls;
 do not describe the embedded guided view as native. See [verification](docs/verification.md).
 
@@ -94,6 +94,8 @@ the new cinema/restaurant experience.
 
 ## Presentation materials
 
+- [Recorded demo and narration](docs/recording.md)
+- [Hackathon entry checklist](docs/hackathon-checklist.md)
 - [Two-minute English demo script](docs/demo-script.md)
 - [Recording beat sheet](docs/video-beat-sheet.md)
 - [Submission draft and release gate](docs/devpost-submission.md)

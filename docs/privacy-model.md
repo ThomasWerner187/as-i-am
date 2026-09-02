@@ -17,7 +17,7 @@ functional receipt and actual tool results it requests. It is not a production c
 4. **Memory-only app state:** no profile cookies, localStorage, IndexedDB or analytics.
 5. **Receipt validation:** exports rebuild a closed functional object; imports validate the envelope,
    version, timestamp, profile, statistics and privacy markers before application.
-6. **Explicit guided transfer:** the person clicks “Share preferences with OLIVA.” No background
+6. **Explicit guided transfer:** the person clicks “Use my preferences at dinner.” No background
    preference transfer occurs merely by switching tabs.
 7. **Origin/source checks:** fallback messages require the configured controller origin and parent
    window; replies require the expected frame, origin and request ID.

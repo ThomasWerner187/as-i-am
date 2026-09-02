@@ -1,5 +1,43 @@
 # clickthru — website click-through recorder
 
+## Current As I Am recording
+
+The cinema/dinner take uses `live-capture.mjs` with the selected Codex Browser tab's supported
+CDP capability. It records real DOM-targeted clicks, including controls inside the two frames.
+It does not launch a separate browser or invoke hidden application state.
+
+From an active Browser operation, navigate to the demo, obtain its `cdp` capability, import
+`evening-take.mjs`, and **await the entire** `recordEveningTake(cdp, outputDirectory)` call.
+Do not leave its capture pump running after the Browser operation returns. Each take gets a
+fresh directory, a bounded frame rate, an event timeline and an explicit failure marker.
+
+Then package the returned directory:
+
+```bash
+node tools/clickthru/package-capture.mjs tools/clickthru/out/<take>
+# Optional local English guide voice (macOS Daniel; synthetic, not a cloned voice):
+node tools/clickthru/narrate-capture.mjs tools/clickthru/out/<take>
+# Or an explicitly chosen existing ElevenLabs voice (uses account credits):
+# ELEVENLABS_API_KEY must already be present in the environment. Never commit it.
+node tools/clickthru/narrate-elevenlabs.mjs tools/clickthru/out/<take> <voice-id> "Voice name"
+```
+
+Outputs: silent `as-i-am-clickthrough.mp4`, narrated `as-i-am-demo.mp4`, matching standalone
+HTML players, and English SRT/VTT captions. The packager preserves actual frame timing and
+refuses to overwrite existing videos. `narration.json` holds the editable guide script.
+
+The ElevenLabs variant produces `as-i-am-elevenlabs.mp4`, `.html`, `.srt` and `.vtt`.
+It uses [speech timestamps](https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps)
+for short captions and keeps a local cache to avoid paying again when only packaging is retried.
+It has a request timeout, does not automatically retry paid requests, refuses to overwrite the
+finished video, and stops if narration would need to be rushed by more than 12%. No voice is
+created or modified. API keys are read from the environment and never saved.
+
+Recordings are ignored by Git. The capture is a guided fallback demonstration, not footage
+of an autonomous native agent. The browser's existing aspect ratio is preserved.
+
+## Original standalone recorder
+
 Records a scripted walk-through of any website with an **animated cursor** (eased
 glides, click ripples, floating caption tags) and packages it as a **single
 self-contained HTML file** showing the recording inside a **browser mockup**
