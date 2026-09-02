@@ -31,6 +31,7 @@ import { validateToolInput } from "./inputValidation";
 import { engine } from "../engine/adaptationEngine";
 import { speech } from "../engine/speech";
 import { activity } from "../data/activityStore";
+import { eveningTools, domainToolsFor } from "../evening/tools";
 import {
   COUPONS, findCoupon, findProduct, money, priceBreakdown, PRODUCTS,
   type Coupon, type Product,
@@ -68,6 +69,8 @@ export interface ToolDef {
 function currentRoute(): string {
   if (typeof location === "undefined") return "shop";
   const p = location.pathname.replace(/\/+$/, "");
+  if (p.endsWith("/cinema")) return "cinema";
+  if (p.endsWith("/restaurant")) return "restaurant";
   if (p.endsWith("/services")) return "services";
   if (p.endsWith("/shop")) return "shop";
   return "home";
@@ -75,6 +78,7 @@ function currentRoute(): string {
 
 function activePageId(): string {
   const route = currentRoute();
+  if (route === "cinema" || route === "restaurant") return `${route}-booking`;
   return route === "services" ? "services-portal" : route === "shop" ? "shop-catalog" : "landing";
 }
 
@@ -261,6 +265,24 @@ interface PageDescriptor {
 }
 
 const PAGE_DESCRIPTORS: Record<string, PageDescriptor> = {
+  cinema: {
+    page_id: "cinema-booking", site_name: "LUNA Cinema",
+    what: "Choose two seats for LUNA at 20:15. A real seat map becomes a clear seat-pair list when functional preferences request larger targets or guided steps.",
+    for_whom: "People booking a cinema evening in their preferred interaction style.",
+    main_sections: ["Film", "Seat selection", "Review", "Human confirmation"],
+    tasks: [{ id: "choose_seats", description: "Find available adjacent seat pairs with full prices.", tool: "get_available_seat_pairs" }, { id: "review_seats", description: "Prepare a pair for human review and confirmation.", tool: "prepare_seat_selection" }],
+    costs: "Synthetic seats: EUR 12 standard, EUR 13 comfort per person. No real purchases.",
+    risks: "Tools only stage selections. Only a visible human button confirms the simulated booking.",
+  },
+  restaurant: {
+    page_id: "restaurant-booking", site_name: "OLIVA Restaurant",
+    what: "Choose a table for two before the 20:15 film. A time grid becomes a focused choice list when a functional receipt is imported.",
+    for_whom: "People planning dinner before a film without repeating their accessibility setup.",
+    main_sections: ["Restaurant", "Available tables", "Review", "Human confirmation"],
+    tasks: [{ id: "choose_table", description: "Find tables allowing time to eat and walk to the film.", tool: "get_available_table_times" }, { id: "review_table", description: "Stage a table for human confirmation.", tool: "prepare_table_selection" }],
+    costs: "No deposit. Meal is paid at the restaurant. All data is synthetic.",
+    risks: "Only a visible human button confirms the simulated reservation.",
+  },
   shop: {
     page_id: "shop-catalog",
     site_name: "Hearth & Signal",
@@ -1229,6 +1251,12 @@ const domainTools: ToolDef[] = [
 
 export const ALL_TOOLS: ToolDef[] = [...universalTools, ...semanticTools, ...domainTools];
 
+/** Keep legacy tools stable; new pages expose only their own relevant tools. */
+export function toolsForEvening(site: "cinema" | "restaurant"): ToolDef[] {
+  const supported = new Set(["get_adaptation_capabilities", "get_adaptation_state", "apply_adaptation_profile", "tune_visual_presentation", "tune_interaction", "tune_cognitive_support", "tune_motion_and_media", "measure_rendered_ui", "verify_profile_fit", "undo_adaptation", "reset_adaptations", "explain_adaptation", "export_adaptation_receipt", "import_adaptation_receipt"]);
+  return [...universalTools.filter(tool => supported.has(tool.name)), ...semanticTools.filter(tool => ["explain_page", "list_available_tasks"].includes(tool.name)), ...domainToolsFor(site)];
+}
+
 const CLAMPING_ADAPTATION_TOOLS = new Set([
   "apply_adaptation_profile",
   "tune_visual_presentation",
@@ -1254,7 +1282,7 @@ export async function dispatchTool(
   args: Record<string, unknown>,
   pageId?: string,
 ): Promise<string> {
-  const def = ALL_TOOLS.find((t) => t.name === name);
+  const def = [...ALL_TOOLS, ...eveningTools].find((t) => t.name === name);
   if (!def) return err("unknown_tool", `Unknown tool "${name}".`);
   const safeArgs = args ?? {};
   const scan = scanForDiagnosisTerms(safeArgs);

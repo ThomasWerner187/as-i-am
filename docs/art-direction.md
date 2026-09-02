@@ -1,0 +1,30 @@
+# Art direction and asset provenance
+
+The opening must communicate the task without explaining the protocol. A small, believable
+seat map becomes three obvious pairs; a recognizable restaurant becomes three clear dinner
+choices. Technical evidence is progressively disclosed under “Under the hood.”
+
+The frontend-design approach preserves distinct site identities: charcoal/amber LUNA,
+cream/olive OLIVA, and a quiet paper/sage controller. Fraunces and Instrument Sans continue
+the existing local-font direction. Transformation comes from actual component structure,
+target size and content priority, not a decorative animation or screenshot swap.
+
+## Generated production artwork
+
+Both assets were generated specifically for this fictional demo on 2026-09-02 with the
+image-generation tool. They contain no UI text. Text overlays and labels are rendered as HTML.
+
+### `public/art/luna-poster.png`
+
+Prompt:
+
+> Use case: stylized-concept. Generate a production website asset: a cinematic science fiction film poster ARTWORK ONLY, portrait 2:3 aspect. A huge richly textured amber moon hangs above a majestic quiet ochre desert with layered sand dunes and a single tiny silhouetted traveler. Rich almost-black sky, luminous bronze moon, fine analog photographic film grain, art-house science fiction tone, dramatic composition. Carefully composed vast scale, controlled deep dark shadows, warm amber highlights. No text, no logos, no watermarks, no UI, no frames. This will be used as the LUNA cinema film poster in an accessibility demo; retain large quiet lower area suitable for text overlay added in code.
+
+### `public/art/oliva-table.png`
+
+Prompt:
+
+> Use case: photorealistic-natural. Generate a production website asset: a beautiful realistic editorial photograph for an intimate Mediterranean restaurant called OLIVA (do not include text). Portrait 3:4 crop, close tabletop scene with a rustic ceramic plate of fresh hand-shaped pasta with basil, olive oil and cherry tomatoes, beside a softly folded linen napkin and a small glass of water. Warm late-afternoon sunlight raking across a pale stone table, gentle long shadows, glimpse of olive foliage at the edge. Sophisticated food magazine quality, real tactile ingredients, natural imperfect plating, peaceful inviting mood. Keep the food recognizable even as a small side panel. No people, no letters, no logo, no watermark, no UI, no border.
+
+Images are static, locally served and have meaningful alt text. Review final artwork and
+licensing requirements before public submission. No third-party cinema or restaurant is implied.

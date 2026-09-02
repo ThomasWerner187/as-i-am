@@ -1,22 +1,32 @@
 # Recording beat sheet
 
-| Time | Screen | Product point | Required proof |
-| --- | --- | --- | --- |
-| 0:00–0:18 | Landing | Repeated setup is the user problem | Hero and one primary CTA visible |
-| 0:18–0:38 | Shop + proof rail | Begin from a real baseline | Baseline measurement and page-specific capability count |
-| 0:38–0:58 | Privacy boundary | Agent knows context; site gets function | Exact JSON payload shown briefly |
-| 0:58–1:25 | Adapted shop | Execution is observable | Before/after table, fit result, real refinement |
-| 1:25–1:52 | Services portal | Functional preferences are portable | Full receipt exported, shop reset, second route validates and imports supported values |
-| 1:52–2:10 | Completed proof | Human remains in control | Session-only, undo/reset, confirmation language |
-| 2:10–2:20 | Landing contract | Name the category and close | Discover → apply → measure → refine → carry |
+| Time | Screen | The audience should understand |
+| --- | --- | --- |
+| 0:00–0:15 | LUNA seat map | “I want two seats together.” |
+| 0:15–0:40 | Three large pairs → human confirmation | The actual site adapts; I still choose. |
+| 0:40–1:05 | OLIVA’s distinct design and large dinner choices | My preferences travel to another site. |
+| 1:05–1:30 | Actual tools, measured result, functional receipt | WebMCP provides negotiation and evidence. |
+| 1:30–1:50 | Original preview, larger text, undo | Adaptation is reversible; selections stay. |
+| 1:50–2:00 | Hero / finished evening | “The web adapts. You don’t have to.” |
 
-## Capture checklist
+## Before recording
 
-- [ ] 1440×900 or 1920×1080, browser zoom 100%
-- [ ] No personal tabs, bookmarks, notifications or machine identifiers
-- [ ] Pointer visible and deliberate; no frantic scrolling
-- [ ] All proof actions finish before narration moves on
-- [ ] WebMCP status is truthful in the captured browser
-- [ ] No console, test harness or raw logs unless used as short technical B-roll
-- [ ] Spoken audio is clear and the final file is under three minutes
-- [ ] Upload as a public YouTube video and verify playback logged out
+- Start all three origins with `npm run dev` and reload the controller for fresh session state.
+- Use 1440×900 or 1920×1080 at 100% zoom. Keep the pointer visible and deliberate.
+- Check the actual native/fallback badge. Use direct top-level pages for native calls if frame
+  exposure is unavailable. Keep the distinction explicit in narration.
+- Run both complete bookings once, then reload for the take.
+- Capture the seat-map comparison before confirming tickets; confirmation is preserved by preview.
+- Confirm that receipt transfer is an explicit action and contains no booking selections.
+- Keep JSON collapsed until the technical reveal; it is evidence, not the opening story.
+- Hide personal tabs, bookmarks, notifications and machine-specific information.
+
+## After recording
+
+- Use real application footage with spoken English and captions; target two minutes.
+- Keep the unadapted/adapted transitions visible long enough to compare.
+- Check narrated measurements against that take, rather than quoting a fixed benchmark.
+- Preserve the synthetic-booking disclosure.
+- Review the final video before publishing; verify submitted links in a logged-out browser.
+- The old `demo-clickthru.mp4` and shop/services screenshots are legacy materials. A new final
+  video of the cinema/restaurant experience still needs to be recorded.

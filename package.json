@@ -5,7 +5,9 @@
   "description": "As I Am — Adaptive WebMCP contract for personalized, private and portable web accessibility",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node tools/dev-experience.mjs",
+    "dev:experience": "node tools/dev-experience.mjs",
+    "dev:site": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",

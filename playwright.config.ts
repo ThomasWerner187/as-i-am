@@ -8,11 +8,11 @@ export default defineConfig({
     baseURL: "http://localhost:5273",
     viewport: { width: 1280, height: 900 },
   },
-  webServer: {
-    command: "npm run dev",
-    url: "http://localhost:5273",
+  webServer: [5273, 5274, 5275].map(port => ({
+    command: `npm run dev:site -- --port ${port}`,
+    url: `http://localhost:${port}`,
     reuseExistingServer: true,
     timeout: 30_000,
-  },
+  })),
   projects: [{ name: "chromium", use: { browserName: "chromium" } }],
 });

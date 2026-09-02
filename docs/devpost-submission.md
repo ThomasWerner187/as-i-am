@@ -1,131 +1,93 @@
-# Devpost submission copy
+# Submission draft — As I Am
 
-Use this as the source of truth for the submission form. Replace bracketed deployment fields
-only after verifying them from a logged-out browser. The submission deadline is September 3,
-2026 at 1:00 PM Pacific; check the [official rules](https://webmcp.devpost.com/rules) before the final submit.
+English copy for review. This document does not publish the project, change repository
+visibility, or submit the entry. Recheck the [official hackathon page](https://webmcp.devpost.com/)
+and rules before submission; publishing requires the owner’s decision.
 
-## Project title
+## Title and one-line description
 
-As I Am — The web adapts. You don’t have to.
+**As I Am — The web adapts. You don’t have to.**
 
-## One-line description
-
-A private agent carries how a person needs the web to work — not why — and negotiates a
-measurable, reversible fit with participating websites through WebMCP.
-
-## Live links
-
-- Project URL: `[ADD VERIFIED PUBLIC URL]`
-- Video: `[ADD VERIFIED PUBLIC YOUTUBE URL]`
-- Source: `https://github.com/ThomasWerner187/as-i-am` — this repository must be public for submission.
-- License: `https://github.com/ThomasWerner187/as-i-am/blob/main/LICENSE` — verify GitHub detects
-  the MIT license and shows it near the top of the repository page.
+One evening, two websites: WebMCP carries how you need the interface to work, not why.
 
 ## Inspiration
 
-Accessibility preferences are personal, but their implementation is fragmented. Someone may
-need larger text, bigger targets, less motion or a calmer information hierarchy, yet has to
-configure that experience again in every product. A website cannot safely infer the need, and
-sharing a medical label would expose far more than the site requires.
-
-We wanted a narrower boundary: let a trusted agent understand the person, but let the website
-receive only functional instructions it can act on and verify.
+Choosing cinema seats and booking dinner should be an ordinary evening, not another round
+of explaining how you need the web to behave. Accessibility preferences are personal, but
+people repeatedly configure them across products. We wanted a shared functional language:
+larger targets, calmer choices, one step at a time. The website does not need a medical label.
 
 ## What it does
 
-As I Am defines and demonstrates an Adaptive Web Contract. A WebMCP-enabled page exposes its
-supported adaptation capabilities. An agent sends a bounded functional profile. The site maps
-that profile into its own tokens and components, waits for the UI to render, measures the result,
-and returns a fit report. The agent can refine individual values, undo the last operation, reset
-everything, or export a diagnosis-free receipt for the next participating surface.
+As I Am demonstrates an Adaptive Web Contract through two instantly recognizable tasks.
+A dense cinema seat map becomes large adjacent-seat choices. A restaurant then imports the
+same functional receipt and offers clear dinner-time choices in a completely different design.
+The user chooses and confirms; the agent can only prepare a booking review.
 
-The prototype includes a dense electronics comparison shop and a resident-services portal as two
-routes in one SPA. The guided 90-second proof starts with measured baseline UI, reveals the exact
-privacy boundary, applies and refines a profile, then validates and imports the full receipt on the
-second product surface. That surface capability-negotiates the values, reports unsupported ones and
-measures the accepted subset in its own design language.
+Each site discovers, validates, renders and measures its own supported adaptations. Preferences
+can be refined, undone or exported without transferring identity, personal reasons or booking
+selections. The local experience uses three origins and separate document-level engines.
 
 ## How we built it
 
-- React, TypeScript and Vite for a static, inspectable application.
-- A single dispatch boundary shared by native `document.modelContext`, the self-guided proof,
-  the advanced demo controls and the `?agent=1` development harness.
-- A versioned functional schema spanning visual, interaction, cognitive, motion/media, reading
-  and safety preferences.
-- A session-only adaptation engine with atomic operations, exact undo and site-owned rendering.
-- DOM measurement for text size, effective target size, action spacing, contrast samples,
-  visible primary actions, motion, overflow and occlusion.
-- Route-specific capability discovery and fit grading that distinguishes satisfied, partial and
-  unsupported requests.
-- A strict receipt-import boundary that validates provenance metadata, privacy markers, profile
-  schema and destination support before applying anything.
-- Vitest, Playwright and axe-core coverage plus CI for typecheck, unit, end-to-end and production build.
+React, TypeScript and Vite render the sites. Native `document.modelContext` registers 19 tools
+on each participating page: capability discovery, validated adaptation, rendered measurement,
+fit verification, undo/reset, receipt export/import and domain-specific booking operations.
 
-## Why WebMCP
+The guided controller runs preset requests and openly labels its transport. It uses native
+WebMCP discovery/execution where the browser exposes cross-origin frame tools; otherwise an
+origin-checked bridge calls the same validation and handlers. It is not an embedded LLM.
+An external agent can use the direct site pages through native WebMCP.
 
-This is not a settings panel with an agent-shaped button. WebMCP is the negotiation layer:
+Closed schemas, destination capability negotiation, session-only state and human confirmation
+boundaries are covered by unit and browser tests. The pages also have keyboard, mobile and
+normal/adapted axe checks. Automated scans are not a claim of complete WCAG conformance.
 
-1. The agent discovers what the current page supports.
-2. The site receives typed functional intent instead of selectors or private context.
-3. The page returns measurements and unmet values after rendering.
-4. Semantic tools expose real page tasks while preserving human confirmation for risky actions.
-5. A full functional receipt can be validated and capability-negotiated on a different participating page without copying its UI logic.
+## Why WebMCP matters
 
-Without WebMCP, there is no explicit, inspectable contract between the private agent and the
-site-owned experience.
+WebMCP makes adaptation discoverable and inspectable at the page boundary. An agent learns
+what the site supports, sends typed functional values, and receives a fit report after the UI
+renders. Domain tools return real synthetic availability and stage a review without exposing
+a confirmation operation. A receipt makes those preferences portable without copying CSS or
+sharing booking data.
 
-## Challenges
+The memorable moment is visual. The technical substance is the measured, reversible contract
+behind it—not the number of tools.
 
-The hardest problem was truthfulness. Applying a CSS variable is not the same as satisfying a
-preference. React may not have committed structural changes when a tool handler returns, native
-form controls can make target measurements misleading, and a generic capability list can promise
-support a page does not really have. We added render synchronization, effective label-target
-measurement, page-specific capabilities, strict boundary validation and evidence-based fit grading.
+## Challenges and lessons
 
-The second challenge was explaining privacy without asking judges to trust a paragraph. The guided
-proof visibly separates simulated private context from the exact JSON sent to the website.
+Applying a design token does not prove that a request was satisfied. We wait for committed
+rendering, measure effective targets and overflow, and report partial or unsupported results.
+The second challenge was clarity: the earlier shop/services examples needed too much explanation.
+Seats together and dinner before the film communicate the benefit immediately.
 
-## Accomplishments
+Browser support also differs between top-level pages and embedded frames. We test native calls
+separately and expose a truthful fallback instead of claiming native execution everywhere.
 
-- A complete observe → adapt → measure → refine loop with rendered evidence.
-- One contract driving two distinct product surfaces.
-- A portable functional receipt with strict export and import validation, destination negotiation
-  and an honest same-origin reset-before-transfer demonstration.
-- Diagnosis-like payload rejection and no persistent profile storage.
-- Real domain interactions: search, filters, task focus, guided forms, full price calculation and
-  human-confirmed staged cart changes.
-- A self-guided judge path that tells the full product story without a presenter.
+## What is demonstrated—and what is not
 
-## What we learned
-
-Agent-native accessibility needs both semantics and observability. Typed preferences make intent
-clear, but measurements make the result accountable. We also learned that portability is valuable
-only when the receiving site preserves its own design language and can decline unsupported requests.
+- Working synthetic booking flows, explicit human confirmation, larger-target transformations,
+  reversible refinement and validated receipt transfer.
+- Three separate local origins using a shared implementation, not independently owned websites.
+- A real native WebMCP path, plus a clearly labelled guided fallback.
+- No persistent profile storage by this app; functional preferences may still be sensitive.
+- Unsigned prototype receipts, not authenticated credentials or production consent management.
+- Participation is required; the prototype does not adapt arbitrary third-party sites.
 
 ## What’s next
 
-The next milestone is an open specification package, a conformance fixture and two independently
-deployed example origins. After that: browser-managed consent and receipts, stronger privacy
-separation between agent and site, user studies with people who use adaptive interfaces, and a
-small integration kit for design-system teams.
+Deploy and verify the three public origins; record the final English demonstration. Then extract
+a small integration kit and conformance fixture, test with people who use adaptive interfaces,
+and add agent-side consent, minimisation, receipt expiry and integrity protection.
 
-## Official judging-criteria map
+## Release gate
 
-| Area | Where to see it |
-| --- | --- |
-| WebMCP Leverage | Capability discovery, typed adaptation and receipt tools, semantic page tasks, rendered measurement |
-| Execution | Complete 90-second proof, real domain tools, undo/reset and automated checks |
-| Potential Impact | A concrete reduction in repeated accessibility setup without disclosing diagnoses |
-| Creativity & Ambition | Private functional negotiation, accountable fit reports and portable receipts |
+- [ ] Verify public controller, cinema and restaurant URLs and actual origin topology.
+- [ ] Run both booking flows twice in the intended presentation browser.
+- [ ] Verify native tool discovery/execution and keep fallback language accurate.
+- [ ] Record a new English video; review audio, captions, runtime and synthetic-data disclosure.
+- [ ] Obtain the owner’s approval for any repository visibility change and publication.
+- [ ] Review secrets, personal data, license, assets and source links before release.
+- [ ] Verify all submission links logged out and recheck the current official deadline/rules.
 
-## Final submission gate
-
-- [ ] Public deployment loads `/`, `/shop`, `/services` and `/shop?judge=1` directly
-- [ ] 90-second proof completes twice in a logged-out browser
-- [ ] Native WebMCP status and fallback language are both accurate
-- [ ] GitHub repository is public and the MIT license is detected and visible near the top
-- [ ] YouTube video is public, under three minutes, contains explanatory audio and plays logged out
-- [ ] No secrets, personal data, employer data or machine-local files in source or video
-- [ ] Screenshots and README reflect the final UI
-- [ ] All commands in README pass from a clean install
-- [ ] Submit before September 3, 2026 at 1:00 PM Pacific; after the deadline, freeze the submitted repo and live site during judging
+Project URL, video URL and submission URL remain intentionally unset until verified.

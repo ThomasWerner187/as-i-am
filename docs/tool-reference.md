@@ -1,4 +1,29 @@
-# Tool Reference — Adaptive Web Contract 0.1 (32 tools)
+# Tool Reference — Adaptive Web Contract 0.1
+
+## Cinema and restaurant experience
+
+Each participating site registers **19 tools**: 14 universal adaptation tools (the universal
+table below, excluding `adapt_for_task` and `set_reading_mode`), `explain_page`,
+`list_available_tasks`, and three domain tools. Discovery describes page-specific support;
+the broad profile schema is not a promise that every field is supported everywhere.
+
+| Site | Tool | Input / result |
+| --- | --- | --- |
+| LUNA | `get_available_seat_pairs` | Optional `max_total`; available adjacent pairs, full EUR totals, synthetic flag |
+| LUNA | `prepare_seat_selection` | `pair_id` from inventory; stages review, never confirms |
+| OLIVA | `get_available_table_times` | Optional `film_time: "20:15"`; available times allowing 90-minute meal and 15-minute walk |
+| OLIVA | `prepare_table_selection` | Available `time`; stages review, never reserves |
+| Both | `get_booking_state` | Current page's selection and choose/review/confirmed stage |
+
+No booking-confirmation tool exists. Wrong-page domain calls and extra fields are rejected.
+LUNA supports `visual.important_text_scale`; OLIVA reports it unsupported when importing a
+receipt containing it. Both retain user selections during adaptation changes.
+
+The controller exposes only `get_evening_context` and `open_evening_site({site})`.
+Switching the active site does not transfer preferences or confirm anything.
+
+The rest of this reference includes the **32-tool legacy inventory** used by `/shop` and
+`/services`. Those extra domain and reading tools are not registered on the evening sites.
 
 All tools take a JSON object and return a compact JSON **string**. Names ≤ 30 chars,
 descriptions ≤ 500 chars (WebMCP limits). Registration: `document.modelContext.registerTool`

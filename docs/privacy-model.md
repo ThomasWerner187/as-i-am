@@ -1,59 +1,55 @@
 # Privacy model
 
-## Boundary
+## The boundary
 
-The product principle is deliberately narrow:
+A trusted agent may understand the person. A participating website receives a bounded
+functional request, such as larger targets or step-by-step presentation. The profile schema
+does not define diagnosis, identity, account or medication fields.
 
-> A trusted agent may understand the person. A participating website receives a bounded
-> functional request describing how its interface should behave.
+The guided controller is a preset demonstration, not a private AI service. It receives the
+functional receipt and actual tool results it requests. It is not a production consent broker.
 
-Examples of functional values are `text_scale: 1.5`, `minimum_target_size: 52` and
-`disable_animation: true`. The profile wire schema does not define diagnosis, condition,
-identity, medication or account fields.
+## What the prototype enforces
 
-## What this prototype enforces
+1. **Closed schemas:** unknown keys, wrong types and malformed nested fields are rejected.
+2. **Defence-in-depth scan:** tool arguments are checked for protected-health terms before mutation.
+3. **Destination negotiation:** the receiving site accepts only supported or inherent preferences.
+4. **Memory-only app state:** no profile cookies, localStorage, IndexedDB or analytics.
+5. **Receipt validation:** exports rebuild a closed functional object; imports validate the envelope,
+   version, timestamp, profile, statistics and privacy markers before application.
+6. **Explicit guided transfer:** the person clicks “Share preferences with OLIVA.” No background
+   preference transfer occurs merely by switching tabs.
+7. **Origin/source checks:** fallback messages require the configured controller origin and parent
+   window; replies require the expected frame, origin and request ID.
+8. **No booking details in receipts:** seat IDs, time selections and identity are not exported.
+   The shared film schedule is static synthetic fixture data already present in both sites.
 
-1. **Closed profile schema** — profile sections and fields are enumerated. Unknown keys,
-   wrong types and malformed nested objects are rejected at the dispatch boundary.
-2. **Runtime content scan** — tool argument payloads are scanned for protected-health terms
-   before handlers execute. A match returns a privacy error without mutating state.
-3. **Data minimisation by capability** — discovery reports the capabilities of the active
-   page, enabling an agent to send only supported, task-relevant values.
-4. **Session scope** — adaptation, shop and activity state live in JavaScript memory. The
-   prototype does not place profile data in cookies, localStorage, IndexedDB, analytics or URLs.
-5. **Receipt validation** — exported functional receipts are rebuilt from active contract
-   state, validated and scanned before they are returned. Imports revalidate the full receipt,
-   then capability-negotiate the profile before changing the destination surface.
-6. **Visible payload** — judge mode shows the exact functional JSON used by the website and
-   clearly labels its private-agent context as a simulation.
+Native tools rely on the external agent/browser to obtain transfer consent. The prototype has
+no browser-managed permission grant for each exported receipt. Tool registration alone does not
+establish consent or a trusted agent identity.
 
 ## What this does not prove
 
-- A finite term scanner is defence in depth, not a general proof that arbitrary text contains
-  no medical information. The closed wire schema is the primary boundary.
-- Functional preferences can still be sensitive or identifying in combination. “No diagnosis
-  field” does not mean “no personal data.” A production system needs purpose limitation,
-  consent, minimisation and policy at the agent boundary.
-- The receipt is a prototype data object, not a signed credential. It has no issuer trust,
-  integrity proof, expiry or cross-device consent model yet.
-- The self-guided proof and both demo sites currently ship in one SPA. The visual boundary
-  demonstrates the protocol, but it is not process or origin isolation.
-- Browser memory can still be inspected by code running in the same origin. A production
-  architecture should isolate the trusted agent from participating sites.
+- A finite term scanner cannot prove that arbitrary text contains no sensitive information.
+  The closed functional schema is the primary minimisation boundary.
+- Functional preferences may be sensitive or identifying in combination. “No diagnosis field”
+  does not mean “no personal data.”
+- Receipts are unsigned, with no issuer authentication, expiry, integrity proof or cross-device
+  consent model. Their origin field is claimed provenance, not a credential.
+- Local ports provide browser origin separation, but all three sites share a source repository
+  and developer-controlled implementation. They are not independent organizations.
+- A same-origin static deployment loses that origin boundary; the UI says so.
+- Same-origin code and browser extensions may inspect runtime state. External agents have their
+  own data handling and retention policies; this app does not control them.
 
 ## Human control
 
-- Adaptations are reversible through exact undo and reset operations.
-- Temporary base preview does not mutate adaptation history or statistics.
-- Domain actions with user impact are staged. For example, a cart tool prepares a change;
-  a person confirms it in the page.
-- Fit reports expose partial and unsupported requests instead of silently declaring success.
+Adaptations support undo, reset and temporary base preview. Booking selections survive those
+operations. Domain tools stage a review but expose no confirmation operation. The visible
+buttons confirm only synthetic transactions; no payment or real reservation occurs.
 
-## Production direction
+## Production work still needed
 
-A real deployment should add separate origins, an agent-side consent and minimisation policy,
-receipt scope and expiry, integrity protection, and a small privacy manifest describing each
-site’s requested fields and purpose. The contract should carry the minimum functional subset
-needed for the current page and task.
-
-All profiles, products, coupons, requests and appointments in this repository are synthetic.
+Agent-side consent and minimisation policy; receipt scope, expiry and integrity protection;
+independent deployment review; real user research; and a site privacy manifest explaining the
+purpose of each requested functional field. Keep only the minimum subset needed for the task.

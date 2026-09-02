@@ -17,7 +17,7 @@ interface WebMCPTool {
 
 interface ModelContext {
   registerTool(tool: WebMCPTool, options?: { signal?: AbortSignal; exposedTo?: string[] }): Promise<void> | void;
-  getTools?(): Promise<unknown[]>;
+  getTools?(options?: { fromOrigins?: string[] }): Promise<Array<{ name: string; origin?: string; window?: Window }>>;
   executeTool?(tool: unknown, input: string, options?: { signal?: AbortSignal }): Promise<unknown>;
 }
 

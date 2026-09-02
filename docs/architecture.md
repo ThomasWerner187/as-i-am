@@ -1,96 +1,70 @@
 # Architecture
 
-## Runtime flow
+## Runtime and trust boundaries
 
 ```text
-native WebMCP agent        90-second proof         ?agent=1 harness
-document.modelContext      JudgeMode.tsx            advanced controls
-          │                      │                         │
-          └──────────────────────┼─────────────────────────┘
-                                 ▼
-                    dispatchTool(name, arguments)
-                    schema + privacy validation
-                                 │
-              ┌──────────────────┴──────────────────┐
-              ▼                                     ▼
-      universal adaptation tools              semantic page tools
-              │                                     │
-              ▼                                     ▼
-       AdaptationEngine                     shop/services stores
-       atomic in-memory state                reversible domain state
-              │                                     │
-              └──────────────────┬──────────────────┘
-                                 ▼
-                  CSS tokens + document flags
-                     + React component state
-                                 │
-                    wait for committed render
-                                 ▼
-             rendered measurement + profile fit report
+External agent / guided controller (localhost:5273)
+       │ explicit tool requests; user permits receipt transfer
+       ├── LUNA document (localhost:5274/cinema)
+       │      validate → own engine/store → own UI → rendered fit report
+       └── OLIVA document (localhost:5275/restaurant)
+              validate → own engine/store → own UI → rendered fit report
 ```
 
-Native WebMCP, judge mode and the harness are entry points, not separate implementations.
-They share the same dispatch, validation, handlers and measurement code.
+The two sites use the same source implementation, but separate documents, JavaScript state,
+styles and local origins. They do not share a React store. Both frames stay mounted so switching
+sites preserves each user selection. Only an explicit transfer operation exports/imports a receipt.
+The fixed 20:15 film schedule is fixture data already present in both sites, not transferred booking data.
 
-## Main boundaries
+## Two transports, one handler boundary
 
-### Contract boundary
+Native registration uses `document.modelContext.registerTool` with an AbortController lifecycle
+and `exposedTo: [controllerOrigin]`. The controller requests tools for the destination origin,
+matches the tool’s origin and window, and invokes `executeTool` with serialized arguments.
+Its frames delegate `allow="tools"`. See the
+[Chrome imperative API documentation](https://developer.chrome.com/docs/ai/webmcp/imperative-api).
 
-`src/adaptive-contract/schema.ts` defines the versioned functional profile. Tool inputs are
-validated before dispatch; page capability sets are derived for the active route. The contract
-describes function, never selectors or replacement CSS.
+When the browser does not expose native tools in frames, the labelled guided fallback sends
+messages only to the configured frame origin. Both endpoints validate origin, source window
+and correlation ID. The site allows only its registered tool inventory, not arbitrary code or
+confirmation actions. Native discovery/execution failures are reported without silent downgrade.
+Original-view preview is a separate demo-only UI action.
 
-### Rendering boundary
+Both paths reach `dispatchTool`: argument schema/privacy checks → page capability policy →
+handler → committed render → measurement. `?agent=1` exposes this handler boundary for tests;
+it is not proof of native transport. Top-level native calls are verified separately.
 
-`src/engine/adaptationEngine.ts` owns the merged profile, operation version, undo history and
-announcement state. `src/engine/tokens.ts` maps supported fields to site-owned CSS custom
-properties and document attributes. Components subscribe to the engine for structural changes
-such as reduced navigation, persistent labels, guided steps and reading presentation.
+## State ownership
 
-### Evidence boundary
+- `AdaptationEngine` owns merged preferences, version, history and temporary base preview.
+- `EveningStore` owns seat/time choices and choose → review → confirmed stages.
+- Selection is preserved across adaptation, refinement, preview and undo.
+- Domain tools can stage reviews but cannot confirm. Only visible user controls confirm.
+- `EveningShell` owns the active view, transport status, guided trace and transferred receipt.
+  Child notifications contain only presentation status, not booking details.
+- Each site registers 14 adaptation tools, two semantic tools and three domain tools.
+  The controller registers only `get_evening_context` and `open_evening_site`.
 
-Mutating adaptation tools wait for the React update and next paint before returning rendered
-measurements. `src/adaptive-contract/measurements.ts` excludes judge/demo chrome and measures
-the effective interactive target for labelled native controls. `verify_profile_fit` grades only
-signals that can be evidenced, and reports partial or unsupported preferences explicitly.
+## Files
 
-### Domain boundary
+| Area | Responsibility |
+| --- | --- |
+| `src/evening/EveningShell.tsx` | English demo, consent action, proof trace, agent entry point |
+| `src/evening/BookingPage.tsx` | Site-owned transformation, choices, review/confirmation |
+| `src/evening/state.ts`, `tools.ts` | Synthetic inventory, invariants, domain tools |
+| `src/evening/bridge.ts`, `config.ts` | Native/fallback transport, origin configuration |
+| `src/adaptive-contract/` | Schema, validation, capabilities, receipts, measurements and fit |
+| `src/engine/`, `src/webmcp/` | Atomic adaptation and native registration lifecycle |
+| `src/styles/evening.css` | Three distinct presentation layers and responsive adaptation |
+| `tools/dev-experience.mjs` | Safe three-server launcher; stops only its own children |
 
-Semantic tools operate through the same state rendered by each page: shop search and filters
-change the visible catalog, task focus maps public task IDs to page regions, and risky cart
-changes remain staged for human confirmation.
+## Deployment and limits
 
-## Repository map
+Vite produces a static SPA. Three separately configured hosts preserve origin separation.
+A single host works as separate documents on one origin, and the UI states that explicitly.
+Set all three `VITE_*` URLs as documented in the README; use secure origins and appropriate
+frame/permissions policies for public deployment. No production authentication, payment,
+reservation backend, signed receipt or browser-managed consent is implemented.
 
-```text
-src/adaptive-contract/  schema, capabilities, tools, measurements, receipts, privacy
-src/engine/             adaptation state, token mapping, read-aloud support
-src/webmcp/             document.modelContext bridge and browser types
-src/pages/              landing, comparison shop, resident-services portal
-src/components/         judge mode, advanced panels, site chrome, primitives, artwork
-src/data/               synthetic domain data and in-memory stores
-src/styles/             shared system, route themes, adaptation and proof presentation
-tests/unit/             contract, privacy, engine, measurement and domain-state checks
-tests/e2e/              product loops, portability, accessibility and registration
-docs/                   product, standards, privacy, submission and demo material
-```
-
-## Deliberate decisions
-
-- **Site ownership:** the agent sends semantic intent; each site controls its visual language.
-- **Atomic operations:** one tool call produces one undoable state transition.
-- **Rendered truth:** success is not inferred from requested tokens when a measurable browser
-  signal exists.
-- **Visible refusal:** unsupported or unmet preferences are part of the result, not hidden logs.
-- **Validated portability:** the destination validates the full receipt and capability-negotiates
-  its profile before applying the supported subset.
-- **Progressive disclosure:** the main path is one guided proof; the full profile library and
-  raw harness remain available as advanced inspection surfaces.
-- **Static delivery:** React, TypeScript and Vite produce a host-agnostic static SPA.
-
-## Current topology and next boundary
-
-`/shop` and `/services` are intentionally different product surfaces but currently share one
-bundle, engine instance and origin. This proves reuse across components, not independent-site
-interoperability. The next architectural milestone is to extract the contract into a small
-package and deploy two independently built example origins against the same conformance fixture.
+Legacy `/shop` and `/services` routes retain their original SPA engine. They remain regression
+fixtures, accessed from `/legacy`, not the new portability demonstration.

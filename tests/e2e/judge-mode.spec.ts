@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("the 90-second proof tells the complete adaptation and portability story", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/legacy");
 
   await page.getByRole("button", { name: "Run the 90-second proof" }).click();
   await expect(page).toHaveURL(/\/shop\?judge=1/);

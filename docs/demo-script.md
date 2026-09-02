@@ -1,86 +1,81 @@
-# Demo script — 2:20 target
+# Demo script — one evening, two websites
 
-Record this as one coherent product story, not a feature tour. Use a 1440×900 browser,
-hide developer tools, start at `/`, and keep the pointer slow enough to follow.
+Target: two minutes. Lead with the human task and visual transformation. Explain WebMCP
+after the audience has seen what changed. All interface text and narration are English.
 
-## 0:00–0:18 — The repeated burden
+## 0:00–0:15 — An ordinary evening
 
-**On screen:** Landing hero. Pause on “The web adapts. You don’t have to.”
+Screen: the homepage, with the LUNA seat map visible.
 
-**Voice-over:**
+> I just want two seats together and dinner before the film. But first I have to navigate this.
+> What if the website adapted to me?
 
-> People adapt the web to themselves every day — larger text, less motion, bigger targets,
-> fewer choices. But that knowledge disappears at the next website. As I Am asks a simple
-> question: what if a private agent could carry the functional fit, without carrying the diagnosis?
+The baseline is keyboard-operable; it simply uses a dense seat-map layout.
 
-Click **Run the 90-second proof**.
+## 0:15–0:40 — The first reveal
 
-## 0:18–0:38 — Start with reality
+Click **Make it work for me →**. Hold on the three large seat-pair choices.
 
-**On screen:** Dense shop beside the proof rail. Click **Start with the live baseline**.
+> I ask for larger targets, less clutter, and one step at a time. LUNA keeps its own design,
+> but now I can choose a pair instead of hunting for tiny seats.
+> The page measures what it actually rendered, rather than just saying “done.”
 
-**Voice-over:**
+Show the current target measurement. Select **Row F · Seats 6 + 7**.
+Click **Review selection**, pause on the total, then **Confirm demo tickets**.
 
-> This is a real comparison shop, not a slide. The proof first resets and measures the rendered
-> baseline. Then the agent discovers only the capabilities this page actually supports.
+> The agent can help prepare a choice. I make the final decision. These are demo bookings;
+> no tickets are purchased.
 
-## 0:38–0:58 — Make the privacy boundary visible
+## 0:40–1:05 — The second reveal
 
-**On screen:** The two boundary rows. Open **Inspect the exact payload** briefly.
+Click **Share preferences with OLIVA →**. Hold on the cream-and-olive restaurant.
+Select **18:30 · Table for two**.
 
-**Voice-over:**
+> Now a different website. I don’t explain my preferences again. OLIVA receives a functional
+> receipt, checks what it supports, and makes its own interface easier to use.
+> Same person. Different website. No personal reasons or seat choices passed along.
 
-> The private side can understand the person. The website receives only bounded functional
-> values: text scale, target size, motion and cognitive support. The contract has no identity or
-> medical field, and invalid payloads are rejected before they can change the page.
+Click **Review selection**, then **Confirm demo table**.
 
-Close the payload. Click **Send functional profile**.
+## 1:05–1:30 — Make WebMCP concrete
 
-## 0:58–1:25 — Apply, measure, refine
+Open **Under the hood**. Briefly show one actual call and the transferred receipt.
 
-**On screen:** Let the transformation settle. Hold on the before/after table, then click
-**Refine text to 180%**.
+> This is WebMCP as a live contract: discover, adapt, measure, refine, and carry forward.
+> Each site exposes typed adaptation and booking tools. The site owns the rendering;
+> the agent never sends arbitrary CSS.
 
-**Voice-over:**
+Say the correct mode for the recording:
 
-> The site translates the request through its own design system. Then it measures the committed
-> DOM — text, targets, spacing, actions, motion and overflow — and grades the fit. If the person
-> says the text is still too small, the agent changes only those values and verifies again.
+- Guided fallback: “These buttons run preset requests through the same validated handlers.
+  This browser labels the guided transport as a fallback.”
+- Verified native recording: “These requests are being executed through the browser’s native
+  WebMCP tool interface.” Only say this for calls whose transport is actually native.
 
-## 1:25–1:52 — Portability
+For native B-roll, open the direct cinema and restaurant URLs and use an external agent.
+Show discovery, profile application, the measured result, and receipt import. Do not splice
+fallback button clicks into footage presented as autonomous native agent execution.
 
-**On screen:** Click **Carry receipt to the second surface**. Let City of Meridian appear.
+## 1:30–1:50 — Keep control
 
-**Voice-over:**
+Return to cinema. For a visible map comparison, use a fresh take before confirmation:
+**Compare with original** → **Back to my view**. Use **Larger text**, then **Undo**.
+The selected seats remain unchanged.
 
-> Now the fit becomes portable. The shop exports a diagnosis-free functional receipt and resets.
-> A visually different services surface on the same prototype origin validates the full receipt,
-> accepts the values it supports, reports the rest, and renders the result in its own language.
+> Preferences are reversible. Your choices are preserved. And the website gets only the
+> functional request—not a diagnosis, an identity, or a story about you.
 
-## 1:52–2:10 — Human control
+## 1:50–2:00 — Close
 
-**On screen:** Hold on the completed proof summary. Exit the proof and briefly show advanced
-controls with Undo and Reset.
+> As I Am gives participating websites a shared language for individual needs.
+> The web adapts. You don’t have to.
 
-**Voice-over:**
+## External-agent request
 
-> The human stays in control. Adaptations are session-only, transparent and reversible. Risky
-> domain actions are staged for confirmation; the agent never silently completes them.
-
-## 2:10–2:20 — Close on the product
-
-**On screen:** Return to the landing claim and contract flow.
-
-**Voice-over:**
-
-> WebMCP turns accessibility preferences into a live negotiation: discover, adapt, measure,
-> refine and carry forward. The web adapts. You don’t have to.
-
-## Recording notes
-
-- Keep the finished video below three minutes and include spoken audio.
-- Record a second take with native WebMCP enabled if available; the on-screen status must say live.
-- If native WebMCP is unavailable, use the self-guided proof and state that it invokes the exact
-  same handlers through the local harness path.
-- Never describe the two prototype routes as independent deployed websites.
-- Do not quote fixed metric values in narration; let the current measured table speak.
+> Help me plan a cinema-and-dinner evening. Open LUNA and discover its WebMCP tools.
+> I want larger click targets, one step at a time, and less visual clutter. Apply only supported
+> functional preferences, measure the rendered result, and correct any unmet requests.
+> Show me available adjacent seat pairs and let me choose. Never confirm a booking for me.
+> Ask before carrying only my functional adaptation receipt to OLIVA. Discover OLIVA’s
+> capabilities, import what it supports, and show me dinner times. Do not send personal
+> reasons, identity, or cinema selections to the restaurant.

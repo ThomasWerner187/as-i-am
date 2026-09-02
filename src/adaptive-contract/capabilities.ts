@@ -100,6 +100,14 @@ interface PageSupport {
 }
 
 const PAGE_SUPPORT: Record<string, PageSupport> = {
+  "cinema-booking": {
+    adaptive: ["visual.text_scale", "visual.important_text_scale", "visual.line_height", "visual.font_style", "interaction.minimum_target_size", "interaction.target_spacing", "interaction.focus_strength", "cognitive.information_density", "cognitive.step_by_step", "cognitive.hide_nonessential", "motion_media.reduce_motion", "motion_media.disable_animation"],
+    inherent: ["interaction.drag_alternatives", "interaction.double_click_disabled", "cognitive.persistent_labels", "cognitive.progress_indicators", "motion_media.disable_autoplay", "safety.confirm_destructive", "safety.complete_price_totals"],
+  },
+  "restaurant-booking": {
+    adaptive: ["visual.text_scale", "visual.line_height", "visual.font_style", "interaction.minimum_target_size", "interaction.target_spacing", "interaction.focus_strength", "cognitive.information_density", "cognitive.step_by_step", "cognitive.hide_nonessential", "motion_media.reduce_motion", "motion_media.disable_animation"],
+    inherent: ["interaction.drag_alternatives", "interaction.double_click_disabled", "cognitive.persistent_labels", "cognitive.progress_indicators", "motion_media.disable_autoplay", "safety.confirm_destructive", "safety.complete_price_totals"],
+  },
   landing: {
     adaptive: GLOBAL_ADAPTIVE,
     inherent: [

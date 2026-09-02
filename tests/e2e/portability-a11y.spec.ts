@@ -72,7 +72,7 @@ test.describe("profile portability across two product surfaces", () => {
 });
 
 test.describe("accessibility", () => {
-  for (const route of ["/", "/shop", "/services"]) {
+  for (const route of ["/legacy", "/shop", "/services"]) {
     test(`axe: no critical violations on ${route} (normal view)`, async ({ page }) => {
       await page.goto(route);
       const results = await new AxeBuilder({ page })
