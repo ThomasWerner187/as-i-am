@@ -52,11 +52,32 @@ test("first action is visible on a short desktop and the fallback completes both
   await expect(cinema.getByText("See you under the moon.")).toBeVisible();
   await page
     .getByRole("button", {
-      name: "Use my preferences at dinner →",
+      name: "Continue to dinner →",
       exact: true,
     })
     .click();
+  // The restaurant is visibly usable in its original form before consent to transfer.
+  await expect(
+    restaurant.getByRole("button", { name: "18:30", exact: true }),
+  ).toBeVisible();
+  await restaurant.getByRole("button", { name: "18:30", exact: true }).click();
+  await expect(restaurant.getByTestId("table-choice-list")).not.toBeVisible();
+  await page.getByRole("button", { name: "How it works", exact: true }).click();
+  await expect(
+    page.getByRole("region", { name: "Preferences shared with OLIVA" }),
+  ).toHaveCount(0);
+  await page.getByText("Actual tools & data", { exact: true }).click();
+  await expect(
+    page.getByText("import_adaptation_receipt", { exact: true }),
+  ).toHaveCount(0);
+  await page.getByRole("button", { name: "How it works", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Use my preferences here →", exact: true })
+    .click();
   await expect(restaurant.getByTestId("table-choice-list")).toBeVisible();
+  await expect(
+    restaurant.getByRole("button", { name: /18:30 · Table for two/ }),
+  ).toHaveAttribute("aria-pressed", "true");
   await restaurant
     .getByRole("button", { name: /18:30 · Table for two/ })
     .click();
@@ -66,6 +87,16 @@ test("first action is visible on a short desktop and the fallback completes both
   await restaurant.getByRole("button", { name: /Confirm demo table/ }).click();
   await expect(restaurant.getByText("We’ll save you a table.")).toBeVisible();
   await page.getByRole("button", { name: /How it works/ }).click();
+  await expect(
+    page.getByRole("list", { name: "The WebMCP flow" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Preferences shared with OLIVA" }),
+  ).toContainText("56px buttons");
+  await expect(
+    page.getByText("import_adaptation_receipt", { exact: true }),
+  ).not.toBeVisible();
+  await page.getByText("Actual tools & data", { exact: true }).click();
   await expect(page.getByText(/Three separate origins/)).toBeVisible();
   await expect(
     page.getByText("import_adaptation_receipt", { exact: true }),
@@ -260,14 +291,14 @@ test("the complete controller remains usable on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await page.getByRole("button", { name: "Make it easier →" }).click();
-  await page
-    .getByRole("button", { name: "Use my preferences at dinner →" })
-    .click();
+  await page.getByRole("button", { name: "Continue to dinner →" }).click();
+  await page.getByRole("button", { name: "Use my preferences here →" }).click();
   await expect(
     page
       .frameLocator('iframe[title="OLIVA Restaurant"]')
       .getByTestId("table-choice-list"),
   ).toBeVisible();
+  await page.getByRole("button", { name: "How it works", exact: true }).click();
   const dimensions = await page.evaluate(() => ({
     viewport: document.documentElement.clientWidth,
     content: document.documentElement.scrollWidth,

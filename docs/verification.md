@@ -9,13 +9,18 @@ npm run typecheck
 npm test
 npm run test:e2e
 npm run build
+node --test tools/clickthru/caption-groups.test.mjs
 ```
 
 Final local run: TypeScript and production build passed; 67 unit tests and 39 browser tests
 passed (106 total). The browser suite includes both new and legacy flows.
+Four additional recorder tests verify sentence boundaries, balanced caption splitting and
+preservation of the original speech-alignment indexes.
 
 The evening tests cover both complete synthetic booking flows, explicit UI confirmation,
 selection preservation through preview/refinement/undo, earlier restaurant-time preservation,
+the unchanged original restaurant before consent, no receipt import on navigation alone,
+the readable proof panel and collapsed raw tool data,
 mobile layouts, normal/adapted axe scans, cross-origin receipt negotiation, hostile receipt
 rejection, and untrusted sibling-frame messages. Unit checks verify exact native origin/window
 matching, serialized invocation and no silent fallback after native errors.
@@ -63,9 +68,15 @@ Re-verify native/fallback mode and all measurements in the actual presentation b
 
 ## Recorded demonstration
 
-The [68-second click-through](recording.md) was captured from the working controller after the
-copy changes, including both synthetic bookings and the preference receipt. The exported MP4
-decoded without errors and played in the browser. English narration using the owner's existing
-ElevenLabs voice and speech-aligned captions are included; the silent and earlier guide-voice
-versions are preserved. All six voice sections fit without a speed change. This recording shows the
-labelled guided fallback, not autonomous native agent execution.
+The [122-second click-through](recording.md) was captured from the working controller after the
+story changes: both original sites are used, the full restaurant is shown again before explicit
+transfer, and both synthetic bookings are confirmed by visible clicks. The readable proof panel
+shows the actual functional receipt. The 227 captured frames retain their real timing.
+
+The exported MP4 decoded without errors and played in the browser; the original restaurant and
+readable explanation were visually checked in playback. It contains H.264 video, AAC audio and
+English subtitles. English narration uses
+the owner's existing ElevenLabs voice; all ten sections fit without a speed change. Thirty-four
+speech-aligned captions avoid dangling final-word cues. The silent and earlier narrated takes
+are preserved. This recording shows the labelled guided fallback, not autonomous native agent
+execution.

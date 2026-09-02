@@ -141,7 +141,7 @@ export async function clickRecordedControl(cdp, label, site = "shell") {
     if (
       ["BUTTON", "SUMMARY"].includes(node.nodeName) &&
       scope === site &&
-      textOf(node).startsWith(label)
+      (attrs["aria-label"] || textOf(node)).startsWith(label)
     )
       candidates.push({ node, attrs });
     for (const child of node.children ?? []) visit(child, scope);

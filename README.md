@@ -17,16 +17,16 @@ npm run dev
 This starts three separate local origins. Ports 5273–5275 must be available; the launcher
 will not stop existing servers. Run one server manually with `npm run dev:site -- --port 5274`.
 
-| Experience | Address |
-| --- | --- |
-| Guided demo / agent entry point | http://localhost:5273 |
-| LUNA Cinema | http://localhost:5274/cinema |
-| OLIVA Restaurant | http://localhost:5275/restaurant |
+| Experience                      | Address                          |
+| ------------------------------- | -------------------------------- |
+| Guided demo / agent entry point | http://localhost:5273            |
+| LUNA Cinema                     | http://localhost:5274/cinema     |
+| OLIVA Restaurant                | http://localhost:5275/restaurant |
 
 1. Notice the working seat map. Click **Make it easier →**.
 2. The map becomes three large adjacent-pair choices. Choose one; review and confirm the demo tickets yourself.
-3. Click **Use my preferences at dinner →**. Only the functional receipt crosses the boundary.
-4. OLIVA presents large dinner-time choices in its own design. Select and confirm a demo table.
+3. Click **Continue to dinner →**. OLIVA's full time grid still works; nothing has been shared yet.
+4. Click **Use my preferences here →**. Only the functional receipt crosses the boundary. OLIVA adapts in its own design and keeps any table time already selected. Review and confirm the demo table.
 5. Try **Larger text**, **Original**, **Undo**, and **How it works**.
 
 All bookings are fictional. There is no payment, real reservation or personal-data collection.

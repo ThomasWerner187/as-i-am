@@ -1,74 +1,74 @@
 # Demo script — one evening, two websites
 
-Target: two minutes. Lead with the human task and visual transformation. Explain WebMCP
-after the audience has seen what changed. All interface text and narration are English.
+The current cut is just over two minutes. Lead with a person planning a night out, show both
+working websites, then explain why someone might want a different way to use them. All
+interface text and narration are English. The exact voice-over lives in
+[`narration.json`](../tools/clickthru/narration.json).
 
-## 0:00–0:15 — An ordinary evening
+## 0:00–0:24 — A simple night out
 
-Screen: the homepage, with the LUNA seat map visible.
+Start on the original LUNA seat map. Select F6 and F7 using the normal small controls.
+Switch to the original OLIVA page and select 18:30 in the full time grid. Hold long enough
+to see the restaurant details and surrounding content, then return to cinema.
 
-> I just want two seats together and dinner before the film. But first I have to navigate this.
-> What if the website adapted to me?
+> I just want a night out. Two seats together, and dinner before the film.
 
-The baseline is keyboard-operable; it simply uses a dense seat-map layout.
+Both websites already work. The story is about different people, not broken websites.
+Someone may have an accessibility need, find clutter distracting, or simply prefer a different
+layout. Do not imply that every person with a disability wants the same adaptation.
 
-## 0:15–0:40 — The first reveal
+## 0:24–0:49 — Ask for a better fit
 
-Click **Make it easier →**. Hold on the three large seat-pair choices.
+Let the request be read, then click **Make it easier →**. Hold on the three large seat-pair
+choices. The selected F6/F7 pair stays selected. Compare **Original** → **My view** before
+confirming the tickets.
 
-> I ask for larger targets, less clutter, and one step at a time. LUNA keeps its own design,
-> but now I can choose a pair instead of hunting for tiny seats.
-> The page measures what it actually rendered, rather than just saying “done.”
+> Same cinema. Same seats. Just easier to use.
 
-Show the current target measurement. Select **Row F · Seats 6 + 7**.
-Click **Review selection**, pause on the total, then **Confirm demo tickets**.
+Click **Review selection**, pause on the price, then **Confirm demo tickets**. The person
+still reviews and confirms. These are synthetic bookings; no tickets are purchased.
 
-> The agent can help prepare a choice. I make the final decision. These are demo bookings;
-> no tickets are purchased.
+## 0:49–1:19 — The restaurant, before and after
 
-## 0:40–1:05 — The second reveal
+Click **Continue to dinner →**. This only navigates: it does not transfer preferences.
+Show the complete original restaurant again for about ten seconds, including the selected
+18:30 time. The audience must see what is about to change.
 
-Click **Use my preferences at dinner →**. Hold on the cream-and-olive restaurant.
-Select **18:30 · Table for two**.
+> I don't want to set everything up twice.
 
-> Now a different website. I don’t explain my preferences again. OLIVA receives a functional
-> receipt, checks what it supports, and makes its own interface easier to use.
-> Same person. Different website. No personal reasons or seat choices passed along.
+Click **Use my preferences here →**. The restaurant applies the functional preferences only
+after this explicit action. Hold on its calmer layout and larger controls; the cream-and-olive
+design and 18:30 choice remain. Briefly compare **Original** → **My view**.
 
-Click **Review selection**, then **Confirm demo table**.
+Click **Review selection**, then **Confirm demo table**. Explain that cinema booking details
+and personal reasons are not in the shared receipt.
 
-## 1:05–1:30 — Make WebMCP concrete
+## 1:19–1:38 — Why WebMCP matters
 
-Open **How it works**. Briefly show one actual call and the transferred receipt.
+Open **How it works** and frame the readable explanation: **Discover → Adapt → Carry**.
+The visible preference chips come from the actual transferred receipt. Keep **Actual tools
+& data** collapsed; judges can inspect it separately.
 
-> This is WebMCP as a live contract: discover, adapt, measure, refine, and carry forward.
-> Each site exposes typed adaptation and booking tools. The site owns the rendering;
-> the agent never sends arbitrary CSS.
+> The website tells an agent what it can change. The agent asks. The site adapts and checks
+> the result. These guided buttons replay those requests.
 
-Say the correct mode for the recording:
+This recording is the labelled guided fallback. It is not autonomous native WebMCP footage.
+Native requests were verified separately on the direct top-level sites; see
+[verification](verification.md). Do not splice the guided clicks into footage presented as
+native agent execution.
 
-- Guided fallback: “These buttons run preset requests through the same validated handlers.
-  This browser labels the guided transport as a fallback.”
-- Verified native recording: “These requests are being executed through the browser’s native
-  WebMCP tool interface.” Only say this for calls whose transport is actually native.
+## 1:38–2:02 — Your needs. Your preferences. Your web.
 
-For native B-roll, open the direct cinema and restaurant URLs and use an external agent.
-Show discovery, profile application, the measured result, and receipt import. Do not splice
-fallback button clicks into footage presented as autonomous native agent execution.
+Return to cinema and click **Larger text** twice to show another supported preference.
+Briefly revisit **Not just a night out**, then close on the hero.
 
-## 1:30–1:50 — Keep control
+> Shopping, travel, everyday forms: the same idea, wherever websites support it.
 
-Return to cinema. For a visible map comparison, use a fresh take before confirmation:
-**Original** → **My view**. Use **Larger text**, then **Undo**.
-The selected seats remain unchanged.
+These are possible applications of the contract, not additional integrations demonstrated
+in this recording. The website must expose the supported adaptations; this is not an
+automatic rewrite of every website on the internet.
 
-> Preferences are reversible. Your choices are preserved. And the website gets only the
-> functional request—not a diagnosis, an identity, or a story about you.
-
-## 1:50–2:00 — Close
-
-> As I Am gives participating websites a shared language for individual needs.
-> The web adapts. You don’t have to.
+> A web that adapts to what you like, and what you need. As I Am. The web adapts to you.
 
 ## External-agent request
 

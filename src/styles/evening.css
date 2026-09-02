@@ -322,6 +322,125 @@ html[data-evening="shell"] {
   color: #626e5b;
   font-size: 11px;
 }
+.proof-details > h2 {
+  margin: 0 0 6px;
+  font-weight: 550;
+  letter-spacing: -0.035em;
+}
+.proof-intro {
+  margin: 0 0 24px;
+  color: var(--ink-soft);
+}
+.proof-details .contract-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  padding: 0;
+  margin: 0 0 24px;
+  list-style: none;
+}
+.proof-details .contract-steps li {
+  margin: 0;
+  border-top: 2px solid var(--accent);
+  padding-top: 14px;
+}
+.contract-steps li > span {
+  float: right;
+  font-family: var(--serif);
+  color: var(--accent);
+  font-size: 28px;
+  line-height: 1;
+}
+.contract-steps h3 {
+  font-family: var(--sans);
+  font-size: 17px;
+  margin: 0 0 6px;
+}
+.contract-steps p {
+  max-width: 29ch;
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.shared-receipt {
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: #edf0e9;
+  border-radius: 8px;
+}
+.receipt-route {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 0 0 7px;
+  color: var(--accent);
+}
+.receipt-route span {
+  margin: 0 10px;
+}
+.shared-receipt h3,
+.beyond-evening h3 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 550;
+}
+.shared-receipt ul {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0;
+  list-style: none;
+  margin: 14px 0;
+}
+.shared-receipt li {
+  padding: 5px 10px;
+  border: 1px solid #c6cec0;
+  border-radius: 4px;
+  background: #fffefa;
+  font-size: 12px;
+}
+.shared-receipt > p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+.beyond-evening {
+  padding: 22px 0;
+}
+.beyond-evening > p {
+  margin: 8px 0 0;
+  color: var(--ink-soft);
+}
+.beyond-evening .everyday-needs {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.technical-proof {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  font-size: 12px;
+}
+.technical-proof > summary {
+  color: var(--ink-soft);
+}
+@media (max-width: 720px) {
+  .proof-details .contract-steps {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .contract-steps p {
+    max-width: none;
+  }
+  .proof-details .shared-receipt li {
+    margin: 0;
+  }
+  .beyond-evening .everyday-needs {
+    gap: 12px;
+  }
+}
 .shell-note {
   max-width: 1190px;
   margin: 18px auto 0;

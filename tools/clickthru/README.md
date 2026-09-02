@@ -5,6 +5,10 @@
 The cinema/dinner take uses `live-capture.mjs` with the selected Codex Browser tab's supported
 CDP capability. It records real DOM-targeted clicks, including controls inside the two frames.
 It does not launch a separate browser or invoke hidden application state.
+The story uses both original sites first, then adapts the cinema. **Continue to dinner** shows
+the unchanged restaurant; a separate **Use my preferences here** click performs the transfer.
+The ten English chapters move from a personal need to the before/after reveal, a readable
+WebMCP explanation, and possible uses beyond booking. See the [beat sheet](../../docs/video-beat-sheet.md).
 
 From an active Browser operation, navigate to the demo, obtain its `cdp` capability, import
 `evening-take.mjs`, and **await the entire** `recordEveningTake(cdp, outputDirectory)` call.
@@ -29,6 +33,8 @@ refuses to overwrite existing videos. `narration.json` holds the editable guide 
 The ElevenLabs variant produces `as-i-am-elevenlabs.mp4`, `.html`, `.srt` and `.vtt`.
 It uses [speech timestamps](https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps)
 for short captions and keeps a local cache to avoid paying again when only packaging is retried.
+Long sentences are split into balanced cues with the original alignment indexes preserved;
+run `node --test tools/clickthru/caption-groups.test.mjs` to check the grouping.
 It has a request timeout, does not automatically retry paid requests, refuses to overwrite the
 finished video, and stops if narration would need to be rushed by more than 12%. No voice is
 created or modified. API keys are read from the environment and never saved.
@@ -70,24 +76,46 @@ open tools/clickthru/out/<name>/<name>.html
 
 ```jsonc
 {
-  "name": "my-demo",                 // output file name
-  "url": "/shop",                    // path (against base_url) or absolute URL
+  "name": "my-demo", // output file name
+  "url": "/shop", // path (against base_url) or absolute URL
   "base_url": "http://localhost:5173",
   "viewport": { "width": 1360, "height": 900 },
-  "fps": 15,                          // not used for timing (real timestamps are kept), only mp4
-  "mp4": true,                        // set false to skip ffmpeg
+  "fps": 15, // not used for timing (real timestamps are kept), only mp4
+  "mp4": true, // set false to skip ffmpeg
   "steps": [
     { "act": "goto_note" },
-    { "act": "wait",    "ms": 1500 },
-    { "act": "caption", "text": "Floating label next to the cursor", "ms": 2000 },
+    { "act": "wait", "ms": 1500 },
+    {
+      "act": "caption",
+      "text": "Floating label next to the cursor",
+      "ms": 2000,
+    },
     { "act": "hide_tag" },
-    { "act": "move",    "selector": "css or none", "x": 100, "y": 200, "dur": 600, "note": "scrubber label" },
-    { "act": "click",   "selector": "[data-testid='x']", "note": "Open the panel", "settle": 900, "timeout": 8000 },
-    { "act": "hold",    "selector": "[data-testid='x']", "ms": 1500, "note": "Press and hold" },
-    { "act": "type",    "selector": "input#q", "text": "hello", "delay": 30 },
-    { "act": "press",   "key": "Enter" },
-    { "act": "scroll",  "y": 700, "note": "Scroll down" }
-  ]
+    {
+      "act": "move",
+      "selector": "css or none",
+      "x": 100,
+      "y": 200,
+      "dur": 600,
+      "note": "scrubber label",
+    },
+    {
+      "act": "click",
+      "selector": "[data-testid='x']",
+      "note": "Open the panel",
+      "settle": 900,
+      "timeout": 8000,
+    },
+    {
+      "act": "hold",
+      "selector": "[data-testid='x']",
+      "ms": 1500,
+      "note": "Press and hold",
+    },
+    { "act": "type", "selector": "input#q", "text": "hello", "delay": 30 },
+    { "act": "press", "key": "Enter" },
+    { "act": "scroll", "y": 700, "note": "Scroll down" },
+  ],
 }
 ```
 

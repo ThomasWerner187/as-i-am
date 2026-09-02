@@ -296,7 +296,6 @@ export default function EveningShell() {
     await stopPreview();
     setStatus("Carrying only your functional preferences to OLIVA…");
     const exported = await call("cinema", "export_adaptation_receipt");
-    setReceipt(exported.receipt);
     setSite("restaurant");
     // The receiving document has its own engine; no shared React state or CSS.
     await new Promise<void>((resolve) =>
@@ -308,6 +307,7 @@ export default function EveningShell() {
     const imported = await call("restaurant", "import_adaptation_receipt", {
       receipt: exported.receipt,
     });
+    setReceipt(exported.receipt);
     const fit = await call("restaurant", "verify_profile_fit");
     await call("restaurant", "get_available_table_times");
     setAfter(fit.measurements);
@@ -339,6 +339,7 @@ export default function EveningShell() {
     setStatus("");
   }
   const hasFit = adapted[site];
+  const canCarry = site === "restaurant" && !hasFit && adapted.cinema;
   const transport = ready[site]
     ? native[site] && document.modelContext?.executeTool
       ? "Native WebMCP ready"
@@ -353,7 +354,9 @@ export default function EveningShell() {
         </span>
         <div className="experience-links">
           <span className="connection-status">{transport}</span>
-          <button onClick={() => setAgentOpen(!agentOpen)}>Use WebMCP ↗</button>
+          <button onClick={() => setAgentOpen(!agentOpen)}>
+            Use WebMCP ↗
+          </button>
         </div>
       </header>
       <section className="experience-intro" aria-labelledby="experience-title">
@@ -362,7 +365,7 @@ export default function EveningShell() {
           <br />
           <em>You don’t have to.</em>
         </h1>
-        <p>Two tickets. Dinner before the film. Less hassle.</p>
+        <p>Your needs. Your preferences. A web that works your way.</p>
       </section>
       {agentOpen && (
         <section className="agent-details">
@@ -465,12 +468,14 @@ export default function EveningShell() {
                 ? site === "cinema"
                   ? "“Dinner next. Keep it this simple.”"
                   : "No need to explain it all again."
-                : site === "cinema"
-                  ? "“Bigger buttons. Two seats together, please.”"
-                  : "“Bigger choices. One step at a time.”"}
+                : canCarry
+                  ? "“Same preferences here, please.”"
+                  : site === "cinema"
+                    ? "“Bigger buttons. Two seats together, please.”"
+                    : "“Bigger choices. One step at a time.”"}
             </p>
             <small>
-              {hasFit && site === "cinema"
+              {canCarry
                 ? "Share preferences, not booking details."
                 : "You choose. You confirm."}
             </small>
@@ -485,7 +490,13 @@ export default function EveningShell() {
             }
             onClick={() =>
               void perform(
-                hasFit ? (site === "cinema" ? carry : refine) : apply,
+                hasFit
+                  ? site === "cinema"
+                    ? () => switchSite("restaurant")
+                    : refine
+                  : canCarry
+                    ? carry
+                    : apply,
               )
             }
           >
@@ -493,13 +504,15 @@ export default function EveningShell() {
               ? "One moment…"
               : hasFit
                 ? site === "cinema"
-                  ? "Use my preferences at dinner →"
+                  ? "Continue to dinner →"
                   : textScale[site] >= 2.2
                     ? "Text size: maximum"
                     : textScale[site] > 1
                       ? "Larger again"
                       : "A little larger"
-                : "Make it easier →"}
+                : canCarry
+                  ? "Use my preferences here →"
+                  : "Make it easier →"}
           </button>
         </section>
         <div className="proof-footer">
@@ -594,56 +607,127 @@ export default function EveningShell() {
         )}
       </main>
       {proofOpen && (
-        <section className="proof-details">
-          <h2>Your preferences. Each site’s design.</h2>
-          <p>
-            {crossOrigin
-              ? "Three separate origins: this demo controller, LUNA, and OLIVA. Each site has its own document and adaptation engine."
-              : "Separate documents on the same deployment origin. Configure separate site URLs to demonstrate an origin boundary."}{" "}
-            Nothing is stored in cookies or localStorage.
+        <section className="proof-details" aria-labelledby="how-it-works-title">
+          <h2 id="how-it-works-title">How the web adapts to you.</h2>
+          <p className="proof-intro">
+            WebMCP lets your agent ask a website for changes it supports.
           </p>
-          <p>
-            Native mode calls discovered tools through document.modelContext.
-            Fallback mode uses an origin-checked demo bridge and is explicitly
-            labelled. Measurements describe rendered properties, not a complete
-            accessibility audit.
-          </p>
-          <details>
-            <summary>Demo preferences</summary>
-            <pre>{JSON.stringify(DEMO_PROFILE, null, 2)}</pre>
-          </details>
-          {receipt && (
-            <details>
-              <summary>Shared with OLIVA</summary>
-              <pre>{JSON.stringify(receipt, null, 2)}</pre>
-            </details>
-          )}
-          <ol>
-            {trace.map((entry, index) => (
-              <li key={index}>
-                <details>
-                  <summary>
-                    <code>{entry.name}</code> ·{" "}
-                    {entry.ok ? "completed" : "not completed"} ·{" "}
-                    {entry.transport === "native"
-                      ? "native WebMCP"
-                      : "demo fallback"}
-                  </summary>
-                  <p className="trace-origin">
-                    {SITE_NAMES[entry.site]} ·{" "}
-                    {new URL(siteUrl(entry.site)).origin}
-                  </p>
-                  <pre>
-                    {JSON.stringify(
-                      { arguments: entry.args, result: entry.result },
-                      null,
-                      2,
-                    )}
-                  </pre>
-                </details>
-              </li>
-            ))}
+          <ol className="contract-steps" aria-label="The WebMCP flow">
+            <li>
+              <span aria-hidden="true">1</span>
+              <h3>Discover</h3>
+              <p>The site tells your agent what can change.</p>
+            </li>
+            <li>
+              <span aria-hidden="true">2</span>
+              <h3>Adapt</h3>
+              <p>Your agent asks. The site changes and checks the result.</p>
+            </li>
+            <li>
+              <span aria-hidden="true">3</span>
+              <h3>Carry</h3>
+              <p>With your OK, your preferences move to the next site.</p>
+            </li>
           </ol>
+          {receipt && (
+            <section
+              className="shared-receipt"
+              aria-label="Preferences shared with OLIVA"
+            >
+              <div>
+                <p className="receipt-route">
+                  LUNA <span aria-hidden="true">→</span> OLIVA
+                </p>
+                <h3>Preferences. Not personal details.</h3>
+              </div>
+              <ul aria-label="Shared preferences">
+                {receipt.profile.interaction?.minimum_target_size && (
+                  <li>
+                    {receipt.profile.interaction.minimum_target_size}px buttons
+                  </li>
+                )}
+                {receipt.profile.interaction?.target_spacing && (
+                  <li>More space</li>
+                )}
+                {receipt.profile.interaction?.focus_strength === "strong" && (
+                  <li>Clear focus</li>
+                )}
+                {receipt.profile.cognitive?.step_by_step && (
+                  <li>One step at a time</li>
+                )}
+                {receipt.profile.cognitive?.hide_nonessential && (
+                  <li>Less clutter</li>
+                )}
+                {receipt.profile.motion_media?.reduce_motion && (
+                  <li>Less motion</li>
+                )}
+              </ul>
+              <p>Not shared: your name, seat choices, or personal reasons.</p>
+            </section>
+          )}
+          <div className="beyond-evening">
+            <h3>Not just a night out.</h3>
+            <p>
+              Shopping. Travel. Everyday forms. On websites that support this
+              contract, the same idea applies.
+            </p>
+            <p className="everyday-needs">
+              <span>Easier to read.</span>
+              <span>Easier to tap.</span>
+              <span>Less to take in.</span>
+            </p>
+          </div>
+          <details className="technical-proof">
+            <summary>Actual tools &amp; data</summary>
+            <p>
+              {crossOrigin
+                ? "Three separate origins: this demo controller, LUNA, and OLIVA. Each site has its own document and adaptation engine."
+                : "Separate documents on the same deployment origin. Configure separate site URLs to demonstrate an origin boundary."}{" "}
+              Nothing is stored in cookies or localStorage.
+            </p>
+            <p>
+              Native mode calls discovered tools through document.modelContext.
+              Fallback mode uses an origin-checked demo bridge and is explicitly
+              labelled. Measurements describe rendered properties, not a
+              complete accessibility audit.
+            </p>
+            <details>
+              <summary>Demo preferences</summary>
+              <pre>{JSON.stringify(DEMO_PROFILE, null, 2)}</pre>
+            </details>
+            {receipt && (
+              <details>
+                <summary>Shared with OLIVA</summary>
+                <pre>{JSON.stringify(receipt, null, 2)}</pre>
+              </details>
+            )}
+            <ol>
+              {trace.map((entry, index) => (
+                <li key={index}>
+                  <details>
+                    <summary>
+                      <code>{entry.name}</code> ·{" "}
+                      {entry.ok ? "completed" : "not completed"} ·{" "}
+                      {entry.transport === "native"
+                        ? "native WebMCP"
+                        : "demo fallback"}
+                    </summary>
+                    <p className="trace-origin">
+                      {SITE_NAMES[entry.site]} ·{" "}
+                      {new URL(siteUrl(entry.site)).origin}
+                    </p>
+                    <pre>
+                      {JSON.stringify(
+                        { arguments: entry.args, result: entry.result },
+                        null,
+                        2,
+                      )}
+                    </pre>
+                  </details>
+                </li>
+              ))}
+            </ol>
+          </details>
         </section>
       )}
       <p className="shell-note">

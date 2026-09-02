@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
+import { groupCaptionWords } from "./caption-groups.mjs";
 
 const [take, voiceId, voiceName = "Selected voice"] = process.argv.slice(2);
 if (!take || !/^[A-Za-z0-9]{20}$/.test(voiceId ?? ""))
@@ -159,9 +160,7 @@ for (const [index, part] of narration.entries()) {
   const alignment = cached.result.alignment;
   const text = alignment.characters.join("");
   const words = [...text.matchAll(/\S+/g)];
-  let group = [];
-  const flush = () => {
-    if (!group.length) return;
+  for (const group of groupCaptionWords(words)) {
     const first = group[0].index;
     const last = group.at(-1).index + group.at(-1)[0].length - 1;
     const begin =
@@ -183,14 +182,7 @@ for (const [index, part] of narration.entries()) {
         .join(" ")
         .replace("Web M C P", "WebMCP"),
     });
-    group = [];
-  };
-  for (const word of words) {
-    if ([...group, word].map((item) => item[0]).join(" ").length > 76) flush();
-    group.push(word);
-    if (/[.!?]$/.test(word[0])) flush();
   }
-  flush();
   console.log(JSON.stringify(chapterReports.at(-1)));
 }
 

@@ -4,6 +4,12 @@ The opening must communicate the task without explaining the protocol. A small, 
 seat map becomes three obvious pairs; a recognizable restaurant becomes three clear dinner
 choices. Technical evidence is progressively disclosed under “How it works.”
 
+The story-led cut shows both original, working websites before requesting any help. The restaurant
+is shown again immediately before the separate transfer action. The explanation uses three plain
+steps and a readable preference receipt; raw JSON stays under “Actual tools & data.” The motive is
+individual needs and preferences, not a claim that the original sites are broken. Broader contexts
+are explicitly limited to websites that support the contract.
+
 The frontend-design approach preserves distinct site identities: charcoal/amber LUNA,
 cream/olive OLIVA, and a quiet paper/sage controller. Fraunces and Instrument Sans continue
 the existing local-font direction. Transformation comes from actual component structure,
