@@ -4,12 +4,17 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { alignStory, storyText, subtitleFiles } from "./continuous-timing.mjs";
+import { voiceRequest } from "./voice-request.mjs";
 
-const [destination, voiceId, voiceName = "Selected voice"] =
-  process.argv.slice(2);
+const [
+  destination,
+  voiceId,
+  voiceName = "Selected voice",
+  model = "eleven_multilingual_v2",
+] = process.argv.slice(2);
 if (!destination || !/^[A-Za-z0-9]{20}$/.test(voiceId ?? ""))
   throw new Error(
-    "Usage: node generate-continuous-voice.mjs <output-directory> <voice-id> [voice-name]",
+    "Usage: node generate-continuous-voice.mjs <output-directory> <voice-id> [voice-name] [eleven_multilingual_v2|eleven_v3]",
   );
 const directory = path.resolve(destination);
 await fs.mkdir(directory, { recursive: true });
@@ -19,17 +24,7 @@ const story = JSON.parse(
     "utf8",
   ),
 );
-const request = {
-  text: storyText(story),
-  model_id: "eleven_multilingual_v2",
-  voice_settings: {
-    stability: 0.5,
-    similarity_boost: 0.8,
-    style: 0.1,
-    use_speaker_boost: true,
-    speed: 0.9,
-  },
-};
+const request = voiceRequest(storyText(story), model);
 const fingerprint = createHash("sha256")
   .update(JSON.stringify({ voiceId, request }))
   .digest("hex");
@@ -112,6 +107,8 @@ await fs.writeFile(
     {
       ...plan,
       voiceName,
+      model,
+      voiceSettings: request.voice_settings,
       provider: "ElevenLabs",
       fingerprint,
       audioSha256: createHash("sha256").update(bytes).digest("hex"),

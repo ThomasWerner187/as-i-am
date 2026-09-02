@@ -1,6 +1,6 @@
 # Demo script — one evening, two websites
 
-The current cut is about 97 seconds, beginning with a ten-second pitch. The entire script is
+The current Chris / Eleven v3 cut is 93 seconds, beginning with a ten-second pitch. The entire script is
 generated as one continuous performance, including the opening. Chapters are editing markers,
 not separate audio clips. All interface text and narration are English. The authoritative
 voice-over is [`continuous-story.json`](../tools/clickthru/continuous-story.json).
@@ -12,10 +12,10 @@ Hold the original cinema page. Start immediately with the idea, before explainin
 > What if the web adapted to you? As I Am makes supporting websites easier to use, with
 > preferences that travel with you, not your personal details.
 
-The actual opening is 9.3 seconds. Flow directly into “Let me show you with a simple night out.”
+The actual opening is 9.1 seconds. Flow directly into “Let me show you with a simple night out.”
 Do not add silence or a separate vocal take at the transition.
 
-## 0:09–0:34 — A simple night out
+## 0:09–0:30 — A simple night out
 
 Start on the original LUNA seat map. Select F6 and F7 using the normal small controls.
 Switch to the original OLIVA page and select 18:30 in the full time grid. Hold long enough
@@ -27,7 +27,7 @@ Both websites already work. The story is about different people, not broken webs
 Someone may have an accessibility need, find clutter distracting, or simply prefer a different
 layout. Do not imply that every person with a disability wants the same adaptation.
 
-## 0:34–0:51 — Ask for a better fit
+## 0:30–0:44 — Ask for a better fit
 
 Let the request be read, then click **Make it easier →**. Hold on the three large seat-pair
 choices. The selected F6/F7 pair stays selected. Compare **Original** → **My view** before
@@ -38,7 +38,7 @@ confirming the tickets.
 Click **Review selection**, pause on the price, then **Confirm demo tickets**. The person
 still reviews and confirms. These are synthetic bookings; no tickets are purchased.
 
-## 0:51–1:09 — The restaurant, before and after
+## 0:44–1:02 — The restaurant, before and after
 
 Click **Continue to dinner →**. This only navigates: it does not transfer preferences.
 Show the complete original restaurant again for about six seconds, including the selected
@@ -53,7 +53,7 @@ design and 18:30 choice remain. Briefly compare **Original** → **My view**.
 Click **Review selection**, then **Confirm demo table**. Explain that cinema booking details
 and personal reasons are not in the shared receipt.
 
-## 1:09–1:21 — Why WebMCP matters
+## 1:02–1:15 — Why WebMCP matters
 
 Open **How it works** and frame the readable explanation: **Discover → Adapt → Carry**.
 The visible preference chips come from the actual transferred receipt. Keep **Actual tools
@@ -67,7 +67,7 @@ Native requests were verified separately on the direct top-level sites; see
 [verification](verification.md). Do not splice the guided clicks into footage presented as
 native agent execution.
 
-## 1:21–1:37 — Your needs. Your preferences. Your web.
+## 1:15–1:33 — Your needs. Your preferences. Your web.
 
 Return to cinema and click **Larger text** twice to show another supported preference.
 Briefly revisit **Not just a night out**, then close on the hero.

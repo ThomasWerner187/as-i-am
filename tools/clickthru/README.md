@@ -9,11 +9,11 @@ text is joined into **one request**, without chapter breaks or separately genera
 ```bash
 # Create a fresh ignored output directory; keep earlier takes.
 mktemp -d tools/clickthru/out/continuous-XXXXXX
-# Use the returned directory below. Requires an explicitly selected existing voice.
-node tools/clickthru/generate-continuous-voice.mjs <output-directory> <voice-id> "Voice name"
+# Use the returned directory below and an existing voice selected for this narration.
+node tools/clickthru/generate-continuous-voice.mjs <output-directory> <voice-id> "Voice name" eleven_v3
 # Local editing only: no ElevenLabs request and no API key needed.
 node tools/clickthru/package-continuous.mjs tools/clickthru/out/<source-take> <output-directory>
-node --test tools/clickthru/continuous-timing.test.mjs tools/clickthru/caption-groups.test.mjs
+node --test tools/clickthru/voice-request.test.mjs tools/clickthru/continuous-timing.test.mjs tools/clickthru/caption-groups.test.mjs
 ```
 
 The continuous master determines the chapter times, captions, and length of each screen hold.
@@ -27,7 +27,10 @@ earlier exports are never overwritten. Finished MP4s are protected against overw
 
 Generation caches its response and retains a request marker if the paid call fails or times out.
 Do not delete that marker and retry blindly: check the request's outcome first. A changed
-script or voice requires a new output directory. Voice IDs, audio and API responses stay ignored.
+script, voice or model requires a new output directory. Voice IDs, audio and API responses stay ignored.
+The optional model argument accepts `eleven_v3` or `eleven_multilingual_v2` (the default for
+compatibility with earlier takes). V3 uses Natural stability without speed or speaker boost;
+v2 retains the previous 0.9 generation speed. The speech plan records the chosen model and settings.
 The timing API and generation-speed setting follow the official
 [ElevenLabs API](https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps)
 and [pacing guidance](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices#pace).

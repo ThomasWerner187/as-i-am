@@ -1,6 +1,6 @@
 # Recording beat sheet
 
-The current [97-second edit](recording.md) follows the timestamps of one continuous voice-over.
+The current [93-second Chris / Eleven v3 edit](recording.md) follows the timestamps of one continuous voice-over.
 Only the recorded screen holds are retimed. Click motion stays at its original speed, and
 both original sites are used before adaptation.
 
@@ -8,15 +8,15 @@ both original sites are used before adaptation.
 | --------- | ---------------------------------------------------- | ------------------------------------------------------------------- |
 | 0:00–0:09 | Original LUNA page; elevator pitch                   | The web adapts to me. Preferences travel, not personal details.     |
 | 0:09      | Select F6 and F7 on the original seat map            | A simple night out makes the idea concrete.                         |
-| 0:16      | Full OLIVA page; select 18:30 in its normal grid     | These are working websites.                                         |
-| 0:22      | Hold the busy restaurant, then return to cinema      | Different needs and preferences deserve different interfaces.       |
-| 0:34      | Read the request; adapt LUNA                         | Bigger buttons, fewer distractions, same seats.                     |
-| 0:44      | Original / My view; review and confirm               | I stay in control.                                                  |
-| 0:51      | Continue to dinner; hold the unchanged restaurant    | Navigation does not share preferences.                              |
-| 0:57      | Use my preferences here; compare, review and confirm | I choose to share preferences. My table choice stays.               |
-| 1:09      | Discover → Adapt → Carry; readable receipt           | WebMCP gives the agent and website a shared way to request changes. |
-| 1:21      | Make the cinema text larger                          | The same approach can help beyond booking.                          |
-| 1:31–1:37 | Broader applications, then hero                      | Your needs. Your preferences. Your choice.                          |
+| 0:15      | Full OLIVA page; select 18:30 in its normal grid     | These are working websites.                                         |
+| 0:21      | Hold the busy restaurant, then return to cinema      | Different needs and preferences deserve different interfaces.       |
+| 0:30      | Read the request; adapt LUNA                         | Bigger buttons, fewer distractions, same seats.                     |
+| 0:38      | Original / My view; review and confirm               | I stay in control.                                                  |
+| 0:44      | Continue to dinner; hold the unchanged restaurant    | Navigation does not share preferences.                              |
+| 0:51      | Use my preferences here; compare, review and confirm | I choose to share preferences. My table choice stays.               |
+| 1:02      | Discover → Adapt → Carry; readable receipt           | WebMCP gives the agent and website a shared way to request changes. |
+| 1:15      | Make the cinema text larger                          | The same approach can help beyond booking.                          |
+| 1:26–1:33 | Broader applications, then hero                      | Your needs. Your preferences. Your choice.                          |
 
 ## Before recording
 
