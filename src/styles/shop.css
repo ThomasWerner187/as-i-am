@@ -15,7 +15,7 @@
 .aia-ticker:focus-within .ticker-track,
 .aia-ticker.is-paused .ticker-track { animation-play-state: paused; }
 .aia-ticker .wrap { display: flex; align-items: center; gap: 1rem; padding-block: 0.25rem; }
-.ticker-viewport { flex: 1; overflow: hidden; white-space: nowrap; }
+.ticker-viewport { position: relative; flex: 1; min-inline-size: 0; overflow: hidden; white-space: nowrap; }
 .ticker-track { display: inline-block; animation: ticker 28s linear infinite; }
 .ticker-toggle {
   flex: none;
@@ -67,7 +67,7 @@
 }
 .empty-catalog { grid-column: 1 / -1; padding: 1.2rem; }
 
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 0.9rem; }
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 215px), 1fr)); gap: 0.9rem; }
 .product-card { display: flex; flex-direction: column; padding: 0.8rem; gap: 0.45rem; position: relative; transition: transform 0.22s cubic-bezier(0.2,0.7,0.2,1), box-shadow 0.22s ease; }
 .product-card:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(38,35,28,0.05), 0 14px 34px rgba(38,35,28,0.10); }
 .product-card .art { aspect-ratio: 4/3; border-radius: 6px; overflow: hidden; background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 14%, transparent); }
@@ -76,7 +76,7 @@
 .product-card .cat { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); }
 .product-card .desc { font-size: 0.78rem; color: var(--ink-soft); flex-grow: 1; }
 .product-card .badges { display: flex; gap: 0.3rem; flex-wrap: wrap; }
-.price-row { display: flex; align-items: baseline; gap: 0.5em; flex-wrap: wrap; }
+.price-row { display: flex; align-items: baseline; gap: var(--aia-target-gap); flex-wrap: wrap; }
 .price { font-weight: 650; font-size: 1.22rem; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
 .price-old { text-decoration: line-through; color: var(--ink-faint); font-size: 0.8rem; }
 .price-delta { font-size: 0.78rem; font-weight: 700; }
@@ -142,6 +142,25 @@ footer.site-footer a { display: block; padding-block: 0.15em; color: var(--ink-s
   .cart-confirmation, .cart-preview__layout, .cart-line { grid-template-columns: 1fr; }
   .cart-summary { position: static; }
   footer.site-footer .cols { grid-template-columns: 1fr 1fr; }
+}
+
+/* Adapted typography can make a desktop viewport behave like a much narrower
+   content canvas (especially beside judge mode). Reflow from the requested
+   density state instead of relying only on viewport media queries. */
+[data-aia-density="reduced"] .catalog-layout,
+[data-aia-density="minimal"] .catalog-layout,
+[data-aia-hide-nonessential="on"] .hero {
+  grid-template-columns: minmax(0, 1fr);
+}
+[data-aia-density="reduced"] .catalog-search,
+[data-aia-density="minimal"] .catalog-search {
+  margin-inline-start: 0;
+  inline-size: 100%;
+}
+[data-aia-density="reduced"] .catalog-search input,
+[data-aia-density="minimal"] .catalog-search input {
+  min-inline-size: 0;
+  inline-size: 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,63 +1,96 @@
 # Architecture
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  Browser (Chrome 149+ with WebMCP testing flag — or any browser) │
-│                                                                  │
-│  Agent (ChatGPT / any MCP client)                               │
-│    │  tool calls (JSON args → JSON string results)              │
-│    ▼                                                            │
-│  document.modelContext.registerTool(...)   ← src/webmcp/register.ts
-│    │                ▲                                           │
-│    │                │ ?agent=1 dev harness (same dispatch)      │
-│    ▼                │                                           │
-│  src/adaptive-contract/tools.ts  — 31 tool handlers (single source)
-│    │            │              │               │                │
-│    ▼            ▼              ▼               ▼                │
-│  schema.ts   profile.ts     privacy.ts      receipts.ts         │
-│  (v0.1 JSON  (merge, clamp, (diagnosis-term (portable,           │
-│   schemas)   validate)      scanner)        diagnosis-free)     │
-│    │                                                            │
-│    ▼                                                            │
-│  AdaptationEngine (src/engine) — atomic, undoable ops            │
-│    │  CSS custom properties + data-attributes on <html>          │
-│    │  + React-level structure (nav reduction, labels, steps,     │
-│    │    reading modes, status pills)                             │
-│    ▼                                                            │
-│  Two demo sites over one contract                                │
-│    /shop  (Hearth & Signal — commerce)                           │
-│    /services (City of Meridian — administration)                 │
-│                                                                  │
-│  measurements.ts — measures the REAL rendered DOM               │
-│  → verify_profile_fit closes the loop: observe→adapt→measure→   │
-│    refine                                                        │
-└──────────────────────────────────────────────────────────────────┘
+## Runtime flow
+
+```text
+native WebMCP agent        90-second proof         ?agent=1 harness
+document.modelContext      JudgeMode.tsx            advanced controls
+          │                      │                         │
+          └──────────────────────┼─────────────────────────┘
+                                 ▼
+                    dispatchTool(name, arguments)
+                    schema + privacy validation
+                                 │
+              ┌──────────────────┴──────────────────┐
+              ▼                                     ▼
+      universal adaptation tools              semantic page tools
+              │                                     │
+              ▼                                     ▼
+       AdaptationEngine                     shop/services stores
+       atomic in-memory state                reversible domain state
+              │                                     │
+              └──────────────────┬──────────────────┘
+                                 ▼
+                  CSS tokens + document flags
+                     + React component state
+                                 │
+                    wait for committed render
+                                 ▼
+             rendered measurement + profile fit report
 ```
 
-## Key decisions
+Native WebMCP, judge mode and the harness are entry points, not separate implementations.
+They share the same dispatch, validation, handlers and measurement code.
 
-- **One handler source.** WebMCP, the `?agent=1` harness and the demo panel all call
-  `dispatchTool()`; behaviour cannot diverge.
-- **Tokens, not selectors.** Agents send semantic keys; `profileToTokenOps()` maps them
-  onto design tokens + document flags; components render structural changes from the
-  engine store (`useSyncExternalStore`, cached snapshots).
-- **Session-only state.** The engine, shop and activity stores are in-memory modules.
-- **Measurement over promise.** Every claim ("targets ≥ 52px") is verified against the
-  rendered DOM and reported back with real numbers.
-- **Stack:** Vite, React 18, TypeScript, hand-written CSS (custom properties), no CSS
-  framework, self-hosted fonts (Fraunces, Instrument Sans, Atkinson Hyperlegible), Playwright
-  + axe-core for tests. Fully static-hostable.
+## Main boundaries
+
+### Contract boundary
+
+`src/adaptive-contract/schema.ts` defines the versioned functional profile. Tool inputs are
+validated before dispatch; page capability sets are derived for the active route. The contract
+describes function, never selectors or replacement CSS.
+
+### Rendering boundary
+
+`src/engine/adaptationEngine.ts` owns the merged profile, operation version, undo history and
+announcement state. `src/engine/tokens.ts` maps supported fields to site-owned CSS custom
+properties and document attributes. Components subscribe to the engine for structural changes
+such as reduced navigation, persistent labels, guided steps and reading presentation.
+
+### Evidence boundary
+
+Mutating adaptation tools wait for the React update and next paint before returning rendered
+measurements. `src/adaptive-contract/measurements.ts` excludes judge/demo chrome and measures
+the effective interactive target for labelled native controls. `verify_profile_fit` grades only
+signals that can be evidenced, and reports partial or unsupported preferences explicitly.
+
+### Domain boundary
+
+Semantic tools operate through the same state rendered by each page: shop search and filters
+change the visible catalog, task focus maps public task IDs to page regions, and risky cart
+changes remain staged for human confirmation.
 
 ## Repository map
 
+```text
+src/adaptive-contract/  schema, capabilities, tools, measurements, receipts, privacy
+src/engine/             adaptation state, token mapping, read-aloud support
+src/webmcp/             document.modelContext bridge and browser types
+src/pages/              landing, comparison shop, resident-services portal
+src/components/         judge mode, advanced panels, site chrome, primitives, artwork
+src/data/               synthetic domain data and in-memory stores
+src/styles/             shared system, route themes, adaptation and proof presentation
+tests/unit/             contract, privacy, engine, measurement and domain-state checks
+tests/e2e/              product loops, portability, accessibility and registration
+docs/                   product, standards, privacy, submission and demo material
 ```
-src/adaptive-contract/  schema, profile, capabilities, tools, measurements, receipts, privacy
-src/engine/             adaptationEngine (state/undo/sync), tokens mapping, speech
-src/webmcp/             register.ts (document.modelContext bridge), types
-src/pages/              Landing, ShopPage, ServicesPage
-src/components/         Panels (demo/activity), Icons, Artwork, Primitives, SiteChrome
-src/data/               synthetic catalog, services data, session stores
-tests/unit/             contract + tool-smoke suites (Vitest)
-tests/e2e/              demo loop, portability, axe, keyboard, WebMCP shim (Playwright)
-docs/                   contract, privacy, accessibility, demo, tool reference, this file
-```
+
+## Deliberate decisions
+
+- **Site ownership:** the agent sends semantic intent; each site controls its visual language.
+- **Atomic operations:** one tool call produces one undoable state transition.
+- **Rendered truth:** success is not inferred from requested tokens when a measurable browser
+  signal exists.
+- **Visible refusal:** unsupported or unmet preferences are part of the result, not hidden logs.
+- **Validated portability:** the destination validates the full receipt and capability-negotiates
+  its profile before applying the supported subset.
+- **Progressive disclosure:** the main path is one guided proof; the full profile library and
+  raw harness remain available as advanced inspection surfaces.
+- **Static delivery:** React, TypeScript and Vite produce a host-agnostic static SPA.
+
+## Current topology and next boundary
+
+`/shop` and `/services` are intentionally different product surfaces but currently share one
+bundle, engine instance and origin. This proves reuse across components, not independent-site
+interoperability. The next architectural milestone is to extract the contract into a small
+package and deploy two independently built example origins against the same conformance fixture.

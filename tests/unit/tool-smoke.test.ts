@@ -14,9 +14,9 @@ import { CONTRACT_VERSION } from "../../src/adaptive-contract/schema";
 const TOOL_NAMES = ALL_TOOLS.map((t) => t.name);
 
 describe("tool registry integrity", () => {
-  it("has 31 tools with unique names within WebMCP limits", () => {
-    expect(TOOL_NAMES).toHaveLength(31);
-    expect(new Set(TOOL_NAMES).size).toBe(31);
+  it("has 32 tools with unique names within WebMCP limits", () => {
+    expect(TOOL_NAMES).toHaveLength(32);
+    expect(new Set(TOOL_NAMES).size).toBe(32);
     for (const t of ALL_TOOLS) {
       expect(t.name.length).toBeLessThanOrEqual(30);
       expect(t.description.length).toBeLessThanOrEqual(500);
@@ -30,6 +30,7 @@ describe("tool registry integrity", () => {
     expect(TOOL_NAMES).toContain("measure_rendered_ui");
     expect(TOOL_NAMES).toContain("undo_adaptation");
     expect(TOOL_NAMES).toContain("export_adaptation_receipt");
+    expect(TOOL_NAMES).toContain("import_adaptation_receipt");
     expect(TOOL_NAMES).toContain("explain_page");
     expect(TOOL_NAMES).toContain("read_content");
     expect(TOOL_NAMES).toContain("search_products");
@@ -45,6 +46,18 @@ describe("tool registry integrity", () => {
     expect(properties).not.toHaveProperty("label");
     expect(properties.visual.additionalProperties).toBe(false);
     expect(ALL_TOOLS.find((tool) => tool.name === "search_products")?.annotations?.readOnlyHint).not.toBe(true);
+
+    const importReceipt = ALL_TOOLS.find((tool) => tool.name === "import_adaptation_receipt")!;
+    const receipt = (importReceipt.inputSchema.properties as Record<string, Record<string, unknown>>).receipt;
+    expect(receipt.required).toEqual(expect.arrayContaining([
+      "contract", "version", "issued_at", "origin_site", "profile", "stats", "privacy",
+    ]));
+    expect(receipt.additionalProperties).toBe(false);
+    const receiptProperties = receipt.properties as Record<string, Record<string, unknown>>;
+    expect(receiptProperties.contract.const).toBe("Adaptive Web Contract");
+    expect(receiptProperties.version.const).toBe(CONTRACT_VERSION);
+    expect(receiptProperties.profile.additionalProperties).toBe(false);
+    expect(receiptProperties.privacy.additionalProperties).toBe(false);
   });
 });
 
@@ -182,6 +195,127 @@ describe("per-tool smoke", () => {
     expect(r.receipt.privacy.contains_diagnoses).toBe(false);
     expect(r.receipt.profile.visual.text_scale).toBe(1.5);
     expect(r.receipt.profile).not.toHaveProperty("label");
+  });
+
+  it("imports a complete receipt using only the destination-supported subset", async () => {
+    await dispatchTool("apply_adaptation_profile", {
+      profile: {
+        version: CONTRACT_VERSION,
+        visual: { text_scale: 1.5, important_text_scale: 1.4 },
+        cognitive: { persistent_labels: true, confirmation_level: "confirm-all" },
+        motion_media: { disable_animation: true },
+      },
+    });
+    const exported = JSON.parse(await dispatchTool("export_adaptation_receipt", {}));
+
+    engine.reset();
+    engine.syncDom();
+    window.history.replaceState({}, "", "/services");
+    const imported = JSON.parse(await dispatchTool(
+      "import_adaptation_receipt",
+      { receipt: exported.receipt },
+      "services-portal",
+    ));
+
+    expect(imported).toMatchObject({
+      ok: true,
+      receipt_accepted: true,
+      receipt_origin: "Hearth & Signal",
+      destination_page_id: "services-portal",
+    });
+    expect(imported.accepted_preference_count).toBe(3);
+    expect(imported.accepted_profile).toMatchObject({
+      version: CONTRACT_VERSION,
+      visual: { text_scale: 1.5 },
+      cognitive: { persistent_labels: true },
+      motion_media: { disable_animation: true },
+    });
+    expect(imported.accepted_profile.visual).not.toHaveProperty("important_text_scale");
+    expect(imported.accepted_profile.cognitive).not.toHaveProperty("confirmation_level");
+    expect(imported.unsupported_preferences).toEqual(expect.arrayContaining([
+      expect.objectContaining({ key: "visual.important_text_scale", reason: "unsupported" }),
+      expect.objectContaining({ key: "cognitive.confirmation_level", reason: "unsupported" }),
+    ]));
+    expect(imported.verification.unsupported).toHaveLength(0);
+    expect(imported.measurements).toBeTruthy();
+    expect(document.documentElement.style.getPropertyValue("--aia-text-scale")).toBe("1.5");
+  });
+
+  it("rejects malformed receipt envelopes before changing adaptation state", async () => {
+    const exported = JSON.parse(await dispatchTool("export_adaptation_receipt", {}));
+    const before = engine.getSnapshot();
+
+    const invalidDate = structuredClone(exported.receipt);
+    invalidDate.issued_at = "2026-02-30T12:00:00Z";
+    const badDate = JSON.parse(await dispatchTool("import_adaptation_receipt", { receipt: invalidDate }));
+    expect(badDate).toMatchObject({ ok: false, receipt_accepted: false, code: "invalid_receipt" });
+    expect(badDate.issues).toEqual(expect.arrayContaining([
+      expect.objectContaining({ path: "receipt.issued_at" }),
+    ]));
+
+    const wrongContract = structuredClone(exported.receipt);
+    wrongContract.contract = "Some Other Contract";
+    const badContract = JSON.parse(await dispatchTool("import_adaptation_receipt", { receipt: wrongContract }));
+    expect(badContract).toMatchObject({ ok: false, receipt_accepted: false, code: "invalid_arguments" });
+
+    const wrongVersion = structuredClone(exported.receipt);
+    wrongVersion.version = "9.9";
+    const badVersion = JSON.parse(await dispatchTool("import_adaptation_receipt", { receipt: wrongVersion }));
+    expect(badVersion).toMatchObject({ ok: false, receipt_accepted: false, code: "invalid_arguments" });
+
+    const badPrivacy = structuredClone(exported.receipt);
+    badPrivacy.privacy.contains_diagnoses = true;
+    const rejectedPrivacy = JSON.parse(await dispatchTool("import_adaptation_receipt", { receipt: badPrivacy }));
+    expect(rejectedPrivacy).toMatchObject({ ok: false, receipt_accepted: false, code: "invalid_arguments" });
+
+    const badStats = structuredClone(exported.receipt);
+    badStats.stats.refinements = -1;
+    const rejectedStats = JSON.parse(await dispatchTool("import_adaptation_receipt", { receipt: badStats }));
+    expect(rejectedStats).toMatchObject({ ok: false, code: "invalid_arguments" });
+
+    const withLabel = structuredClone(exported.receipt);
+    withLabel.profile.label = "free text";
+    const badProfile = JSON.parse(await dispatchTool("import_adaptation_receipt", { receipt: withLabel }));
+    expect(badProfile).toMatchObject({ ok: false, code: "invalid_arguments" });
+
+    const outOfRange = structuredClone(exported.receipt);
+    outOfRange.profile.visual = { text_scale: 99 };
+    const rejectedRange = JSON.parse(await dispatchTool("import_adaptation_receipt", { receipt: outOfRange }));
+    expect(rejectedRange).toMatchObject({ ok: false, code: "invalid_arguments" });
+    expect(engine.getSnapshot().adaptationVersion).toBe(before.adaptationVersion);
+    expect(engine.getSnapshot().active).toEqual(before.active);
+  });
+
+  it("reports an unsupported fit without mutation when the destination accepts nothing", async () => {
+    await dispatchTool("apply_adaptation_profile", {
+      profile: { version: CONTRACT_VERSION, visual: { important_text_scale: 1.4 } },
+    });
+    const exported = JSON.parse(await dispatchTool("export_adaptation_receipt", {}));
+    engine.reset();
+    engine.syncDom();
+    const before = engine.getSnapshot();
+
+    const imported = JSON.parse(await dispatchTool(
+      "import_adaptation_receipt",
+      { receipt: exported.receipt },
+      "services-portal",
+    ));
+
+    expect(imported).toMatchObject({
+      ok: true,
+      receipt_accepted: true,
+      accepted_preference_count: 0,
+      accepted_profile: { version: CONTRACT_VERSION },
+      verification: { overall: "unsupported", satisfied: [], partially_satisfied: [] },
+    });
+    expect(imported.unsupported_preferences).toEqual([
+      expect.objectContaining({ key: "visual.important_text_scale", reason: "unsupported" }),
+    ]);
+    expect(imported.verification.unsupported).toEqual([
+      expect.objectContaining({ key: "visual.important_text_scale" }),
+    ]);
+    expect(engine.getSnapshot().adaptationVersion).toBe(before.adaptationVersion);
+    expect(engine.getSnapshot().active).toEqual(before.active);
   });
 
   it("semantic tools explain the page and its tasks", async () => {

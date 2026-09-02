@@ -147,3 +147,28 @@ test("cart preview shows every price component and undo preserves an earlier qua
   await expect(page.getByTestId("cart-preview")).toContainText("Coupon (QUIET10)");
   await expect(page.getByTestId("cart-button")).toContainText("(2)");
 });
+
+test("the advertised confirm-all policy changes the cart to a real two-step confirmation", async ({ page }) => {
+  await page.goto("/shop?agent=1");
+  const capabilities = await run(page, "get_adaptation_capabilities");
+  const confirmation = capabilities.capabilities.find(
+    (capability: { key: string }) => capability.key === "cognitive.confirmation_level",
+  );
+  expect(confirmation.values).toEqual(["confirm-all"]);
+
+  const applied = await run(page, "tune_cognitive_support", { confirmation_level: "confirm-all" });
+  expect(applied.ok).toBe(true);
+  expect(applied.verification.overall).toBe("satisfied");
+
+  await run(page, "prepare_cart_change", { product_id: "aurora-anc", qty: 1 });
+  const confirm = page.getByTestId("confirm-staged");
+  await expect(confirm).toHaveText("Confirm add to cart");
+  await confirm.click();
+  await expect(page.getByTestId("staged-preview")).toBeVisible();
+  await expect(confirm).toHaveText("Really confirm?");
+  await expect(page.getByTestId("cart-button")).toContainText("(0)");
+
+  await confirm.click();
+  await expect(page.getByTestId("staged-preview")).toBeHidden();
+  await expect(page.getByTestId("cart-button")).toContainText("(1)");
+});

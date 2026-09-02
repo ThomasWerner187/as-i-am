@@ -1,42 +1,59 @@
-# Privacy Model
+# Privacy model
 
-**Principle: the agent can know the person. The website only receives the functional
-preferences it needs.**
+## Boundary
 
-## What the website never receives
+The product principle is deliberately narrow:
 
-- Diagnoses, conditions, medications, case numbers, identities.
-- Anything beyond the session. There is no storage: no cookies, no localStorage,
-  no IndexedDB, no service worker cache of profile data.
-- No network traffic exists for adaptation logic; no analytics, no third-party requests,
-  no profile values in URLs or share links.
+> A trusted agent may understand the person. A participating website receives a bounded
+> functional request describing how its interface should behave.
 
-## How it is enforced (not just promised)
+Examples of functional values are `text_scale: 1.5`, `minimum_target_size: 52` and
+`disable_animation: true`. The profile wire schema does not define diagnosis, condition,
+identity, medication or account fields.
 
-1. **Schema level** — the contract has no field a diagnosis could occupy. Unknown keys are
-   rejected (`validateProfile`).
-2. **Runtime scanner** — every tool argument payload is scanned by
-   `scanForDiagnosisTerms()` against a diagnosis-term list. Hits return
-   `{ ok: false, code: "privacy_violation" }` and are never executed.
-3. **Log level** — the activity timeline stores human summaries and functional parameters
-   only; a test asserts no diagnosis term ever appears in the log.
-4. **Receipt level** — `export_adaptation_receipt` builds a diagnosis-free summary and
-   re-runs both the validator and the scanner before returning it.
+## What this prototype enforces
 
-## Transparency to the user
+1. **Closed profile schema** — profile sections and fields are enumerated. Unknown keys,
+   wrong types and malformed nested objects are rejected at the dispatch boundary.
+2. **Runtime content scan** — tool argument payloads are scanned for protected-health terms
+   before handlers execute. A match returns a privacy error without mutating state.
+3. **Data minimisation by capability** — discovery reports the capabilities of the active
+   page, enabling an agent to send only supported, task-relevant values.
+4. **Session scope** — adaptation, shop and activity state live in JavaScript memory. The
+   prototype does not place profile data in cookies, localStorage, IndexedDB, analytics or URLs.
+5. **Receipt validation** — exported functional receipts are rebuilt from active contract
+   state, validated and scanned before they are returned. Imports revalidate the full receipt,
+   then capability-negotiate the profile before changing the destination surface.
+6. **Visible payload** — judge mode shows the exact functional JSON used by the website and
+   clearly labels its private-agent context as a simulation.
 
-The demo panel on every page lists the exact functional key/value pairs the site received
-("What this website received"), separates what the (simulated) agent knows privately from
-what was sent, and offers Undo / Reset / Receipt at all times.
+## What this does not prove
 
-## Consent & confirmations
+- A finite term scanner is defence in depth, not a general proof that arbitrary text contains
+  no medical information. The closed wire schema is the primary boundary.
+- Functional preferences can still be sensitive or identifying in combination. “No diagnosis
+  field” does not mean “no personal data.” A production system needs purpose limitation,
+  consent, minimisation and policy at the agent boundary.
+- The receipt is a prototype data object, not a signed credential. It has no issuer trust,
+  integrity proof, expiry or cross-device consent model yet.
+- The self-guided proof and both demo sites currently ship in one SPA. The visual boundary
+  demonstrates the protocol, but it is not process or origin isolation.
+- Browser memory can still be inspected by code running in the same origin. A production
+  architecture should isolate the trusted agent from participating sites.
 
-- Cart changes and submissions are staged tools (`prepare_cart_change`): the agent only
-  stages; a human clicks the confirmation in the page.
-- `confirmation_level: "confirm-all"` widens explicit confirmation to every action.
-- Every adaptation is reversible (`undo_adaptation`, `reset_adaptations`).
+## Human control
 
-## Demo data
+- Adaptations are reversible through exact undo and reset operations.
+- Temporary base preview does not mutate adaptation history or statistics.
+- Domain actions with user impact are staged. For example, a cart tool prepares a change;
+  a person confirms it in the page.
+- Fit reports expose partial and unsupported requests instead of silently declaring success.
 
-All profiles, products, coupons, requests and appointments are synthetic. The demo
-profiles are labeled bundles, not user data.
+## Production direction
+
+A real deployment should add separate origins, an agent-side consent and minimisation policy,
+receipt scope and expiry, integrity protection, and a small privacy manifest describing each
+site’s requested fields and purpose. The contract should carry the minimum functional subset
+needed for the current page and task.
+
+All profiles, products, coupons, requests and appointments in this repository are synthetic.

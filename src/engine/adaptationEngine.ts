@@ -340,7 +340,7 @@ export class AdaptationEngine {
     for (const name of [
       "contrast", "glare", "color-mode", "font-style", "status-labels", "focus",
       "keyboard-first", "no-drag", "no-dblclick", "cursor-size", "min-target", "density",
-      "hide-nonessential", "labels", "steps", "progress", "help", "plain-errors",
+      "hide-nonessential", "labels", "steps", "progress", "help", "plain-errors", "confirmation",
       "motion", "autoplay", "parallax", "captions", "transcripts", "static-media",
       "brightness",
     ]) {

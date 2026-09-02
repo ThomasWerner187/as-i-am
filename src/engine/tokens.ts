@@ -67,6 +67,7 @@ export function profileToTokenOps(profile: Record<string, Record<string, unknown
   if (cog.progress_indicators === true) flags["progress"] = "on";
   if (cog.consistent_help === true) flags["help"] = "on";
   if (cog.plain_error_messages === true) flags["plain-errors"] = "on";
+  if (cog.confirmation_level) flags["confirmation"] = String(cog.confirmation_level);
 
   const mm = profile.motion_media ?? {};
   const motionOff = mm.disable_animation === true || mm.reduce_motion === true;

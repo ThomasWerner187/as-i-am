@@ -1,4 +1,4 @@
-# Tool Reference — Adaptive Web Contract 0.1 (31 tools)
+# Tool Reference — Adaptive Web Contract 0.1 (32 tools)
 
 All tools take a JSON object and return a compact JSON **string**. Names ≤ 30 chars,
 descriptions ≤ 500 chars (WebMCP limits). Registration: `document.modelContext.registerTool`
@@ -10,7 +10,7 @@ Errors: `{ ok: false, code, error }` with codes like `privacy_violation`, `unkno
 
 | Tool | Input | Result |
 | --- | --- | --- |
-| `get_adaptation_capabilities` | – | contract+version, page id, every `{key, domain, supported_values}`, unsupported domains |
+| `get_adaptation_capabilities` | – | contract+version, page id, page-specific `{key, domain, status, supported_values}`, unsupported domains |
 | `get_adaptation_state` | – | `adaptation_version`, active preferences, parameter count, undo info |
 | `apply_adaptation_profile` | `profile` (contract 0.1) | applied changes w/ explanations, unmet, warnings, measurements. Diagnosis terms → `privacy_violation`. Out-of-range → clamped + warning |
 | `adapt_for_task` | `task`: `compare_products·understand_page·complete_form·review_price·find_information` | applies a task preset atomically |
@@ -19,12 +19,15 @@ Errors: `{ ok: false, code, error }` with codes like `privacy_violation`, `unkno
 | `tune_cognitive_support` | `information_density`, `maximum_primary_actions 2–5`, `step_by_step`, `hide_nonessential`, `persistent_labels`, `consistent_help`, `progress_indicators`, `plain_error_messages`, `confirmation_level` | applied changes |
 | `tune_motion_and_media` | `reduce_motion`, `disable_animation`, `disable_autoplay`, `disable_parallax`, `mute_nonessential_audio`, `enable_captions`, `enable_transcripts`, `static_media_alternatives` | applied changes |
 | `set_reading_mode` | `mode`, optional `speech_rate 0.5–2` | applied changes; original stays reachable |
-| `measure_rendered_ui` | – | smallest body text (px), price text range, smallest target, min action gap, min contrast (+sample size), visible primary actions, running animations, horizontal overflow, occluded focusables, timestamp |
+| `measure_rendered_ui` | – | smallest body text (px), price text range, effective target, min action gap, sampled contrast, visible primary actions, running animations, horizontal overflow, occluded focusables, rendered signals and timestamp; demo chrome excluded |
 | `verify_profile_fit` | optional `profile` (default: active) | `overall: satisfied·partially_satisfied·unsupported`, `partially_satisfied[]`, `unsupported[]`, `conflicts[]`, `suggested_refinements[]`, measurements |
 | `undo_adaptation` | – | restores the exact previous state; `restored: false` if nothing to undo |
 | `reset_adaptations` | – | base view (itself reversible via undo) |
 | `explain_adaptation` | – | plain-language sentences of every current change + last operation |
-| `export_adaptation_receipt` | – | diagnosis-free `receipt` (contract, profile, stats, `privacy{contains_diagnoses:false, storage:"none", scope:"session"}`) |
+| `export_adaptation_receipt` | – | closed-schema functional `receipt` with agent-local labels removed (contract, profile, stats, session privacy metadata) |
+| `import_adaptation_receipt` | complete closed-schema `receipt` | validates contract, version, RFC 3339 timestamp, origin, profile, stats and privacy promise; applies the destination-supported/inherent subset and returns `receipt_accepted`, `receipt_origin`, `destination_page_id`, accepted count/profile, unsupported preferences, verification and measurements |
+
+`receipt_origin` is claimed provenance from an unsigned demo receipt, not proof of issuer identity.
 
 ## Semantic page tools
 
@@ -34,7 +37,7 @@ Errors: `{ ok: false, code, error }` with codes like `privacy_violation`, `unkno
 | `list_available_tasks` | – | user-level tasks with `id`, `description`, serving `tool` |
 | `summarize_content` | `scope: page·requests·appointments·comparison·products`, `detail_level`, `reading_level: plain·standard`, `include_prices`, `include_warnings` | summary + warnings |
 | `read_content` | `scope`, optional `speak: true`, `rate` | structured speakable text; optional local TTS (Web Speech), text alternative always included |
-| `focus_task` | `task_id` (or `null`) | reduces the UI to the task's areas; collapsed parts remain in the DOM; reversible |
+| `focus_task` | page-listed `task_id` (or `null`) | maps a public task to a visible region; wrong-page and unknown IDs are refused; reversible |
 
 ## Domain tools (demo shop)
 

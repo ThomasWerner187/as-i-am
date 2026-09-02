@@ -15,6 +15,7 @@ import "./styles/shop.css";
 import "./styles/services.css";
 import "./styles/app.css";
 import "./styles/landing.css";
+import "./styles/judge.css";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

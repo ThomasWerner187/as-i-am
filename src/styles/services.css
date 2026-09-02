@@ -20,7 +20,8 @@
 .gov-aside { font-size: 0.82rem; color: var(--ink-soft); display: grid; gap: 0.5rem; align-content: start; }
 .gov-aside a { color: var(--accent-ink); }
 
-.services-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.8rem; padding-block: 1.6rem 3rem; align-items: start; }
+.services-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 1.8rem; padding-block: 1.6rem 3rem; align-items: start; }
+.services-layout > *, .gov-header .wrap > * { min-inline-size: 0; }
 .services-layout--focused-main { grid-template-columns: minmax(0, 54rem); justify-content: center; }
 .services-layout--focused-aside { grid-template-columns: minmax(0, 46rem); justify-content: center; }
 .services-layout--focused-aside > div { display: none; }
@@ -39,7 +40,7 @@
 .panel h2 { font-size: 1.05rem; }
 .panel h3 { font-size: 0.95rem; }
 
-.status-table { font-size: 0.85rem; }
+.status-table { font-size: 0.85rem; overflow-x: auto; }
 .status-table td, .status-table th { padding-block: 0.5rem; }
 
 /* Multi-step form */
@@ -73,7 +74,7 @@
 
 .progress-line { display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; color: var(--ink-soft); margin-block-end: 0.8rem; }
 .progress-line .bar { flex: 1; block-size: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
-.progress-line .bar .fill { block-size: 100%; background: var(--accent); transition: inline-size 0.4s ease; }
+.progress-line .bar .fill { block-size: 100%; background: var(--accent); transform-origin: 0 50%; transition: transform 0.4s ease; }
 [data-aia-motion="off"] .progress-line .bar .fill { transition: none; }
 
 .appt-list { display: grid; gap: 0.6rem; }
@@ -89,4 +90,17 @@
 
 @media (max-width: 980px) {
   .gov-header .wrap, .services-layout { grid-template-columns: 1fr; }
+}
+
+/* Preference-driven reflow also has to work when a proof rail narrows the
+   page without changing the top-level viewport width. */
+[data-aia-density="reduced"] .gov-header .wrap,
+[data-aia-density="minimal"] .gov-header .wrap,
+[data-aia-density="reduced"] .services-layout,
+[data-aia-density="minimal"] .services-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+[data-aia-density="reduced"] .appt,
+[data-aia-density="minimal"] .appt {
+  grid-template-columns: minmax(0, 1fr);
 }

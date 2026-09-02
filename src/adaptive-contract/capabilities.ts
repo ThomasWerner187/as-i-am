@@ -136,6 +136,9 @@ const PAGE_SUPPORT: Record<string, PageSupport> = {
     ],
     valueOverrides: {
       "reading.mode": ["original", "plain_language", "key_points", "step_by_step"],
+      // The shop already confirms cart changes by construction. Only the
+      // stricter two-step policy changes behaviour beyond that baseline.
+      "cognitive.confirmation_level": ["confirm-all"],
     },
   },
   "services-portal": {

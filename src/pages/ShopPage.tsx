@@ -68,6 +68,10 @@ export default function ShopPage({ onNavigate }: { onNavigate: (r: Route) => voi
   const [confirmSecond, setConfirmSecond] = useState(false);
   const confirmAll = snap.active.cognitive?.confirmation_level === "confirm-all";
 
+  useEffect(() => {
+    setConfirmSecond(false);
+  }, [shop.staged?.product_id, shop.staged?.qty]);
+
   const stagedProduct = shop.staged ? findProduct(shop.staged.product_id) : null;
   const activeCoupon = shop.active_coupon ? COUPONS.find((coupon) => coupon.code === shop.active_coupon) : undefined;
   const stagedBreakdown = shop.staged && stagedProduct

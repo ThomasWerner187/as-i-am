@@ -1,15 +1,22 @@
-# Video Beat Sheet (< 2:30)
+# Recording beat sheet
 
-Target: single-take screen recording, optional voice-over. Use `docs/demo-clickthru.mp4`
-as B-roll or record live per [demo-script.md](demo-script.md).
+| Time | Screen | Product point | Required proof |
+| --- | --- | --- | --- |
+| 0:00–0:18 | Landing | Repeated setup is the user problem | Hero and one primary CTA visible |
+| 0:18–0:38 | Shop + proof rail | Begin from a real baseline | Baseline measurement and page-specific capability count |
+| 0:38–0:58 | Privacy boundary | Agent knows context; site gets function | Exact JSON payload shown briefly |
+| 0:58–1:25 | Adapted shop | Execution is observable | Before/after table, fit result, real refinement |
+| 1:25–1:52 | Services portal | Functional preferences are portable | Full receipt exported, shop reset, second route validates and imports supported values |
+| 1:52–2:10 | Completed proof | Human remains in control | Session-only, undo/reset, confirmation language |
+| 2:10–2:20 | Landing contract | Name the category and close | Discover → apply → measure → refine → carry |
 
-| Beat | Time | On screen | Say / caption |
-| ---- | ---- | --------- | ------------- |
-| 1 | 0:00–0:15 | `/shop` normal view, cursor wanders over ticker, nav, filters | "This shop is perfectly normal — and exhausting. Imagine configuring every site like this, by hand, forever." |
-| 2 | 0:15–0:25 | Demo panel: agent-knows vs website-receives | "Your agent can know you. This website only receives what it needs to adapt." |
-| 3 | 0:25–0:45 | Apply profile — the transformation lands; activity timeline | "26 functional preferences. Zero diagnoses. The site applies them through its own design tokens." |
-| 4 | 0:45–1:00 | "Text is still too small" → refine → measure tool result with real px | "The agent refines — and the page measures itself. No guessing." |
-| 5 | 1:00–1:15 | Hold-to-peek before/after; undo | "Everything is reversible. The original is one press away." |
-| 6 | 1:15–1:45 | Navigate to `/services`; same receipt applies; banner "applied without sharing a diagnosis" | "A completely different website. The same private profile. This is the Adaptive Web Contract." |
-| 7 | 1:45–2:10 | Real Chrome: `document.modelContext.getTools()` lists 31 tools; `executeTool` applies | "No simulation: this is the WebMCP imperative API in Chrome — capability discovery, measured results, undo." |
-| 8 | 2:10–2:30 | Landing page claim + honest limits | "One private profile. Every participating website adapts. The web adapts — you don't have to." |
+## Capture checklist
+
+- [ ] 1440×900 or 1920×1080, browser zoom 100%
+- [ ] No personal tabs, bookmarks, notifications or machine identifiers
+- [ ] Pointer visible and deliberate; no frantic scrolling
+- [ ] All proof actions finish before narration moves on
+- [ ] WebMCP status is truthful in the captured browser
+- [ ] No console, test harness or raw logs unless used as short technical B-roll
+- [ ] Spoken audio is clear and the final file is under three minutes
+- [ ] Upload as a public YouTube video and verify playback logged out

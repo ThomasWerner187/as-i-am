@@ -1,7 +1,7 @@
 /**
- * E2E: the profile FOLLOWS the user across two different websites.
- * Apply on /shop → export receipt → apply receipt on /services → the page
- * transforms identically. Plus axe scans, keyboard, reduced-motion and
+ * E2E: the profile FOLLOWS the user across two different product surfaces.
+ * Apply on /shop → export receipt → import the full receipt on /services → the
+ * destination adapts its supported subset. Plus axe scans, keyboard, reduced-motion and
  * color-independence checks.
  */
 
@@ -25,8 +25,8 @@ const COMBO = {
   safety: { complete_price_totals: true },
 };
 
-test.describe("profile portability across two sites", () => {
-  test("same functional profile transforms /shop and /services", async ({ page }) => {
+test.describe("profile portability across two product surfaces", () => {
+  test("the functional receipt adapts /shop and /services by their capabilities", async ({ page }) => {
     // Shop: apply
     await page.goto("/shop?agent=1");
     const applied = await run(page, "apply_adaptation_profile", { profile: COMBO });
@@ -36,13 +36,25 @@ test.describe("profile portability across two sites", () => {
     // Export the diagnosis-free receipt (what the agent carries over)
     const receipt = await run(page, "export_adaptation_receipt");
     expect(receipt.receipt.privacy.contains_diagnoses).toBe(false);
-    const profileFromReceipt = receipt.receipt.profile;
-    expect(profileFromReceipt.visual.text_scale).toBe(1.5);
+    expect(receipt.receipt.profile.visual.text_scale).toBe(1.5);
 
-    // Services: apply the SAME receipt — a completely different site
+    // Services: import the SAME receipt on a different destination surface.
     await page.goto("/services?agent=1");
-    const applied2 = await run(page, "apply_adaptation_profile", { profile: profileFromReceipt });
-    expect(applied2.ok).toBe(true);
+    const imported = await run(page, "import_adaptation_receipt", { receipt: receipt.receipt });
+    expect(imported).toMatchObject({
+      ok: true,
+      receipt_accepted: true,
+      receipt_origin: "Hearth & Signal",
+      destination_page_id: "services-portal",
+    });
+    expect(imported.accepted_preference_count).toBeGreaterThan(0);
+    expect(imported.accepted_profile.visual.text_scale).toBe(1.5);
+    expect(imported.accepted_profile).not.toHaveProperty("label");
+    expect(imported.unsupported_preferences).toEqual(expect.arrayContaining([
+      expect.objectContaining({ key: "visual.important_text_scale", reason: "unsupported" }),
+    ]));
+    expect(imported.verification.unsupported).toHaveLength(0);
+    expect(imported.measurements).toBeTruthy();
     await expect(page.locator("html")).toHaveAttribute("data-aia-motion", "off");
     await expect(page.locator("html")).toHaveAttribute("data-aia-hide-nonessential", "on");
 

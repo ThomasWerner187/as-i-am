@@ -54,7 +54,7 @@ export function ProgressLine({ current, total, label }: { current: number; total
         aria-valuemax={total}
         aria-label={label}
       >
-        <span className="fill" style={{ width: `${(current / total) * 100}%` }} />
+        <span className="fill" style={{ transform: `scaleX(${current / total})` }} />
       </span>
     </div>
   );

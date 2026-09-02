@@ -55,26 +55,27 @@ export function DemoPanel({ route }: { route: string }) {
         aria-expanded={open}
         style={{ insetInlineEnd: "auto", insetInlineStart: "1rem" }}
       >
-        {open ? (<><IconClose size={16} /> Close demo panel</>) : (<><IconSliders size={16} /> Demo profiles</>)}
+        {open ? (<><IconClose size={16} /> Close controls</>) : (<><IconSliders size={16} /> Advanced controls</>)}
       </button>
 
       {open && (
         <aside
           className="aia-panel"
           data-testid="demo-panel"
-          aria-label="Demo profiles and privacy panel"
+          aria-label="Advanced demo controls and payload inspector"
           style={{ insetInlineEnd: "auto", insetInlineStart: "1rem", inlineSize: "min(94vw, 420px)" }}
         >
           <header>
-            <h2>Demo controls — for judges</h2>
+            <h2>Advanced controls</h2>
             <button type="button" className="btn btn--small" aria-label="Close demo panel" onClick={() => setOpen(false)}>
               <IconClose size={14} />
             </button>
           </header>
           <div className="body">
             <p className="demo-note">
-              DEMO: this panel simulates what your personal agent would know and send. In the real
-              product only your agent holds the profile — this website never sees it.
+              Synthetic test bundles for exploring the contract beyond the guided proof. The
+              private-context examples are demo chrome in this shared prototype bundle; only the
+              functional profile below is passed to tool handlers.
             </p>
 
             <section aria-label="Adaptation state">
@@ -124,7 +125,7 @@ export function DemoPanel({ route }: { route: string }) {
                 <div className="demo-bundle" key={b.id} style={{ marginTop: "0.45rem" }} data-bundle={b.id}>
                   <h3>{b.name}</h3>
                   <div className="private">
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3em", verticalAlign: "-0.15em" }}><IconLock size={13} /></span> Agent knows (never sent):{" "}
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3em", verticalAlign: "-0.15em" }}><IconLock size={13} /></span> Simulated agent context (not in tool arguments):{" "}
                     <button
                       type="button"
                       className="btn btn--small"
@@ -168,7 +169,7 @@ export function DemoPanel({ route }: { route: string }) {
                   ))}
                 </ul>
                 <p className="privacy-pill" style={{ marginTop: "0.5rem" }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35em" }}><IconLock size={14} /> Session-only · no diagnosis · no storage · everything undoable</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35em" }}><IconLock size={14} /> Closed functional schema · session memory · undoable</span>
                 </p>
               </section>
             )}

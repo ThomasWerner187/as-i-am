@@ -1,137 +1,184 @@
 # As I Am
 
-**The web adapts. You don't have to.**
+**The web adapts. You don’t have to.**
 
-One private preference profile. Every participating website adapts.
+As I Am is a working WebMCP prototype for a private, portable accessibility contract.
+A personal agent can know *why* someone needs a different experience. A participating
+website receives only *what it needs to change*: functional values such as text scale,
+minimum target size, reduced motion or step-by-step presentation.
 
-As I Am is a working demo of the **Adaptive Web Contract v0.1** for the OpenAI WebMCP
-Challenge 2026: a personal agent holds what it knows about a person; websites expose what
-they can adapt over WebMCP; the agent sends **functional preferences only** — never a
-diagnosis — and the website applies them, *measures the rendered result*, and lets the
-agent refine, undo and verify.
+The important part is the feedback loop: the page applies those values through its own
+design system, measures the rendered DOM, reports anything it could not satisfy, and lets
+the agent refine or undo the result.
 
-## The proof in one loop
+## See the whole idea in 90 seconds
 
-| Before (normal shop) | After (agent applied a functional profile) |
-| --- | --- |
-| 10 nav items, icon-only controls, ticker, promos, dense text | 3 primary actions, visible labels, no motion, 150–180% text, prices emphasized, 52px targets |
-
-![Adapted shop view](docs/screenshots/shop-adapted.png)
-
-**Reproduce it (one prompt):**
-
-> "I have low vision, a hand tremor, and I lose track of multi-step tasks. Make this page
-> comfortable for me, but do not send my diagnoses to the website."
-
-The agent calls `get_adaptation_capabilities`, `apply_adaptation_profile`,
-`measure_rendered_ui`. Then say:
-
-> "The text is still too small, especially the prices."
-
-The agent raises only the relevant text categories via `tune_visual_presentation`,
-re-measures with `measure_rendered_ui`, and reports the actual rendered pixel sizes back.
-
-## Live
-
-- **Demo:** *(deploy target — see below; locally: `npm run dev` → http://localhost:5173)*
-- Works fully without WebMCP: every tool is also runnable in the built-in dev harness at **`?agent=1`**.
-
-## Privacy model (why this is different)
-
-- **No diagnosis parameters exist in any tool schema.** The contract has no field for them.
-- Tool arguments are **scanned and rejected** if they contain diagnosis-like terms.
-- The tool log shows functional parameters only (tested).
-- Nothing is persisted: session memory only — no cookies, no localStorage, no analytics,
-  no third-party requests, no profile values in URLs.
-- Every page shows transparently **which functional values it received** (see the demo panel).
-- Export is a **diagnosis-free functional receipt** (`export_adaptation_receipt`) the agent
-  carries to the next participating website.
-- Risky actions always need explicit human confirmation in the page; every adaptation is undoable.
-
-Details: [docs/privacy-model.md](docs/privacy-model.md)
-
-## Why WebMCP
-
-A website cannot magically restyle itself for one person, and a person cannot configure
-every site again and again. WebMCP gives the *website* a standard way to expose what it can
-adapt (capability discovery), what it is (`explain_page`), what tasks it offers
-(`list_available_tasks`) and what actually happened after an adaptation (real measurements) —
-and gives the *agent* a standard way to negotiate. No CSS selectors cross the boundary;
-sites translate semantic preferences into their own design tokens.
-
-Accessibility becomes a live negotiation between a person, their agent and the website —
-not a static settings panel.
-
-## Tools (31)
-
-**Universal adaptation (15):** `get_adaptation_capabilities`, `get_adaptation_state`,
-`apply_adaptation_profile`, `adapt_for_task`, `tune_visual_presentation`,
-`tune_interaction`, `tune_cognitive_support`, `tune_motion_and_media`, `set_reading_mode`,
-`measure_rendered_ui`, `verify_profile_fit`, `undo_adaptation`, `reset_adaptations`,
-`explain_adaptation`, `export_adaptation_receipt`
-
-**Semantic page tools (5):** `explain_page`, `list_available_tasks`, `summarize_content`,
-`read_content` (optional local TTS), `focus_task`
-
-**Demo domain tools (11):** `search_products`, `filter_products`, `get_product_details`,
-`compare_products`, `explain_price`, `calculate_total_cost`, `find_available_coupons`,
-`apply_coupon`, `read_comparison`, `prepare_cart_change` (staged; human-confirmed),
-`undo_cart_change`
-
-Full reference with schemas: [docs/tool-reference.md](docs/tool-reference.md)
-
-## Run locally
+Run locally, open the landing page, and choose **Run the 90-second proof**:
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
+npm run dev
+# open http://localhost:5273
 ```
 
-Routes: `/` (pitch) · `/shop` (electronics comparison shop) · `/services` (city resident portal).
+The self-guided proof uses the real application and the same dispatch path as WebMCP:
 
-**With a real agent:** Chrome 149+ and `chrome://flags/#enable-webmcp-testing` enabled
-(equivalently: launch Chrome with `--enable-features=WebMCP`). The page registers all 31
-tools via `document.modelContext.registerTool(...)`.
+1. Measure the unadapted comparison shop.
+2. Discover the page’s supported capabilities.
+3. Show the boundary between simulated private context and the exact functional JSON payload.
+4. Apply the profile, wait for React to commit, and measure the rendered result.
+5. Refine text to 180% in response to user feedback and verify again.
+6. Export a diagnosis-free receipt, reset the shop, then validate and import the full receipt on a different product surface.
 
-**Verified in real Chrome 152** with `--enable-features=WebMCP`:
-`document.modelContext.getTools()` lists all 31 tools, and
-`mc.executeTool(tool, args)` applied a profile that measurably transformed the page
-(`--aia-text-scale: 1.6`, `data-aia-motion="off"`). See `docs/demo-script.md`.
+Direct proof URL: `http://localhost:5273/shop?judge=1`
 
-**Without WebMCP:** the page says so honestly and stays fully usable; append `?agent=1`
-for the tool harness (same handlers the WebMCP bridge uses).
+## The product idea
 
-## Tests
+Most accessibility settings stop at one operating system, browser, application or website.
+People repeatedly configure the same needs, while sites cannot safely infer which changes
+would help. As I Am introduces a narrow negotiation layer:
+
+```text
+private user context
+        │ stays with the agent
+        ▼
+functional preference profile
+        │ WebMCP tools
+        ▼
+site-owned design tokens and components
+        │ rendered DOM measurements
+        ▼
+fit report → refinement → portable receipt
+```
+
+This is not remote CSS and it is not medical profiling. The agent describes function; the
+site decides how that function maps into its visual language.
+
+## Why WebMCP is essential
+
+WebMCP makes the negotiation inspectable and page-specific:
+
+- `get_adaptation_capabilities` tells an agent what this page genuinely supports.
+- `apply_adaptation_profile` accepts a bounded, validated functional contract.
+- `measure_rendered_ui` reports real text, target, spacing, action, motion and overflow signals.
+- `verify_profile_fit` separates satisfied, partial and unsupported requests.
+- tuning tools close the observe → adapt → measure → refine loop.
+- `export_adaptation_receipt` and `import_adaptation_receipt` carry a validated functional receipt to the next participating surface.
+- semantic page tools expose tasks and content without fragile selector guessing.
+
+Native WebMCP and the built-in `?agent=1` harness both call the same handlers in
+`src/adaptive-contract/tools.ts`; the fallback does not maintain a second implementation.
+
+## What is implemented
+
+- Two visibly different product surfaces, `/shop` and `/services`, implemented as routes in one prototype SPA.
+- One versioned Adaptive Web Contract with visual, interaction, cognitive, motion/media,
+  reading and safety domains.
+- Route-specific capability discovery and strict JSON-boundary validation.
+- Diagnosis-term rejection across dispatched tool arguments.
+- Atomic adaptation operations with exact undo, reset and temporary base preview.
+- Render-aware measurement after the UI has committed.
+- Honest fit grading for measurable values and rendered signals.
+- Working product search, filters, task focus, guided forms, price totals and staged cart changes.
+- Session-only activity and adaptation state; no cookies, localStorage or analytics.
+- A judge-facing proof mode plus advanced profile and developer harness controls.
+
+The current tool inventory is registered through `document.modelContext.registerTool(...)`
+when the experimental WebMCP API is present. See [the tool reference](docs/tool-reference.md)
+for the full schemas.
+
+## Privacy model
+
+The prototype enforces the boundary in code:
+
+- The profile schema has no medical, diagnosis or identity field.
+- Unknown keys, wrong types and out-of-range values are rejected or explicitly reported.
+- A runtime scanner blocks protected-health terms before a handler mutates state.
+- Receipts are validated and scanned before export and again at the import boundary.
+- The proof shows the exact payload the website receives.
+- State exists in memory for the current session only.
+- Risky domain actions are staged for explicit human confirmation.
+
+The guided proof is honest about its topology: the “private agent” is simulated by demo
+chrome in this repository. A production deployment would place the agent and participating
+sites on separate trust boundaries. Details: [privacy model](docs/privacy-model.md).
+
+## Architecture
+
+```text
+real agent / proof rail / ?agent=1 harness
+                    │
+                    ▼
+         one dispatch + validation boundary
+                    │
+          ┌─────────┴─────────┐
+          ▼                   ▼
+  Adaptive Web Contract   semantic page tools
+          │                   │
+          └─────────┬─────────┘
+                    ▼
+           AdaptationEngine
+       tokens + flags + React state
+                    │
+                    ▼
+          committed rendered DOM
+                    │
+          measurement + fit report
+```
+
+Stack: React 18, TypeScript, Vite, hand-written CSS, local font packages, Vitest,
+Playwright and axe-core. The output is a static SPA. See [architecture](docs/architecture.md).
+
+## Browser modes
+
+**Native WebMCP:** use a compatible Chrome build with WebMCP enabled. The status indicator
+shows how many tools were registered.
+
+**Portable demo:** append `?agent=1` to any route. The harness invokes the same dispatch,
+validation and measurement path without requiring an experimental browser API.
+
+The app remains usable when neither mode is active.
+
+## Quality checks
 
 ```bash
-npm run typecheck     # TypeScript
-npm test              # 43 unit tests (contract, merging, privacy, price math, tool smoke)
-npm run test:e2e      # 16 Playwright tests (demo loop, portability, axe, keyboard, WebMCP shim)
-npm run build         # production build
+npm run typecheck
+npm test
+npm run test:e2e
+npm run build
 ```
 
-Covered among others: the Demo-1 loop (apply → refine → measure → undo), the same profile
-working on **both** sites, receipt portability, diagnosis-term rejection, zero
-serious/critical axe violations in normal *and* adapted views, keyboard-only operation,
-reduced-motion, colour-independent status rendering, and WebMCP registration against a
-faithful `document.modelContext` shim.
+Coverage includes contract validation, privacy rejection, rendered measurement, apply and
+refine flows, exact undo, receipt portability, real search/filter state, keyboard operation,
+normal and adapted axe scans, WebMCP registration, and the complete 90-second proof.
 
-## Known limits (honest)
+## Deployment
 
-- Websites must implement the contract; no magic restyling of arbitrary sites.
-- WebMCP complements semantic HTML/WCAG/assistive tech — it never replaces them.
-- The agent simulator in the demo panel is a stand-in for a real personal agent.
-- Read-aloud uses the local Web Speech API (browser-dependent); a text alternative always exists.
-- Ticker/carousel autoplay exists in the *normal* view on purpose — the demo shows it being removed.
+The app is static-hostable. `vercel.json` provides SPA route fallback for `/shop` and
+`/services`; build with `npm run build` and serve `dist/`. Do not add a public demo URL to
+the submission until the deployed route and native/fallback status have been verified.
 
-**Demo video:** `docs/demo-clickthru.mp4` — recorded with our own
-[clickthru recorder](tools/clickthru/README.md) (Playwright + animated cursor, packaged
-in a browser-mockup player; reusable in any project).
+## Honest limits and next milestone
 
-More: [docs/accessibility-model.md](docs/accessibility-model.md) ·
-[docs/adaptive-web-contract.md](docs/adaptive-web-contract.md) ·
-[docs/demo-script.md](docs/demo-script.md) · [docs/architecture.md](docs/architecture.md)
+- Participating sites must implement the contract; As I Am does not restyle arbitrary pages.
+- WebMCP complements semantic HTML, WCAG and assistive technology. It does not replace them.
+- The shop and services portal are currently routes in one prototype SPA, not independent origins.
+- The private agent in judge mode is a clearly labelled simulation.
+- Browser measurement can prove rendered properties; preference semantics without a reliable
+  rendered signal are reported as unsupported or implementation-level evidence.
+- All catalog, resident, profile and transaction data is synthetic.
+
+The next product milestone is a small open specification package, a conformance fixture and
+two independently deployed example sites so portability crosses a real origin boundary.
+
+## Hackathon materials
+
+- [Under-three-minute demo script](docs/demo-script.md)
+- [Recording beat sheet](docs/video-beat-sheet.md)
+- [Devpost-ready submission copy](docs/devpost-submission.md)
+- [Adaptive Web Contract](docs/adaptive-web-contract.md)
+- [Accessibility position](docs/accessibility-model.md)
 
 ## License
 
-MIT — see [LICENSE](LICENSE). All data is synthetic; no real purchases, accounts or tracking.
+MIT — see [LICENSE](LICENSE).

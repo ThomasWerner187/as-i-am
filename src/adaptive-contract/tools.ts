@@ -13,13 +13,19 @@ import {
   CONTRACT_VERSION,
   functionalPayload,
   profileJsonSchema,
+  type AdaptationReceipt,
   type AdaptationResult,
   type FunctionalProfile,
   type UnmetRequest,
 } from "./schema";
 import { discoverCapabilities, requestedKeys } from "./capabilities";
 import { scanForDiagnosisTerms } from "./privacy";
-import { buildReceipt, countPreferences } from "./receipts";
+import {
+  buildReceipt,
+  countPreferences,
+  receiptJsonSchema,
+  validateReceipt,
+} from "./receipts";
 import { collectMeasurements, verifyFit, waitForRenderedCommit } from "./measurements";
 import { validateToolInput } from "./inputValidation";
 import { engine } from "../engine/adaptationEngine";
@@ -73,6 +79,7 @@ function activePageId(): string {
 }
 
 const PROFILE_INPUT_SCHEMA = profileJsonSchema();
+const RECEIPT_INPUT_SCHEMA = receiptJsonSchema();
 const PARTIAL_PROFILE_INPUT_SCHEMA: Record<string, unknown> = {
   ...PROFILE_INPUT_SCHEMA,
   required: [],
@@ -99,9 +106,22 @@ function requestedMap(profile: Record<string, unknown>): Record<string, number |
 
 interface PartitionedProfile {
   adaptive: FunctionalProfile;
+  accepted: FunctionalProfile;
+  acceptedRequested: Record<string, number | string | boolean>;
   requested: Record<string, number | string | boolean>;
   inherent: string[];
   unsupported: UnmetRequest[];
+}
+
+function setProfileValue(
+  profile: Record<string, unknown>,
+  key: string,
+  value: number | string | boolean,
+): void {
+  const [section, field] = key.split(".");
+  const values = (profile[section] ?? {}) as Record<string, unknown>;
+  values[field] = value;
+  profile[section] = values;
 }
 
 /** Keep only values this concrete page can actually adapt. */
@@ -111,6 +131,8 @@ function partitionProfile(profile: FunctionalProfile, pageId: string): Partition
     discoverCapabilities(pageId, "").capabilities.map((capability) => [capability.key, capability]),
   );
   const adaptive: Record<string, unknown> = { version: CONTRACT_VERSION };
+  const accepted: Record<string, unknown> = { version: CONTRACT_VERSION };
+  const acceptedRequested: Record<string, number | string | boolean> = {};
   const inherent: string[] = [];
   const unsupported: UnmetRequest[] = [];
   const requested = requestedMap(payload);
@@ -131,17 +153,18 @@ function partitionProfile(profile: FunctionalProfile, pageId: string): Partition
       });
       continue;
     }
+    acceptedRequested[key] = value;
+    setProfileValue(accepted, key, value);
     if (capability.status === "inherent") {
       inherent.push(key);
       continue;
     }
-    const [section, field] = key.split(".");
-    const values = (adaptive[section] ?? {}) as Record<string, unknown>;
-    values[field] = value;
-    adaptive[section] = values;
+    setProfileValue(adaptive, key, value);
   }
   return {
     adaptive: adaptive as unknown as FunctionalProfile,
+    accepted: accepted as unknown as FunctionalProfile,
+    acceptedRequested,
     requested,
     inherent,
     unsupported,
@@ -673,6 +696,72 @@ const universalTools: ToolDef[] = [
       }
     },
   },
+  {
+    name: "import_adaptation_receipt",
+    description:
+      "Import a complete Adaptive Web Contract 0.1 receipt. Validates the envelope, version, timestamp, privacy promise and functional profile, then applies only values supported or already satisfied by this page and verifies that accepted subset after render.",
+    inputSchema: {
+      type: "object",
+      properties: { receipt: RECEIPT_INPUT_SCHEMA },
+      required: ["receipt"],
+      additionalProperties: false,
+    },
+    run: async (pageId, args) => {
+      const receipt = args.receipt;
+      const validity = validateReceipt(receipt);
+      if (!validity.ok) {
+        activity.push("import_adaptation_receipt", "Rejected an invalid adaptation receipt.");
+        return j({
+          ok: false,
+          receipt_accepted: false,
+          code: "invalid_receipt",
+          error: "Receipt failed the Adaptive Web Contract 0.1 envelope validation.",
+          issues: validity.issues,
+        });
+      }
+
+      const typedReceipt = receipt as AdaptationReceipt;
+      const { result, partition } = applyProfileOnPage(
+        typedReceipt.profile,
+        pageId,
+        "Imported adaptation receipt",
+      );
+      const rendered = await measuredAdaptation(
+        pageId,
+        result,
+        partition.acceptedRequested,
+      );
+      const acceptedProfile = functionalPayload(partition.accepted);
+      const acceptedPreferenceCount = countPreferences(partition.accepted);
+      const verification = acceptedPreferenceCount === 0 && partition.unsupported.length > 0
+        ? {
+            ...rendered.verification,
+            overall: "unsupported" as const,
+            satisfied: [],
+            partially_satisfied: [],
+            unsupported: partition.unsupported.map(({ key, detail }) => ({ key, reason: detail })),
+          }
+        : rendered.verification;
+      activity.push(
+        "import_adaptation_receipt",
+        `Accepted ${acceptedPreferenceCount} portable preference(s) for ${pageId}; ${partition.unsupported.length} unsupported.`,
+      );
+      return j({
+        ok: true,
+        receipt_accepted: true,
+        receipt_origin: typedReceipt.origin_site,
+        destination_page_id: pageId,
+        accepted_preference_count: acceptedPreferenceCount,
+        accepted_profile: acceptedProfile,
+        unsupported_preferences: partition.unsupported,
+        verification,
+        measurements: rendered.measurements,
+        adaptation_version: rendered.adaptation_version,
+        applied: rendered.applied,
+        warnings: rendered.warnings,
+      });
+    },
+  },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -1173,6 +1262,7 @@ export async function dispatchTool(
     activity.push(name, "Blocked by the demo privacy screen.");
     return j({
       ok: false,
+      ...(name === "import_adaptation_receipt" ? { receipt_accepted: false } : {}),
       code: "privacy_violation",
       error: "Arguments matched a diagnosis-like term in the demo safety screen; refused. Send functional parameters only.",
       findings: scan.findings.map((f) => f.where),
@@ -1185,6 +1275,7 @@ export async function dispatchTool(
     activity.push(name, "Rejected invalid tool arguments at the contract boundary.");
     return j({
       ok: false,
+      ...(name === "import_adaptation_receipt" ? { receipt_accepted: false } : {}),
       code: "invalid_arguments",
       error: "Arguments do not match this tool's input schema.",
       issues: inputIssues,

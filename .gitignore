@@ -15,6 +15,12 @@ dist/
 build/
 .next/
 DerivedData/
+.playwright-cli/
+.impeccable/
+output/playwright/
+playwright-report/
+test-results/*
+!test-results/.last-run.json
 
 # clickthru recordings (regenerable, too big for git)
 tools/clickthru/out/

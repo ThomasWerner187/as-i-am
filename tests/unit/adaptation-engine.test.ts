@@ -34,4 +34,21 @@ describe("AdaptationEngine base preview", () => {
     expect(resumed.undoDepth).toBe(before.undoDepth);
     expect(document.documentElement.style.getPropertyValue("--aia-text-scale")).toBe("1.6");
   });
+
+  it("publishes and clears the active confirmation policy as a measurable DOM signal", () => {
+    const testEngine = new AdaptationEngine();
+    testEngine.applyProfile(
+      {
+        version: CONTRACT_VERSION,
+        cognitive: { confirmation_level: "confirm-risky" },
+      },
+      "confirmation policy",
+    );
+    testEngine.syncDom();
+    expect(document.documentElement.dataset.aiaConfirmation).toBe("confirm-risky");
+
+    testEngine.reset();
+    testEngine.syncDom();
+    expect(document.documentElement.dataset.aiaConfirmation).toBeUndefined();
+  });
 });

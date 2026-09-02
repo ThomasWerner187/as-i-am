@@ -65,6 +65,8 @@ function px(v: string): number {
 }
 
 function isVisible(el: Element): boolean {
+  const closedDetails = el.closest("details:not([open])");
+  if (closedDetails && el.tagName !== "SUMMARY" && !el.closest("summary")) return false;
   const style = getComputedStyle(el);
   if (style.display === "none" || style.visibility === "hidden") return false;
   const rect = el.getBoundingClientRect();
@@ -277,7 +279,8 @@ function collectRenderedSignals(
   };
   const on = (key: string, name: string) => {
     const value = root.getAttribute(`data-aia-${name}`);
-    if (value !== null) signals[key] = value === "on" || value === "off";
+    if (value === "on") signals[key] = true;
+    else if (value === "off") signals[key] = false;
   };
 
   numericToken("visual.text_scale", "--aia-text-scale");
@@ -304,6 +307,7 @@ function collectRenderedSignals(
   on("cognitive.persistent_labels", "labels");
   on("cognitive.step_by_step", "steps");
   on("cognitive.plain_error_messages", "plain-errors");
+  attr("cognitive.confirmation_level", "confirmation");
   if (root.getAttribute("data-aia-progress") === "on" && scope.querySelector('[data-aia="progress"], [role="progressbar"]')) {
     signals["cognitive.progress_indicators"] = true;
   }
@@ -475,6 +479,7 @@ export function verifyFit(
       case "cognitive.persistent_labels":
       case "cognitive.progress_indicators":
       case "cognitive.plain_error_messages":
+      case "cognitive.confirmation_level":
       case "motion_media.disable_autoplay":
       case "motion_media.disable_parallax":
       case "reading.mode":

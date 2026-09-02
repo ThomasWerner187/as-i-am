@@ -1,49 +1,86 @@
-# Demo Script (≈4 minutes)
+# Demo script — 2:20 target
 
-**Setup:** Chrome 149+, `chrome://flags/#enable-webmcp-testing` enabled, dev server or
-deployed URL open. Without the flag: use the `?agent=1` harness — same tools, same order.
+Record this as one coherent product story, not a feature tour. Use a 1440×900 browser,
+hide developer tools, start at `/`, and keep the pointer slow enough to follow.
 
-## Beat 1 — The normal world (30 s)
-Open `/shop`. Point out: deal ticker, 10-item navigation, icon-only controls, dense cards,
-filters, comparison table, coupons. "A perfectly normal, rather exhausting shop."
+## 0:00–0:18 — The repeated burden
 
-## Beat 2 — The killer loop (90 s)
-Send the agent (or click **Demo profiles → Precision & readability → Send as agent
-would**):
+**On screen:** Landing hero. Pause on “The web adapts. You don’t have to.”
 
-> "I have low vision, a hand tremor, and I lose track of multi-step tasks. Make this page
-> comfortable for me, but do not send my diagnoses to the website."
+**Voice-over:**
 
-Narrate the activity timeline: capabilities → apply 26 preferences → measure. Show:
-3 nav actions, visible labels, huge prices, 52px targets, no motion, guided steps.
-Open the **"What this website received"** panel: functional values only.
-Open **"Agent knows (never sent)"** vs the sent profile: the privacy gap, visible.
+> People adapt the web to themselves every day — larger text, less motion, bigger targets,
+> fewer choices. But that knowledge disappears at the next website. As I Am asks a simple
+> question: what if a private agent could carry the functional fit, without carrying the diagnosis?
 
-## Beat 3 — Granular refinement (45 s)
-> "The text is still too small, especially the prices."
+Click **Run the 90-second proof**.
 
-Agent: reads state → `tune_visual_presentation { text_scale: 1.8, important_text_scale: 1.6 }`
-→ `measure_rendered_ui` → reports real rendered px. The **Hold to peek original** button
-shows before/after live.
+## 0:18–0:38 — Start with reality
 
-## Beat 4 — Colour & pain day (45 s)
-Reset. Demo 3: "I cannot reliably distinguish red and green…" → statuses rebuild with
-icons, labels, patterns (not a filter). Reset. Demo 4 (migraine): motion stops, glare
-drops, page simplifies — framed as temporary session state.
+**On screen:** Dense shop beside the proof rail. Click **Start with the live baseline**.
 
-## Beat 5 — The profile follows the person (60 s)
-On `/shop`: `export_adaptation_receipt` (diagnosis-free). Navigate to `/services`
-(completely different site: forms, deadlines, statuses).
-> "Apply the same functional preferences you used on the shop."
+**Voice-over:**
 
-Same transformation, page-appropriate. Banner: **"Preference profile applied without
-sharing a diagnosis."**
+> This is a real comparison shop, not a slide. The proof first resets and measures the rendered
+> baseline. Then the agent discovers only the capabilities this page actually supports.
 
-## Beat 6 — Honesty (15 s)
-Show the WebMCP status chip, the `?agent=1` harness, and the "Honest limits" section on `/`.
+## 0:38–0:58 — Make the privacy boundary visible
 
-## Judge Q&A cheat-sheet
-- **Why WebMCP?** Structured capability discovery + semantic tasks + measured results —
-  a negotiation, not a settings panel, and no fragile DOM hacks.
-- **What does the site learn?** The exact functional values on the panel. Nothing else.
-- **Can the agent confirm a purchase?** No. Staging only; a human clicks.
+**On screen:** The two boundary rows. Open **Inspect the exact payload** briefly.
+
+**Voice-over:**
+
+> The private side can understand the person. The website receives only bounded functional
+> values: text scale, target size, motion and cognitive support. The contract has no identity or
+> medical field, and invalid payloads are rejected before they can change the page.
+
+Close the payload. Click **Send functional profile**.
+
+## 0:58–1:25 — Apply, measure, refine
+
+**On screen:** Let the transformation settle. Hold on the before/after table, then click
+**Refine text to 180%**.
+
+**Voice-over:**
+
+> The site translates the request through its own design system. Then it measures the committed
+> DOM — text, targets, spacing, actions, motion and overflow — and grades the fit. If the person
+> says the text is still too small, the agent changes only those values and verifies again.
+
+## 1:25–1:52 — Portability
+
+**On screen:** Click **Carry receipt to the second surface**. Let City of Meridian appear.
+
+**Voice-over:**
+
+> Now the fit becomes portable. The shop exports a diagnosis-free functional receipt and resets.
+> A visually different services surface on the same prototype origin validates the full receipt,
+> accepts the values it supports, reports the rest, and renders the result in its own language.
+
+## 1:52–2:10 — Human control
+
+**On screen:** Hold on the completed proof summary. Exit the proof and briefly show advanced
+controls with Undo and Reset.
+
+**Voice-over:**
+
+> The human stays in control. Adaptations are session-only, transparent and reversible. Risky
+> domain actions are staged for confirmation; the agent never silently completes them.
+
+## 2:10–2:20 — Close on the product
+
+**On screen:** Return to the landing claim and contract flow.
+
+**Voice-over:**
+
+> WebMCP turns accessibility preferences into a live negotiation: discover, adapt, measure,
+> refine and carry forward. The web adapts. You don’t have to.
+
+## Recording notes
+
+- Keep the finished video below three minutes and include spoken audio.
+- Record a second take with native WebMCP enabled if available; the on-screen status must say live.
+- If native WebMCP is unavailable, use the self-guided proof and state that it invokes the exact
+  same handlers through the local harness path.
+- Never describe the two prototype routes as independent deployed websites.
+- Do not quote fixed metric values in narration; let the current measured table speak.
