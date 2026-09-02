@@ -1,5 +1,37 @@
 # clickthru — website click-through recorder
 
+## Preferred voice workflow: one continuous performance
+
+The current [demo](../../docs/recording.md) starts with a roughly ten-second pitch and uses
+one full English voice generation. `continuous-story.json` contains editing markers, but its
+text is joined into **one request**, without chapter breaks or separately generated snippets.
+
+```bash
+# Create a fresh ignored output directory; keep earlier takes.
+mktemp -d tools/clickthru/out/continuous-XXXXXX
+# Use the returned directory below. Requires an explicitly selected existing voice.
+node tools/clickthru/generate-continuous-voice.mjs <output-directory> <voice-id> "Voice name"
+# Local editing only: no ElevenLabs request and no API key needed.
+node tools/clickthru/package-continuous.mjs tools/clickthru/out/<source-take> <output-directory>
+node --test tools/clickthru/continuous-timing.test.mjs tools/clickthru/caption-groups.test.mjs
+```
+
+The continuous master determines the chapter times, captions, and length of each screen hold.
+Actual click-motion intervals remain real-time; the editor refuses a beat too short to fit
+them. No audio is cut, joined or time-stretched. The video applies one global loudness pass;
+the original MP3 stays untouched. The 0.6-second end hold is the only added audio padding.
+
+Outputs: `as-i-am-continuous.mp4`, a standalone `.html` player with a visible captions toggle,
+`.srt`/`.vtt`, `continuous-master.mp3`, and speech/edit timing reports. The source frames and
+earlier exports are never overwritten. Finished MP4s are protected against overwrite.
+
+Generation caches its response and retains a request marker if the paid call fails or times out.
+Do not delete that marker and retry blindly: check the request's outcome first. A changed
+script or voice requires a new output directory. Voice IDs, audio and API responses stay ignored.
+The timing API and generation-speed setting follow the official
+[ElevenLabs API](https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps)
+and [pacing guidance](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices#pace).
+
 ## Current As I Am recording
 
 The cinema/dinner take uses `live-capture.mjs` with the selected Codex Browser tab's supported
@@ -21,7 +53,7 @@ Then package the returned directory:
 node tools/clickthru/package-capture.mjs tools/clickthru/out/<take>
 # Optional local English guide voice (macOS Daniel; synthetic, not a cloned voice):
 node tools/clickthru/narrate-capture.mjs tools/clickthru/out/<take>
-# Or an explicitly chosen existing ElevenLabs voice (uses account credits):
+# Legacy segmented guide voice (retained for older takes, not the preferred cut):
 # ELEVENLABS_API_KEY must already be present in the environment. Never commit it.
 node tools/clickthru/narrate-elevenlabs.mjs tools/clickthru/out/<take> <voice-id> "Voice name"
 ```

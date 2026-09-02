@@ -10,12 +10,17 @@ npm test
 npm run test:e2e
 npm run build
 node --test tools/clickthru/caption-groups.test.mjs
+node --test tools/clickthru/continuous-timing.test.mjs
 ```
 
 Final local run: TypeScript and production build passed; 67 unit tests and 39 browser tests
 passed (106 total). The browser suite includes both new and legacy flows.
 Four additional recorder tests verify sentence boundaries, balanced caption splitting and
 preservation of the original speech-alignment indexes.
+Eight continuous-narration tests additionally cover full-script alignment, invalid timestamps,
+preserved click-motion speed, short-beat rejection, complete source order, safe frame paths and
+global subtitle timing and balanced caption lines. The application itself is unchanged by the
+continuous-voice edit.
 
 The evening tests cover both complete synthetic booking flows, explicit UI confirmation,
 selection preservation through preview/refinement/undo, earlier restaurant-time preservation,
@@ -68,15 +73,20 @@ Re-verify native/fallback mode and all measurements in the actual presentation b
 
 ## Recorded demonstration
 
-The [122-second click-through](recording.md) was captured from the working controller after the
+The original 122-second click-through was captured from the working controller after the
 story changes: both original sites are used, the full restaurant is shown again before explicit
 transfer, and both synthetic bookings are confirmed by visible clicks. The readable proof panel
-shows the actual functional receipt. The 227 captured frames retain their real timing.
+shows the actual functional receipt. Its 227 frames and original timestamps remain preserved.
 
-The exported MP4 decoded without errors and played in the browser; the original restaurant and
-readable explanation were visually checked in playback. It contains H.264 video, AAC audio and
-English subtitles. English narration uses
-the owner's existing ElevenLabs voice; all ten sections fit without a speed change. Thirty-four
-speech-aligned captions avoid dangling final-word cues. The silent and earlier narrated takes
-are preserved. This recording shows the labelled guided fallback, not autonomous native agent
-execution.
+The preferred [97-second edit](recording.md) uses one continuous 260-word ElevenLabs performance,
+including a 9.3-second pitch. There is one speech request, no speech splicing, and no
+post-generation time stretching. The master hash is checked before rendering. Static screen
+holds follow speech timestamps while short click-motion intervals retain their real durations.
+
+It contains H.264 video, AAC audio and 29 English subtitle cues. The export decoded without
+errors. Browser review verified playback, chapter seeking, the opening, both restaurant views,
+visible balanced captions and the captions toggle. A silence scan of the master at −38 dB
+found only three pauses of at least 0.7 seconds;
+the longest was 1.30 seconds. This is a timing check, not a substitute for the owner's listening
+review. Earlier silent and narrated takes are preserved. The footage remains the labelled
+guided fallback, not autonomous native agent execution.
