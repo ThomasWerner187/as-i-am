@@ -4,6 +4,10 @@ import { engine } from "../engine/adaptationEngine";
 import { waitForRenderedCommit } from "../adaptive-contract/measurements";
 import {
   eveningStore,
+  listShowings,
+  defaultShowing,
+  SHOWTIMES,
+  type Showtime,
   seatPairs,
   tableOptions,
   dinnerPlan,
@@ -21,6 +25,8 @@ const fail = (error: string) => JSON.stringify({ ok: false, error });
 const menuCriteriaProperties = {
   diet: { type: "string", enum: ["any", "vegan", "vegetarian"] },
   max_price: { type: "number", minimum: 0, maximum: 1000 },
+  favorite_dish_id: { type: "string", minLength: 1, maxLength: 80 },
+  limit: { type: "integer", minimum: 1, maximum: 12 },
   avoid_allergens: {
     type: "array",
     items: { type: "string", minLength: 1, maxLength: 60 },
@@ -32,19 +38,44 @@ function menuCriteria(args: Record<string, unknown>): MenuCriteria {
   return {
     diet: args.diet as MenuCriteria["diet"],
     ...(args.max_price !== undefined ? { max_price: args.max_price as number } : {}),
-    avoid_allergens: (args.avoid_allergens as string[] | undefined) ?? [],
+    ...(args.avoid_allergens !== undefined ? { avoid_allergens: args.avoid_allergens as string[] } : {}),
+    ...(args.favorite_dish_id !== undefined ? { favorite_dish_id: args.favorite_dish_id as string } : {}),
+    ...(args.limit !== undefined ? { limit: args.limit as number } : {}),
   };
 }
 
+const dateProperty = { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$", minLength: 10, maxLength: 10 };
 export const eveningTools: ToolDef[] = [
+  {
+    name: "list_showings",
+    description: "List synthetic LUNA showings for the next ISO week, anchored to the supplied today date or this page's local date. Returns the default Friday, dates and actual supported times. Read-only; nothing is booked.",
+    annotations: { readOnlyHint: true },
+    inputSchema: { type: "object", properties: { today: dateProperty }, additionalProperties: false },
+    run: (page, args) => {
+      if (page !== "cinema-booking") return fail("This tool is only available on the cinema page.");
+      const today = args.today as string | undefined ?? eveningStore.get().today;
+      return JSON.stringify({ ok: true, today, default_date: defaultShowing(today).date, default_showing: defaultShowing(today), showings: listShowings(today), simulated: true });
+    },
+  },
+  {
+    name: "select_showing",
+    description: "Choose a listed date and film time on the cinema page. Keeps the selected synthetic seat pair and reopens review if needed. Cannot change a confirmed booking and never confirms or purchases tickets.",
+    inputSchema: { type: "object", properties: { date: dateProperty, time: { type: "string", enum: [...SHOWTIMES] } }, required: ["date", "time"], additionalProperties: false },
+    run: async (page, args) => {
+      if (page !== "cinema-booking") return fail("This tool is only available on the cinema page.");
+      if (!eveningStore.selectShowing(String(args.date), String(args.time))) return fail("That showing is unavailable, outside this page's next-week inventory, or already confirmed.");
+      await waitForRenderedCommit();
+      return JSON.stringify({ ok: true, requires_human_confirmation: true, selection: selectionSummary("cinema") });
+    },
+  },
   {
     name: "get_available_seat_pairs",
     description:
-      "Find real available adjacent seat pairs for LUNA at 20:15. Returns seat ids, positions and full pair prices. Read-only; choosing seats still belongs to the person. Use apply_adaptation_profile to make the seat map easier to use.",
+      "Find available adjacent pairs for the selected LUNA showing. prefer_aisle returns a row-end pair with the user on the outside and spouse inside; row narrows an explicit preference. Returns topology, assignments and full prices. Read-only; all inventory is synthetic.",
     annotations: { readOnlyHint: true },
     inputSchema: {
       type: "object",
-      properties: { max_total: { type: "number", minimum: 0, maximum: 100 } },
+      properties: { max_total: { type: "number", minimum: 0, maximum: 100 }, prefer_aisle: { type: "boolean" }, row: { type: "string", enum: "ABCDEFGH".split("") } },
       additionalProperties: false,
     },
     run: (page, args) =>
@@ -53,17 +84,18 @@ export const eveningTools: ToolDef[] = [
         : JSON.stringify({
             ok: true,
             currency: "EUR",
-            pairs: seatPairs(args.max_total as number | undefined),
+            showing: eveningStore.get().showing,
+            pairs: seatPairs(args.max_total as number | undefined, { prefer_aisle: args.prefer_aisle as boolean | undefined, row: args.row as string | undefined }),
             simulated: true,
           }),
   },
   {
     name: "prepare_seat_selection",
     description:
-      "Stage an available adjacent seat pair and open its review. pair_id comes from get_available_seat_pairs. Never purchases or confirms. The person must confirm using the visible page button. All inventory is synthetic.",
+      "Stage an available pair from get_available_seat_pairs. Set review:false to show it on the map, including You/Wife row-end assignments; default true opens review. An explicit new pair replaces an unconfirmed selection. Never purchases or confirms; the person confirms visibly. Synthetic inventory.",
     inputSchema: {
       type: "object",
-      properties: { pair_id: { type: "string", maxLength: 20 } },
+      properties: { pair_id: { type: "string", maxLength: 20 }, review: { type: "boolean" } },
       required: ["pair_id"],
       additionalProperties: false,
     },
@@ -72,13 +104,13 @@ export const eveningTools: ToolDef[] = [
         return fail("This tool is only available on the cinema page.");
       if (
         !eveningStore.selectPair(String(args.pair_id)) ||
-        !eveningStore.review("cinema")
+        (args.review !== false && !eveningStore.review("cinema"))
       )
         return fail(
           "That pair is unavailable or the demo booking is already confirmed.",
         );
       await waitForRenderedCommit();
-      engine.announceNow("Your seat review is ready. Check the seats and full price, then confirm on the page when you are happy.");
+      engine.announceNow(args.review === false ? "Your seats are highlighted on the map." : "Your seat review is ready. Confirm on the page when you are happy.");
       activity.push(
         "prepare_seat_selection",
         "Seat pair ready for your confirmation.",
@@ -93,12 +125,13 @@ export const eveningTools: ToolDef[] = [
   {
     name: "get_available_table_times",
     description:
-      "Find listed tables for two before the 20:15 film. Defaults: 90 minutes to eat, 15 to walk, 0 arrival buffer. Optional timing constraints filter actual synthetic table/time inventory. Read-only; get_dinner_plan recommends a slot with a buffer.",
+      "Find listed tables for two on the supplied date before the selected film. Defaults: 90 minutes to eat, 15 to walk, 0 arrival buffer. Timing constraints filter synthetic table/date/time inventory. Read-only; get_dinner_plan recommends a slot with a buffer.",
     annotations: { readOnlyHint: true },
     inputSchema: {
       type: "object",
       properties: {
-        film_time: { type: "string", enum: ["20:15"] },
+        film_time: { type: "string", enum: [...SHOWTIMES] },
+        date: dateProperty,
         meal_minutes: { type: "integer", minimum: 30, maximum: 180 },
         walk_minutes: { type: "integer", minimum: 0, maximum: 60 },
         arrival_buffer_minutes: { type: "integer", minimum: 0, maximum: 60 },
@@ -111,6 +144,8 @@ export const eveningTools: ToolDef[] = [
         : JSON.stringify({
             ok: true,
             times: tableOptions(args.film_time as string | undefined, {
+              date: args.date as string | undefined,
+              today: eveningStore.get().today,
               meal_minutes: args.meal_minutes as number | undefined,
               walk_minutes: args.walk_minutes as number | undefined,
               arrival_buffer_minutes: args.arrival_buffer_minutes as number | undefined,
@@ -124,14 +159,16 @@ export const eveningTools: ToolDef[] = [
   {
     name: "get_dinner_plan",
     description:
-      "Recommend the latest listed table/time before the film, allowing 90 minutes to eat, 15 to walk and 15 arrival-buffer minutes by default. Pass film_time from the person's confirmed cinema booking. Optional quiet preference uses the restaurant's table description. Read-only; never selects, reserves or confirms.",
+      "Plan dinner before a selected or confirmed showing on the same date: 90 minutes to eat, 15 to walk, 15 minimum arrival-buffer minutes. Quiet preference uses the table description. plan_source describes agent-provided cinema context, not cross-origin verification. Read-only; never selects or confirms.",
     annotations: { readOnlyHint: true },
     inputSchema: {
       type: "object",
       properties: {
-        film_time: { type: "string", enum: ["20:15"] },
+        film_time: { type: "string", enum: [...SHOWTIMES] },
+        date: dateProperty,
         arrival_buffer_minutes: { type: "integer", minimum: 0, maximum: 60 },
         table_preference: { type: "string", enum: ["any", "quiet"] },
+        plan_source: { type: "string", enum: ["selected", "confirmed"] },
       },
       required: ["film_time"],
       additionalProperties: false,
@@ -141,7 +178,10 @@ export const eveningTools: ToolDef[] = [
       : JSON.stringify({
         ok: true,
         ...dinnerPlan({
-          film_time: args.film_time as "20:15",
+          film_time: args.film_time as Showtime,
+          date: args.date as string | undefined,
+          today: eveningStore.get().today,
+          plan_source: args.plan_source as "selected" | "confirmed" | undefined,
           arrival_buffer_minutes: args.arrival_buffer_minutes as number | undefined,
           table_preference: args.table_preference as "any" | "quiet" | undefined,
         }),
@@ -159,6 +199,7 @@ export const eveningTools: ToolDef[] = [
           enum: TABLE_TIMES.filter(isTimeAvailable),
         },
         table_id: { type: "string", enum: TABLES.map((table) => table.id) },
+        date: dateProperty,
       },
       required: ["time"],
       additionalProperties: false,
@@ -168,9 +209,10 @@ export const eveningTools: ToolDef[] = [
         return fail("This tool is only available on the restaurant page.");
       const current = eveningStore.get();
       const requestedTime = String(args.time);
+      const requestedDate = args.date as string | undefined ?? current.tableDate ?? current.showing.date;
       const requestedTableId = args.table_id as string | undefined
         ?? (current.tableTime === requestedTime ? current.tableId ?? undefined : undefined);
-      if (current.tableTime && (current.tableTime !== requestedTime
+      if (current.tableTime && (current.tableDate !== requestedDate || current.tableTime !== requestedTime
         || (requestedTableId !== undefined && current.tableId !== requestedTableId))) {
         return JSON.stringify({
           ok: false,
@@ -180,7 +222,7 @@ export const eveningTools: ToolDef[] = [
         });
       }
       if (
-        !eveningStore.selectTable(requestedTime, requestedTableId) ||
+        !eveningStore.selectTable(requestedTime, requestedTableId, requestedDate) ||
         !eveningStore.review("restaurant")
       )
         return fail(
@@ -285,7 +327,7 @@ export function domainToolsFor(site: EveningSite) {
     (tool) =>
       tool.name === "get_booking_state" ||
       (site === "cinema"
-        ? ["get_available_seat_pairs", "prepare_seat_selection"].includes(tool.name)
+        ? ["list_showings", "select_showing", "get_available_seat_pairs", "prepare_seat_selection"].includes(tool.name)
         : ["get_available_table_times", "get_dinner_plan", "prepare_table_selection", "get_restaurant_menu", "find_menu_options", "present_menu_for_user"].includes(tool.name)),
   );
 }

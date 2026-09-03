@@ -36,7 +36,7 @@ test("preparation researches a complete evening while both bookings still requir
 
   await page.getByRole("button", { name: "Review suggested table", exact: true }).click();
   const review = restaurant.getByRole("tabpanel", { name: "Your table", exact: true });
-  await expect(review).toContainText("Tonight at 18:00");
+  await expect(review).toContainText(/at 18:00/);
   await expect(review).toContainText("Quiet garden table · T4");
   await review.getByRole("button", { name: /Confirm demo table/ }).click();
   await expect(review.getByRole("heading", { name: "We’ll save you a table." })).toBeVisible();
@@ -64,7 +64,7 @@ test("switching from choosing to preparation uses the tickets the person already
   await cinema.getByRole("button", { name: /Row H · Seats 5 \+ 6/ }).click();
   await cinema.getByRole("button", { name: "Review selection", exact: true }).click();
   await cinema.getByRole("button", { name: /Confirm demo tickets/ }).click();
-  await expect(cinema.getByText(/H5 \+ H6 · Tonight at 20:15/)).toBeVisible();
+  await expect(cinema.getByText(/H5 \+ H6 · .* at 20:15/)).toBeVisible();
 
   await page.getByRole("button", { name: "Prepare for me", exact: true }).click();
   const planAction = page.getByRole("button", { name: "Plan dinner from my tickets →", exact: true });
@@ -74,7 +74,7 @@ test("switching from choosing to preparation uses the tickets the person already
   await expect(page.getByRole("list", { name: "Suggested evening timeline" })).toContainText("20:15");
   await page.getByRole("button", { name: "01 Cinema", exact: true }).click();
   await expect(cinema.getByRole("heading", { name: "See you under the moon." })).toBeVisible();
-  await expect(cinema.getByText(/H5 \+ H6 · Tonight at 20:15/)).toBeVisible();
+  await expect(cinema.getByText(/H5 \+ H6 · .* at 20:15/)).toBeVisible();
 });
 
 test("an earlier 18:30 main-room choice survives planning and opens unchanged for review", async ({ page }) => {
@@ -91,11 +91,11 @@ test("an earlier 18:30 main-room choice survives planning and opens unchanged fo
   await expect(page.getByRole("list", { name: "Suggested evening timeline" })).toContainText("18:00");
   await page.getByRole("button", { name: "Review my table choice", exact: true }).click();
   const review = restaurant.getByRole("tabpanel", { name: "Your table", exact: true });
-  await expect(review).toContainText("Tonight at 18:30");
+  await expect(review).toContainText(/at 18:30/);
   await expect(review).toContainText("Main-room table · T2");
   await expect(review).not.toContainText("Quiet garden table · T4");
   await review.getByRole("button", { name: /Confirm demo table/ }).click();
-  await expect(review).toContainText("Tonight at 18:30 · Main-room table");
+  await expect(review).toContainText(/at 18:30 · Main-room table/);
 });
 
 test("an allergen explicitly selected at OLIVA is preserved by subsequent controller planning", async ({ page }) => {
@@ -162,7 +162,7 @@ test("a later confirmed table choice does not turn the original dinner suggestio
   await restaurant.getByRole("button", { name: "Review selection", exact: true }).click();
   await restaurant.getByRole("button", { name: /Confirm demo table/ }).click();
 
-  await expect(restaurant.getByRole("tabpanel", { name: "Your table", exact: true })).toContainText("Tonight at 18:30 · Main-room table");
+  await expect(restaurant.getByRole("tabpanel", { name: "Your table", exact: true })).toContainText(/at 18:30 · Main-room table/);
   await expect(page.getByRole("heading", { name: "A suggested plan for your evening.", exact: true })).toBeVisible();
   await expect(page.getByText(/Your confirmed table is 18:30/)).toBeVisible();
   await expect(page.getByRole("heading", { name: "Your evening fits together.", exact: true })).toHaveCount(0);
