@@ -83,7 +83,9 @@ test("an earlier 18:30 main-room choice survives planning and opens unchanged fo
   await expect(restaurant.getByRole("button", { name: /Main-room table · T2/ })).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "Prepare my dinner →", exact: true }).click();
 
-  await expect(page.getByText(/Your existing 18:30 table choice has been kept\./)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "A suggested plan for your evening.", exact: true })).toBeVisible();
+  await expect(page.getByText(/Your existing table choice is 18:30/)).toBeVisible();
+  await expect(page.getByText(/Your choice has been kept\./)).toBeVisible();
   await expect(page.getByRole("list", { name: "Suggested evening timeline" })).toContainText("18:00");
   await page.getByRole("button", { name: "Review my table choice", exact: true }).click();
   const review = restaurant.getByRole("tabpanel", { name: "Your table", exact: true });
@@ -114,4 +116,54 @@ test("an allergen explicitly selected at OLIVA is preserved by subsequent contro
   await expect(uncertain).toContainText("Market vegetable plate");
   await expect(uncertain).toContainText("May contain");
   await expect(uncertain).toContainText("Allergen information is incomplete");
+});
+
+test("removing a controller allergen keeps a separate restaurant constraint and updates the matching dishes", async ({ page }) => {
+  await confirmPreparedCinema(page);
+  await page.getByRole("button", { name: /^Example request/ }).click();
+  const controllerMilk = page.getByRole("checkbox", { name: "Milk", exact: true });
+  await controllerMilk.check();
+  await page.getByRole("button", { name: "02 Dinner", exact: true }).click();
+  const restaurant = restaurantPage(page);
+  await restaurant.getByRole("tab", { name: "Menu", exact: true }).click();
+  await restaurant.getByText("Check declared allergens", { exact: true }).click();
+  await restaurant.getByRole("checkbox", { name: "Sesame", exact: true }).check();
+  await restaurant.getByRole("button", { name: "Find dishes for me", exact: true }).click();
+  await page.getByRole("button", { name: "Prepare my dinner →", exact: true }).click();
+
+  await expect(page.getByRole("list", { name: "Suggested evening timeline" })).toBeVisible();
+  await expect(restaurant.getByRole("checkbox", { name: "Milk", exact: true })).toBeChecked();
+  await expect(restaurant.getByRole("checkbox", { name: "Sesame", exact: true })).toBeChecked();
+  await expect(restaurant.getByRole("list", { name: "Dishes needing an allergen check" })).toContainText("Tomato & basil orzo");
+
+  await controllerMilk.uncheck();
+  await page.getByRole("region", { name: "Try a personal adaptation", exact: true }).getByRole("button").click();
+  await expect(restaurant.getByRole("checkbox", { name: "Milk", exact: true })).not.toBeChecked();
+  await expect(restaurant.getByRole("checkbox", { name: "Sesame", exact: true })).toBeChecked();
+  await expect(restaurant.getByRole("list", { name: "Dishes matching your preferences" })).toContainText("Tomato & basil orzo");
+  const uncertain = restaurant.getByRole("list", { name: "Dishes needing an allergen check" });
+  await expect(uncertain).not.toContainText("Tomato & basil orzo");
+  await expect(uncertain).toContainText("Lemon & chickpea salad");
+  await expect(uncertain).toContainText("Market vegetable plate");
+});
+
+test("a later confirmed table choice does not turn the original dinner suggestion into a confirmed itinerary", async ({ page }) => {
+  await confirmPreparedCinema(page);
+  await page.getByRole("button", { name: "Plan dinner from my tickets →", exact: true }).click();
+  const timeline = page.getByRole("list", { name: "Suggested evening timeline" });
+  await expect(timeline.locator("li > strong")).toHaveText(["18:00", "19:30", "19:45", "20:15"]);
+  const restaurant = restaurantPage(page);
+  await restaurant.getByRole("tab", { name: "Your table", exact: true }).click();
+  await restaurant.getByRole("button", { name: "Change selection", exact: true }).click();
+  await restaurant.getByRole("button", { name: /18:30 · Table for two/ }).click();
+  await restaurant.getByRole("button", { name: /Main-room table · T2/ }).click();
+  await restaurant.getByRole("button", { name: "Review selection", exact: true }).click();
+  await restaurant.getByRole("button", { name: /Confirm demo table/ }).click();
+
+  await expect(restaurant.getByRole("tabpanel", { name: "Your table", exact: true })).toContainText("Tonight at 18:30 · Main-room table");
+  await expect(page.getByRole("heading", { name: "A suggested plan for your evening.", exact: true })).toBeVisible();
+  await expect(page.getByText(/Your confirmed table is 18:30/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Your evening fits together.", exact: true })).toHaveCount(0);
+  await expect(timeline.locator("li > strong")).toHaveText(["18:00", "19:30", "19:45", "20:15"]);
+  await expect(timeline).toContainText("Quiet garden table");
 });

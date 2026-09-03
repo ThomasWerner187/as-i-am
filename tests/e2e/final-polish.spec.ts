@@ -34,8 +34,20 @@ test("the mobile primary action is visible and precedes the website in keyboard 
   await expect(
     page.getByRole("link", { name: "Skip to adaptation" }),
   ).toBeFocused();
-  for (let i = 0; i < 4; i++) await page.keyboard.press("Tab");
-  await expect(action).toBeFocused();
+  const controlsBeforeTheWebsite = [
+    page.getByRole("button", { name: "Use WebMCP ↗", exact: true }),
+    page.getByRole("button", { name: "Help me choose", exact: true }),
+    page.getByRole("button", { name: "Prepare for me", exact: true }),
+    page.getByRole("button", { name: /^Example request/ }),
+    page.getByRole("button", { name: "01 Cinema", exact: true }),
+    page.getByRole("button", { name: "02 Dinner", exact: true }),
+    action,
+  ];
+  for (const control of controlsBeforeTheWebsite) {
+    await expect(control).toBeVisible();
+    await page.keyboard.press("Tab");
+    await expect(control).toBeFocused();
+  }
 });
 
 for (const site of ["cinema", "restaurant"] as const) {
