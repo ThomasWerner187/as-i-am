@@ -2,13 +2,32 @@
 
 **The web adapts. You don’t have to.**
 
-**Inclusion means having a choice.** Choosing seats together and dinner before a film should
-be an ordinary evening. Precise pointing or a screen full of information can get in the way.
-As I Am gives a person two ways to get help: clearer information to make their own choices,
-or an agent that researches options and prepares a plan for review.
+**An ordinary evening should be yours to arrange.** As I Am is a prototype for disabled
+people who want participating websites to respond to the access needs they choose to express.
+Small controls can be a barrier with reduced dexterity or tremor. Low vision can make default
+text difficult to read; cognitive overload or fatigue can make dense choices harder to manage.
+The person chooses what should change and how much help their agent should provide.
 
 **Let my agent help. Let me stay in charge.** Both paths keep confirmation with the person.
 This is a free, MIT-licensed prototype for participating websites.
+
+## Choose the access you need
+
+Three explicit choices can be combined:
+
+- **Make pointing easier for me:** larger targets, more space between controls and strong focus.
+- **Make reading easier for me:** larger text, more line spacing and a readable font.
+- **Give me less to process:** guided steps, reduced nonessential content and reduced motion.
+
+Choose what helps today, use **Make it easier →**, and inspect the result. A changed selection
+uses **Update my support**; with none selected, **Use original view** keeps the journey available.
+These choices describe a functional
+request; the app does not infer a diagnosis. The original view and the person's selections
+remain available. The receiving site applies only the preferences it supports.
+
+W3C WAI documents diverse access needs and barriers. Our mappings are prototype design choices,
+not user-validated prescriptions. See [inclusion evidence](docs/inclusion-evidence.md) for the
+primary sources, measured results and the work still needed with real participants.
 
 ## Two forms of help
 
@@ -44,8 +63,9 @@ will not stop existing servers. Run one server manually with `npm run dev:site -
 
 Start with **Help me choose**:
 
-1. Try the original seat map, then **Make it easier →**. Larger adjacent-pair choices keep
-   the seats already selected. Compare **Original** and **My view**.
+1. Try the original seat map. Choose **Make pointing easier for me** and **Give me less to process**, then apply
+   the selected needs with **Make it easier →**. Compare the real controls, **Original** and **My view**; the selected
+   seats should remain. Add **Make reading easier for me** when you want larger text.
 2. Review the complete price and confirm the demo tickets yourself.
 3. **Continue to dinner →** opens OLIVA. **Use my preferences here →** explicitly carries
    the functional interface receipt. Navigation alone does not share it.
@@ -65,7 +85,7 @@ Or choose **Prepare for me**:
 All bookings and menu data are fictional. There is no payment or real reservation. No login
 is required. Use only example food requirements when exploring the demo.
 
-## Native WebMCP, not an invented agent
+## Native WebMCP and the guided demo
 
 Each site registers page-specific tools through `document.modelContext.registerTool`.
 An external agent can discover capabilities, apply a validated profile, measure the rendered
@@ -77,6 +97,11 @@ The guided buttons run preset requests, not an embedded language model. They use
 `getTools` / `executeTool` when available in the participating frames; otherwise they use an
 explicitly labelled, source-and-origin-checked demo bridge to the same validated handlers.
 Native failures are surfaced, not silently retried through the fallback.
+
+For the central proof, use a real external agent: discover supported capabilities, request
+the selected access needs, inspect the changed page and read its rendered measurements.
+The [native walkthrough](docs/judge-testing.md) makes that sequence reproducible. Current
+measurements demonstrate specific rendered properties, not a person's comfort or task success.
 
 Use **Use WebMCP ↗** for the English request and direct site links. Some browsers expose
 native WebMCP only to top-level documents. In that case, use the direct links for native calls;
@@ -138,6 +163,8 @@ the new cinema/restaurant experience.
 ## Presentation materials
 
 - [Judge testing instructions and native tool walkthrough](docs/judge-testing.md)
+- [Inclusion claims and evidence](docs/inclusion-evidence.md)
+- [Practical worksheet for genuine user research](docs/user-validation-guide.md)
 - [Recorded demo and narration](docs/recording.md)
 - [Hackathon entry checklist](docs/hackathon-checklist.md)
 - [Inclusion-led English demo script](docs/demo-script.md)
@@ -162,6 +189,6 @@ this repository during the challenge's submission period. See the
 [submission draft](docs/devpost-submission.md#built-during-the-submission-period) for the
 development history and third-party building blocks.
 
-The new 117-second English recording shows both help modes, confirmed-ticket dinner planning
-and the restaurant menu. The earlier 93-second cut is preserved as an archive. See the
-[recording status](docs/recording.md) for the selected file and remaining public-upload checks.
+The existing [117-second recording](docs/recording.md) shows the previous revision's guided
+flow. A matching replacement must show the new access choices, changing needs and real native
+execution. Fresh capture and verification are pending; no new completed video is claimed here.
