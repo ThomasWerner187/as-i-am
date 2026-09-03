@@ -1,113 +1,73 @@
 # Inclusion: claims and evidence
 
-As I Am is intended to help disabled people shape participating websites around the access
-needs they choose to express. This document separates the reason to build it from evidence
-that the implementation works, and from research that has not yet happened.
+As I Am explores how a familiar agent can help a person use participating websites on their
+own terms. A person's chosen settings, existing preferences and ability to change their mind
+matter throughout the task. The current film demonstrates a fictional evening for Alex and
+Lea; it is not a user study or a participant testimonial.
 
-## Why these needs
+## The current scenario
 
-W3C WAI describes varied, overlapping and changing access needs, including differences in
-stamina, dexterity and concentration. It recommends considering functional requirements rather
-than sorting people by medical classifications. [Diverse Abilities and Barriers](https://www.w3.org/WAI/people-use-web/abilities-barriers/)
+Alex has explicitly asked for his familiar calm view while planning today. The supplied example
+history mentions today's migraine; the website receives only the display settings. This does
+not prescribe a treatment or assume the same needs for next week's visit.
 
-Its guidance identifies small click areas as a barrier for some people with physical
-impairments, describes user-controlled text presentation for visual access, and discusses
-understandable, consistent interfaces for cognitive access. These are reasons to investigate
-our choices, not evidence that this product helps a particular person.
-[Physical](https://www.w3.org/WAI/people-use-web/abilities-barriers/physical/),
-[Visual](https://www.w3.org/WAI/people-use-web/abilities-barriers/visual/),
-[Cognitive and learning](https://www.w3.org/WAI/people-use-web/abilities-barriers/cognitive/)
-
-WAI's [Stories of Web Users](https://www.w3.org/WAI/people-use-web/user-stories/) illustrate
-several different experiences and explicitly do not cover every disability or barrier.
-We have not copied its personas, recruited those people, or tested our app with them.
-These references do not imply W3C endorsement or accessibility certification.
-
-## Product choices, not diagnoses
-
-The person selects one or more functional requests and explicitly applies them:
-
-| Choice | Requested functional values | What a reviewer can inspect |
-| --- | --- | --- |
-| Make pointing easier for me | 56px targets, 12px target spacing, strong focus | Rendered target measurements, available selection controls and visible focus |
-| Make reading easier for me | Text scale 1.3, line height 1.7 and readable font | Actual text/font change, text measurements and overflow at the tested viewport |
-| Give me less to process | Guided steps, hide nonessential content, reduced motion | Changed task presentation, retained essential details and motion state |
-
-The choices can be combined. They are not a “tremor mode,” “low-vision mode” or a diagnosis
-inferred by an agent. The mapping is a prototype design decision; its usefulness and preferred
-values must be evaluated with actual people. A person may want a different combination, a
-different value or no adaptation at all.
-
-A separate choice determines the level of help: **Help me choose** supports exploration;
-**Prepare for me** delegates research and review preparation. Neither is intended as a ranking
-of ability. The person can return to the original view and retains booking confirmation.
-
-## What is actually evidenced
-
-The latest verification covers application `db3b386`. Full details, environment and limits are
-in [verification](verification.md).
-
-| Evidence | Recorded observation | What it does not establish |
-| --- | --- | --- |
-| Automated checks | 112 unit + 15 recorder + 69 browser tests pass, including independent needs and removing support | Real-user usability or population impact |
-| Native pointing | LUNA targets 30px → 56px; selected F6/F7 retained, no horizontal overflow | Successful pointing for every person with tremor |
-| Native portability | Actual six-preference receipt accepted by OLIVA | Independent operators, arbitrary websites or native iframe support |
-| Native reading | Menu text sample minimum 9.9px → 12.9px with readable font and line height 1.7; fit satisfied in that state | Complete low-vision accessibility or a preferred value for every person |
-| Choice and context | Full menu reachable; 18:00/T4 retained after tuning; UI confirmations exercised | A guarantee that every external agent obeys the person |
-| Receipt boundary | No diagnosis, food requirements or booking history in the receipt | Anonymity, signed credentials or browser-wide consent enforcement |
-| New media | 315-word narration, captions and actual native-call JSON ready | A completed video: capture failed with zero frames; recording reaccess was rejected by automatic approval review |
-
-The new controls and changed-need paths are verified. **The matching native video remains
-blocked**, and public links and submission remain separate gates. The earlier 117-second cut
-shows a prior guided revision and is historical only.
-
-## What has not been evidenced
-
-- No research sessions with disabled users are documented for this prototype.
-- No participant testimonials, comparative task-success rates, fatigue reduction or saved-time
-  claims have been established.
-- No independent website operator has implemented this contract as part of the documented work.
-- The two sites share a developer-controlled implementation and synthetic inventory.
-- Automated scans and the available keyboard checks do not replace assistive-technology review.
-- The app does not adapt arbitrary websites. The prototype requires participating sites.
-
-Use [the user-validation worksheet](user-validation-guide.md) for genuine future sessions.
-Do not fill missing evidence with generated personas, model feedback presented as user feedback,
-accessibility simulations or invented quotations.
-
-## Record the new native proof
-
-Record real execution on the tested build, with the browser/tool context visible. A useful
-short sequence is: the person's chosen functional request; native capability discovery;
-validated application; the actual changed page; and its returned measurements. Then show the
-same person's choice and visible confirmation. An annotation may explain a real result, but
-must not invent chat messages, tool output or agent decisions.
-
-Repeat with a changed need: add **Make reading easier for me**, retain the chosen pointing request, apply
-and inspect the result. Show the receipt crossing to the restaurant as a separate operation
-from the film-time input used for dinner planning. Keep the full menu and original view reachable.
-
-For each recorded sequence, retain:
-
-| Field | Record from the real run |
+| Expressed preference | Demonstrated response |
 | --- | --- |
-| Revision and environment | Commit, built artifact, URL, browser/version, viewport and date |
-| Request | Exact selected needs and tool arguments; no unnecessary personal or medical details |
-| Native calls | Discovered tools, actual calls and returned results |
-| Before and after | UI screenshots and measured values from the same viewport/state |
-| Choice boundary | What the person selected, what the tools prepared and who confirmed |
-| Limits | Unsupported/partial fields, unmeasurable properties and observed failures |
-| Media | Source capture, final edit boundaries, duration and file hash |
+| Alex wants his calm view today | Dark appearance, lower glare, reduced motion and disabled animation on LUNA and OLIVA |
+| Alex prefers the aisle, beside Lea | F1/F2, then G1/G2 after an explicit request to move one row back; Alex stays outside |
+| Dinner should fit before the film | The recorded Friday 11 September showing at 20:15 allows dinner at 18:00, a 15-minute walk and arrival at 19:45 |
+| Lea has shared peanut and avocado exclusions | Three recipe recommendations use declared ingredients; cross-contact still needs kitchen confirmation |
+| Alex likes mushroom risotto | It is shown first only because it passes the stated ingredient filter |
+| Both want the final choice | Original appearance, the full menu and visible booking confirmations remain available |
 
-Describe edited waiting time honestly. A guided bridge capture remains a guided demonstration,
-even if the same handlers also have a native registration. If the new native recording is
-unavailable, retain that limitation in the submission instead of presenting presets as proof.
+The example history is deliberately supplied by the prototype. It does not establish an
+agent memory service or reveal facts about the person testing the app. Health context, food
+requirements and booking context stay outside the functional adaptation receipt.
 
-## Public wording
+## Current technical evidence
 
-Supported: “A working prototype with measured interface changes and separately documented native
-tool execution on the stated build.” Add the new recording only after it exists.
+Application revision **`75a7054`** is the basis for the latest run. See
+[verification](verification.md) for the environment and detailed results, and
+[recording](recording.md) for media files and final playback checks.
 
-Not yet supported: “Validated by disabled users,” “reduces fatigue,” “works for every disability,”
-“WCAG compliant,” or a predicted judging score. The contribution is a testable approach to
-person-chosen access, with the next evaluation steps stated openly.
+| Evidence | Recorded observation | Limit |
+| --- | --- | --- |
+| Automated checks | 128 unit, 72 browser and 15 recorder tests passed; eight personal/menu browser checks passed again after the CSS changes | Technical coverage does not establish real-user benefit |
+| Native calm adaptation | Four requested preferences were satisfied on both participating sites: dark appearance, lower glare, reduced motion and disabled animation | A preferred combination for this fictional example, not a universal accessibility setting |
+| Native seat correction | F1/F2 changed to G1/G2 while preserving the selected date/time and outside/inside assignment | Synthetic inventory, not real cinema tickets |
+| Planning and confirmation | Dinner was checked before ticket confirmation; the confirmed date and 20:15 time then informed the 18:00/T4 proposal | Cross-origin confirmation is not independently verified by the restaurant tool |
+| Native menu presentation | Three visual recommendations include the qualifying favorite; peanut/avocado exclusions and the kitchen check remain visible | Ingredient matches are not a guarantee against allergic reactions |
+| Media | A 112-second film has been rendered, with two voices, 101 spoken words, first speech at second 7 and 15 caption cues | A scripted demonstration with actual native tool execution, not an unscripted participant session |
+
+The home walkthrough is a labelled preset. The external-agent native run uses the participating
+pages' real WebMCP tools. Both sites are controlled by this project and use synthetic inventory;
+this is not independent-operator interoperability or adaptation of arbitrary websites.
+
+## Other access choices remain available
+
+The advanced journey at `/guided` retains pointing, reading and cognitive support choices.
+Earlier native evidence on application `db3b386` recorded targets increasing from 30px to 56px,
+a six-preference receipt, and a menu text sample increasing from 9.9px to 12.9px. Those are
+historical observations from their stated viewport and state, not the current film's preference
+counts or current participant outcomes.
+
+The earlier zero-frame capture failure and the older film cuts are historical. The current
+film is rendered; see [recording](recording.md) rather than treating that old failure as a
+present capture blocker.
+
+## What has not been established
+
+- No research sessions with disabled people, participant testimonials or comparative task-success results are documented.
+- No reduction in fatigue, universal migraine benefit or saved-time outcome has been measured.
+- No independent website operator has adopted the contract in the documented work.
+- Automated checks do not establish WCAG certification or replace assistive-technology and user testing.
+- A local completed film does not establish public deployment, upload or submission status.
+
+The next evaluation step is to work with disabled people using their own devices, access tools
+and chosen settings. Use the unfilled [user-validation worksheet](user-validation-guide.md).
+WAI's [Diverse Abilities and Barriers](https://www.w3.org/WAI/people-use-web/abilities-barriers/)
+provides background for varied access needs; it is not an endorsement of this prototype.
+
+Supported public wording: **“A working prototype that lets a familiar agent apply person-chosen
+settings, present source-backed options and keep decisions with the person.”** Pair that claim
+with the technical evidence and limits above.
