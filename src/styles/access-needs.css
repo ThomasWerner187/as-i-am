@@ -1,0 +1,84 @@
+.access-needs {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--ink, #262b29);
+  font-family: var(--sans, sans-serif);
+}
+.access-needs legend {
+  padding: 0;
+  font: 550 22px/1.25 var(--serif, Georgia, serif);
+  letter-spacing: -0.025em;
+}
+.access-needs-hint {
+  margin: 6px 0 14px;
+  color: var(--ink-soft, #59615d);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.access-needs-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 12px;
+}
+.access-need {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  min-height: 56px;
+  padding: 14px;
+  border: 1px solid #b1bca9;
+  border-radius: 8px;
+  background: #fffef9;
+  cursor: pointer;
+}
+.access-need[data-selected="true"] {
+  border-color: #536b49;
+  background: #edf1e7;
+}
+.access-needs:not(:disabled) .access-need:hover {
+  border-color: #304b37;
+  background: #e7eddf;
+}
+.access-need:focus-within {
+  outline: 3px solid #304b37;
+  outline-offset: 3px;
+}
+.access-need input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: #304b37;
+  cursor: inherit;
+}
+.access-need-copy {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+.access-need-label {
+  color: #2e463b;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.access-need-description {
+  color: #4c594a;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.access-needs:disabled .access-need {
+  cursor: default;
+  border-color: #c5cbbb;
+}
+@media (forced-colors: active) {
+  .access-need[data-selected="true"] {
+    border-color: Highlight;
+  }
+  .access-need:focus-within {
+    outline-color: Highlight;
+  }
+}
