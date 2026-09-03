@@ -16,7 +16,66 @@ gitleaks git --redact=100 --no-banner --log-opts=--all .
 The recorder tests also run independently with `npm run test:recording` or
 `node --test tools/clickthru/*.test.mjs`.
 
-## Disability access release — September 3, 2026
+## Current personal evening — September 3, 2026
+
+Application source: **`75a7054`**, prepared in `codex-calm-personal-evening`.
+TypeScript, **128 unit tests, 15 recorder tests and 72 browser tests** passed: **215 tests**
+across the separate validation commands. After the final CSS adjustment, the eight personal
+journey/menu browser checks passed again and the production build completed. The complete
+browser run includes desktop, phone, keyboard and menu regression coverage. An initial run
+found two outdated test expectations for the newly visible date/showtime controls and the
+explicit aisle label; those were updated and the complete 72-test run passed.
+
+`npm audit --json` reported zero vulnerabilities. Gitleaks inspected the complete branch
+history with no detected leaks. `git diff --check` passed. Tests include the personalized
+context, dated showings, aisle assignment and row changes, ingredient and favorite filtering,
+calm rendering, retry behavior and the confirmed-booking handoff. These are technical checks,
+not user-research or accessibility-certification results.
+
+### Actual native execution and visual review
+
+The built application was served at `http://127.0.0.1:4374/`. The in-app browser performed
+actual native WebMCP calls on the top-level cinema and restaurant documents. This recording
+uses **one origin with separate documents**, not independent operators. The preset home
+walkthrough was also exercised through both visible confirmations; it remains labelled as
+such, separately from native external-agent execution.
+
+The film's selected evidence contains 22 successful calls; the raw session log retains 28
+including earlier layout-check takes. The selected observed results are:
+
+- Four requested functional preferences—dark appearance, lower glare, reduced motion and
+  disabled animation—were satisfied on both sites. The sampled state had no horizontal
+  overflow and no running animations. These are Alex's chosen preferences for planning today.
+- The inventory supplied next Friday, **September 11**, at **20:15**. A separate dinner
+  availability query ran before the cinema confirmation. F1/F2 then changed to **G1/G2**,
+  with Alex at the aisle and Lea immediately inside. A visible UI click confirmed the tickets.
+- The actual confirmed cinema state supplied the date/time for dinner. The functional
+  receipt carried only the four display preferences to OLIVA. Dinner was separately proposed
+  for **18:00, quiet garden table T4**, with 90 minutes for dinner, 15 minutes to walk and
+  arrival at 19:45. The restaurant explicitly does not independently verify a caller's cinema
+  confirmation; the controller reads it from the cinema state.
+- Explicit peanut and avocado exclusions produced three visible recipe recommendations:
+  qualifying favorite mushroom risotto, lemon/chickpea salad, and tomato/basil orzo. Ingredient
+  and cross-contact information remain inspectable. Kitchen confirmation is still open.
+- The demonstrator used the visible restaurant control to confirm the synthetic table.
+  Final booking state was read back. No native confirmation tool or real transaction is claimed.
+
+Raw recordings, structured results and matching screenshots are retained locally. The final
+film lasts 112 seconds with two voices, 101 words and 15 captions; speech begins at 7 seconds.
+Both media exports decode completely without errors. See [recording](recording.md) for the
+selected files, exact hashes, audio measurements and production provenance.
+
+The completed player was checked at `http://127.0.0.1:4381/`: the video loaded at full
+1920 × 1080 with a 112-second duration and played without a reported media error. Chapter
+seeking, replay and keyboard seeking worked. At 76.79 seconds, the menu subtitle was visible
+below the dish cards in full screen; turning captions off hid it, and turning them back on
+restored it. Mute/unmute and exiting full screen worked. These playback checks do not replace
+the owner's final listening review.
+
+Public hosting, repository visibility, YouTube publication, the owner's final watch/listen
+and Devpost submission remain separate outstanding gates.
+
+## Historical disability access release — September 3, 2026
 
 Application source: **`db3b386`**. The complete `npm run check` passed with **112 unit,
 15 recorder and 69 browser tests: 196 passing tests**, followed by TypeScript and the production
@@ -76,7 +135,7 @@ The later run followed a new explicit user request and used the supported browse
 No alternative browser-control mechanism was used to bypass the rejection. Public deployment,
 repository visibility, YouTube publication and Devpost submission remain outstanding.
 
-## Inclusion release review — September 3, 2026
+## Historical inclusion release review — September 3, 2026
 
 Application candidate: **`981b90f`**. The full check at `7f9ddd5` passed TypeScript,
 **105 unit tests, 15 recorder tests and 58 browser tests**: **178 passing tests**.

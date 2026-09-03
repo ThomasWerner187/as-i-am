@@ -9,14 +9,14 @@ These times follow the organizer's reminder; recheck the
 ## Local preparation
 
 - [x] Working synthetic cinema and restaurant flows with visible human confirmation.
-- [x] Two chosen help modes, dinner timing from confirmed tickets, and an explicit menu/allergen flow.
+- [x] Familiar, explicitly shared example preferences; a calm view, aisle seats, a row correction, dinner timing and three visual dishes.
 - [x] Native WebMCP registration and a separately labelled guided demo bridge.
 - [x] English project description, agent request and [judge testing instructions](judge-testing.md).
 - [x] MIT source license, generated-artwork provenance and redistributed font notices.
-- [x] New disability-focused English narration and captions prepared locally.
-- [ ] New matching video: capture blocked by browser policy and automatic approval review; previous 117-second cut is historical.
-- [x] Final integrated checks: 112 unit, 69 browser and 15 recorder tests pass; see [verification](verification.md).
-- [x] Application source `db3b386` built and checked; native execution verified on the same application logic.
+- [x] New English dialogue and captions: two voices, 101 words, 15 cues, first speech at second 7.
+- [x] Matching 112-second film exported with real browser captures and native WebMCP results; see [recording](recording.md).
+- [x] Integrated checks: 128 unit, 72 browser and 15 recorder tests pass; see [verification](verification.md).
+- [x] Application source `75a7054` built; eight focused browser checks repeated after the final CSS change and native execution recorded.
 - [x] Zero dependency vulnerabilities, no detected secrets, desktop/mobile visual review complete.
 - [ ] Watch and listen to the selected video; verify it still matches the final live behavior.
 
@@ -38,15 +38,13 @@ These times follow the organizer's reminder; recheck the
 - [ ] Freeze submitted repo, website, video and entry at the deadline; keep the site available through judging.
 
 No verified public deployment, YouTube link or submitted Devpost entry is recorded yet.
-The repository is private and remote `main` contains the scaffold at this preparation stage.
-Update these statements from visible evidence before submission. Local readiness does not
-complete the public checks.
+Work is prepared on a private review branch. Recheck remote visibility and the selected release
+commit before publication. Local readiness does not complete the public checks.
 
 ## The pitch
 
-> Let my agent help. Let me stay in charge.
-> As I Am makes an ordinary night out easier to plan, with support I choose.
-> My agent prepares the details; the website helps me make my own decisions.
+> Your agent remembers what matters. The website responds in a way you can use.
+> You plan the evening together.
 
 Individual entrants must meet the official age, country and conflict-of-interest conditions.
 The [release runbook](release-runbook.md) gives the execution order and freeze record;

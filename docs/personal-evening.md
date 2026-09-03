@@ -47,14 +47,14 @@ on the direct cinema and restaurant pages. The advanced access-choice journey re
 
 ## Film direction
 
-The new cut is planned for 112 seconds, with the first spoken request at second 7. Two voices
+The completed cut runs for 112 seconds, with the first spoken request at second 7. Two voices
 share 101 words. Actual browser images carry the explanation: the view changes, two adjacent
 outside seats move together, a dinner time fits the movie, and three dishes replace a long list.
 Short captions sit outside the captured interface. Technical detail belongs in the evidence
 and testing guide rather than competing with the person's task on screen.
 
-See [recording status](recording.md) for the completed export and checks; planned timing alone
-does not establish a finished film. Artwork provenance is in [menu images](art-sources/menu-images.md).
+See [recording status](recording.md) for the completed export and checks.
+Artwork provenance is in [menu images](art-sources/menu-images.md).
 
 ## The pitch
 
