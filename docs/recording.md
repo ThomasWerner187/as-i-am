@@ -1,83 +1,79 @@
-# As I Am — current film
+# As I Am — selected film
 
 The selected local film is **A night for two**, completed September 3, 2026. It runs for
-**112.000 seconds** and shows the familiar Alex/Lea scenario: a calm view for planning today,
-next week's aisle seats, a user-requested row change, dinner before the film and three dishes.
-It supersedes the older cuts documented below.
+**79.600 seconds** and follows Alex and Lea through a calm planning view, aisle-seat correction,
+dinner timing and three pictured dishes. The earlier 112-second film is superseded and belongs
+to the historical record below.
 
 ## Delivery
 
-Media lives in the ignored production folder of the `codex-calm-personal-evening` worktree:
-`tools/clickthru/out/calm-evening/delivery/`.
+The complete local delivery is in `tools/clickthru/out/warm-flow/delivery/`:
 
-- `as-i-am-calm.mp4`: H.264, 1920 × 1080, 30 fps, AAC stereo, burned-in English captions.
-- `as-i-am-calm-clean.mp4`: matching film with an embedded English subtitle track.
-- `as-i-am-calm.srt` and `.vtt`: 15 cues preserving all 101 spoken words.
-- `index.html`: local player with optional captions, eight chapters and full transcript.
+- `as-i-am-warm.mp4`: H.264, 1920 × 1080, 30 fps, AAC stereo and burned-in English captions.
+- `as-i-am-warm-clean.mp4`: matching picture and sound with an embedded English subtitle track.
+- `as-i-am-warm.srt` and `as-i-am-warm.vtt`: 32 English caption cues.
+- `index.html`: local review player.
 - `poster.jpg`: matching opening image.
 
-Run `node tools/clickthru/out/calm-evening/serve-player.mjs` to serve the player with HTTP
-Range support at `http://127.0.0.1:4381/`. Keep the media files alongside `index.html`.
-Generated films are delivered separately from the source repository.
+Run `node tools/clickthru/out/warm-flow/serve-player.mjs` and open
+`http://127.0.0.1:4382/`. The server supports HTTP Range requests for reliable seeking. Keep the
+six delivery files together; generated media is delivered separately from the source repository.
 
-## Sound and pacing
+## Continuous performance
 
-There is no speech until **7 seconds**. Alex and the agent share ten short utterances,
-**101 words**, using the premade George and Chris voices through ElevenLabs. One generated
-dialogue master was reused for the edit. Utterances were separated at aligned boundaries,
-placed with deliberate pauses and played at 0.94 speed with pitch preserved. A quiet original
-procedural ambient bed fades in and out. There is no percussion, rapid montage or moving camera.
-The final spoken line ends at approximately 106.14 seconds, followed by a quiet closing hold.
+George voices Alex and Jessica voices the agent in one continuous two-voice performance. The
+**71.520-second encoded dialogue master** is placed once at 4.000 seconds. The first audible word begins
+at **4.165 seconds** and the final spoken line ends at **75.569 seconds**. There are **zero
+dialogue cuts**, no time-stretch and no playback-speed change. A quiet original instrumental bed
+sits beneath the complete performance.
 
-The final AAC file measures **−19.22 LUFS integrated, −1.92 dBTP and 13.50 LU loudness range**.
-Those are measurements of the delivered file, not the normalization target. Voice and music
-share a 48 kHz stereo mix. Caption timings follow the aligned speech with a brief tail, with
-at most two lines and 42 characters per line.
+The delivered AAC track measures **−17.8 LUFS integrated, 5.4 LU loudness range and −2.2 dBFS
+true peak**. These are measurements of the selected file, not normalization targets. Voice and
+music share a 48 kHz stereo mix.
 
-## What the images establish
+## Picture and story
 
-The production build uses application source **`75a7054`**. The film selects **nine short
-native-browser captures containing 22 captured frames**, plus actual opening/context/map
-screenshots. The screen was recorded at its existing 966.5 × 1204 CSS viewport. The edit uses
-static holds, correctly scaled crops and brief dissolves; it is not a continuous real-time
-recording. No tool outputs or booking confirmations were fabricated.
+The edit holds one fixed browser position and consistent scale inside a warm cream film layout.
+Visual responses appear after the relevant spoken content. LUNA and OLIVA remain in Alex's
+deliberately chosen calm view: dark, low-glare and still. The sequence shows Friday's 20:15 film,
+F1/F2 changing to G1/G2 at Alex's request, the 18:00/T4 dinner and three menu cards.
 
-The retained evidence has **22 selected successful native calls**: example-context and
-showing-inventory discovery, then the recorded cinema/restaurant flow. Context and inventory
-were read shortly before the final capture; their relevant code was unchanged. The raw
-production log retains all 28 calls, including layout-check takes. Dinner availability was
-checked in a separate restaurant document before the cinema confirmation. The demonstrator
-performs both visible synthetic confirmation clicks. The dialogue is scripted, with fictional
-shared history; it is not an unscripted research session or a production memory service.
-
-The restaurant receives four functional display preferences separately from the confirmed
-cinema date/time and explicit ingredient exclusions. The menu keeps kitchen confirmation open.
-The evidence does not establish allergy safety, universal migraine benefit or independent-site
-adoption. See [inclusion evidence](inclusion-evidence.md).
+Alex and Lea are fictional, and their shared history is supplied example context. The home route
+is a labelled preset walkthrough rather than an embedded autonomous model. The visual edit
+changes documented page states around the continuous performance; it does not claim the browser
+interaction happened in real time. Both confirmations are synthetic. The recipe declarations
+list neither peanut nor avocado, while kitchen confirmation for cross-contact remains open. See
+[verification](verification.md) and [inclusion evidence](inclusion-evidence.md) for the native
+execution evidence and claim boundaries.
 
 ## Final checks
 
-Both MP4 exports pass full FFmpeg decode checks. Runtime, resolution, frame rate and audio
-streams were inspected. Corrected keyframes show the selected date/time, the F1/F2 to G1/G2
-change, the 18:00 table and all three dish cards without cutting off the result. Caption text
-matches all spoken words. Browser playback and its final control checks are recorded in
-[verification](verification.md).
+Both MP4 exports pass full FFmpeg decode checks. FFprobe reports 79.600 seconds, H.264 at
+1920 × 1080 and 30 fps, plus AAC stereo at 48 kHz; the clean export also contains its English
+subtitle stream. The 32 caption cues preserve the exact dialogue in
+the [demo script](demo-script.md), sourced from
+`tools/clickthru/out/warm-flow/spoken-dialogue.txt`.
 
 | File | SHA-256 |
 | --- | --- |
-| `as-i-am-calm.mp4` | `aba82b99cf564be219221645430669365baea97c10ffaa895c4e05e878c11fed` |
-| `as-i-am-calm-clean.mp4` | `8bc633a6d68f27c57aebaed7609c583eb3d8723575c34adfece8a5bcf456dba0` |
+| `as-i-am-warm.mp4` | `6683eb3c3ab63cc6289c24d2a45402d6d782fccc57115b9901b26b5438ae7a37` |
+| `as-i-am-warm-clean.mp4` | `4f6edfcb96c488380a7d4afd628dd88ad5b0cc53082ee46f7d7b8625883ce6fc` |
+| `as-i-am-warm.srt` | `1ade4c835644e657b4974f7f422493990cee5d091a2b0315efe284d0bdeb51c8` |
+| `as-i-am-warm.vtt` | `e64bf6aa7fdea6a435d1f573956cc98f398216190dbadc68b67653c6ee00c1d1` |
 
-Production sources, timing plans, raw captures and the renderer remain in
-`tools/clickthru/out/calm-evening/`. Provider credentials, voice identifiers and API responses
-stay outside Git and the delivery packet. Running the app requires no speech-provider account.
-The owner's final watch/listen, public upload and logged-out link checks remain open.
+The exact dialogue, timing plan, edit metadata, renderer and source materials remain in
+`tools/clickthru/out/warm-flow/`. The owner's final watch/listen, public upload and logged-out
+link checks remain open.
 
 ---
 
 # Historical films
 
-The preceding local candidate was **122.980 seconds**: a Full HD inclusion-led film with real
+The immediately preceding Alex/Lea candidate was **112 seconds**, with George and Chris sharing
+101 spoken words across 15 caption cues. Its `calm-evening` delivery is historical and must not
+be selected for submission.
+
+The next preceding local candidate was **122.980 seconds**: a Full HD inclusion-led film with real
 browser footage, recorded native WebMCP results, one continuous English voice-over and
 40 English caption cues. It replaces the previous 117-second guided candidate. Earlier
 recordings and failed-capture metadata are preserved.

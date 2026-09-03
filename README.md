@@ -199,10 +199,16 @@ this repository during the challenge's submission period. See the
 [submission draft](docs/devpost-submission.md#built-during-the-submission-period) for the
 development history and third-party building blocks.
 
-The current [112-second film](docs/recording.md) follows Alex and Lea's personal evening:
+The selected [79.6-second film](docs/recording.md) follows Alex and Lea's personal evening:
 calm display settings, an aisle-seat correction, dinner timing and three illustrated dishes.
-It uses two voices, 101 spoken words and 15 caption cues. The captioned and clean exports
-are in `tools/clickthru/out/calm-evening/delivery/`.
+George voices Alex and Jessica voices the agent in one continuous, uncut performance. Speech
+begins at 4.165 seconds; 32 English caption cues cover the complete dialogue. Visual changes
+follow the spoken trigger in a warm cream layout with one fixed browser position. LUNA and
+OLIVA appear in Alex's deliberately chosen calm view.
+
+The 1920 × 1080, 30 fps captioned and clean exports, SRT, VTT, poster and local player are in
+`tools/clickthru/out/warm-flow/delivery/`. Serve the player at `http://127.0.0.1:4382/` with
+`node tools/clickthru/out/warm-flow/serve-player.mjs`. The earlier 112-second film is historical.
 
 The [verification report](docs/verification.md) records separate component runs totaling
 215 passing tests: 128 unit, 72 browser and 15 recorder tests. Eight focused browser cases

@@ -13,12 +13,13 @@ These times follow the organizer's reminder; recheck the
 - [x] Native WebMCP registration and a separately labelled guided demo bridge.
 - [x] English project description, agent request and [judge testing instructions](judge-testing.md).
 - [x] MIT source license, generated-artwork provenance and redistributed font notices.
-- [x] New English dialogue and captions: two voices, 101 words, 15 cues, first speech at second 7.
-- [x] Matching 112-second film exported with real browser captures and native WebMCP results; see [recording](recording.md).
+- [x] Final English dialogue: one continuous, uncut George/Alex and Jessica/agent performance; no dialogue cuts or time-stretch.
+- [x] Matching 79.6-second film exported at 1920 × 1080 and 30 fps, with speech from 4.165 seconds and 32 English caption cues; see [recording](recording.md).
+- [x] Warm cream film layout, fixed browser position and visual changes following their spoken triggers; both venues shown in the chosen calm view.
 - [x] Integrated checks: 128 unit, 72 browser and 15 recorder tests pass; see [verification](verification.md).
 - [x] Application source `75a7054` built; eight focused browser checks repeated after the final CSS change and native execution recorded.
 - [x] Zero dependency vulnerabilities, no detected secrets, desktop/mobile visual review complete.
-- [ ] Watch and listen to the selected video; verify it still matches the final live behavior.
+- [ ] Watch and listen to `tools/clickthru/out/warm-flow/delivery/as-i-am-warm.mp4`; verify it still matches the final live behavior.
 
 ## Publication and submission — still outstanding
 
@@ -30,7 +31,7 @@ These times follow the organizer's reminder; recheck the
 - [ ] Reload the controller and both direct routes in a fresh WebMCP-capable browser.
 - [ ] Successfully discover and call native tools on the public top-level LUNA and OLIVA pages.
 - [ ] Complete both booking flows; verify receipt consent, native/fallback label and actual topology.
-- [ ] Upload the selected video to public YouTube, wait for processing and verify audio/captions.
+- [ ] Upload the selected 79.6-second video to public YouTube, wait for processing and verify audio/32 captions.
 - [ ] Fill Devpost with English copy, live/repo/video links and no-login testing instructions.
 - [ ] Include development-period provenance and accepted teammate invitations, or confirm solo entry.
 - [ ] Save and submit; verify green **Submitted** on My Projects rather than a saved draft.

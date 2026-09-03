@@ -87,12 +87,15 @@ have the reviewed commit, preview deployment, final video and exact submission c
    Verify successful CI and the expected source, setup instructions and root MIT license.
 2. With approval, make the project repository public. Check its logged-out page: the actual
    application is visible and GitHub detects the MIT license in the About section.
-3. Review the current Alex/Lea film in `tools/clickthru/out/calm-evening/delivery/`.
-   It runs 112 seconds, with two voices, 101 spoken words and 15 caption cues. Watch/listen
-   once before upload and compare it with the final released UI. Use `as-i-am-calm.mp4` for
-   always-visible subtitles, or `as-i-am-calm-clean.mp4` with `as-i-am-calm.srt` for switchable
-   YouTube captions; `as-i-am-calm.vtt` is also supplied. The older `inclusion-premiere` film
-   is historical. Verify the selected file against the hash and checks in [recording](recording.md).
+3. Review the selected Alex/Lea film in `tools/clickthru/out/warm-flow/delivery/`.
+   It runs 79.6 seconds at 1920 × 1080 and 30 fps, with one continuous, uncut George/Jessica
+   performance and 32 caption cues. Speech begins at 4.165 seconds. Watch/listen once before
+   upload and compare it with the final released UI. Use `as-i-am-warm.mp4` for always-visible
+   subtitles, or `as-i-am-warm-clean.mp4` with `as-i-am-warm.srt` for switchable YouTube
+   captions; `as-i-am-warm.vtt`, `poster.jpg` and `index.html` are also supplied. Serve the
+   player locally with `node tools/clickthru/out/warm-flow/serve-player.mjs` and open
+   `http://127.0.0.1:4382/`. The earlier 112-second film is historical. Verify the selected
+   file against the hash and checks in [recording](recording.md).
 4. Upload the selected file to public YouTube early. Wait for video/audio processing, verify
    playback logged out, and add the supplied English captions. Copy its public URL.
 5. Fill Devpost with the [English submission copy](devpost-submission.md), verified live/repo/video

@@ -1,64 +1,74 @@
 # Demo script — a night for two
 
-The current film is **112 seconds** with **101 spoken words**, **two voices** and **15 caption
-cues**. The first voice begins at **0:07**. Quiet holds and actual browser images carry the
-story; technical detail belongs in the supporting evidence. See [recording](recording.md) for
-export and playback status and [the beat sheet](video-beat-sheet.md) for visual timing.
+The selected film is **79.6 seconds**, 1920 × 1080 at 30 fps, with **32 English
+caption cues**. The first voice begins at **4.165 seconds**. George voices Alex and Jessica
+voices the agent in one continuous two-voice performance. The dialogue master is uncut, runs
+at its original speed and ends at 75.569 seconds; there is no dialogue splice or time-stretch.
 
-Alex and Lea are fictional. The prototype supplies their explicitly shared example history.
-The dialogue is scripted, while the native recording uses actual WebMCP calls and resulting
-page states. The demonstrator operates visible confirmation controls. No dialogue is presented
-as participant research, a real customer's medical history or an autonomous memory service.
+Alex and Lea are fictional. Their explicitly shared example history explains why the agent
+knows Alex's preferred view, seating preference, favorite dish and Lea's ingredient exclusions.
+The film shows the websites changing in response while Alex remains part of each decision.
 
-## Spoken dialogue
+## Exact spoken dialogue
 
-| Starts | Voice | Exact words |
-| --- | --- | --- |
-| 0:07 | Alex | Could you plan a movie night for Lea and me next week? Dinner first would be lovely. |
-| 0:19 | Agent | I'll keep things calm today. Your view, just how you like it. |
-| 0:31 | Agent | Friday, eight fifteen. You at the aisle. Lea right beside you. |
-| 0:43 | Alex | One row further back? |
-| 0:47 | Agent | Of course. You're still at the aisle. |
-| 0:58 | Agent | A table at six. Time to enjoy dinner, then walk to the cinema. |
-| 1:12 | Agent | Your mushroom risotto. And two more options, with no peanut or avocado ingredients listed. |
-| 1:22 | Agent | The kitchen still needs to confirm cross-contact. |
-| 1:30 | Alex | That looks lovely. Let's book it. |
-| 1:43 | Agent | As I Am. The web adapts. You don't have to. |
+The performance directions in `dialogue.json` shape delivery but are not spoken. The text below
+matches `spoken-dialogue.txt` exactly.
 
-## What the pictures establish
+| Voice | Exact words |
+| --- | --- |
+| George · Alex | Could we plan a movie night for Lea and me next week? Dinner before the film, if we can. |
+| Jessica · Agent | Of course. And because the migraine is bothering you today, I'll keep the planning view calm — dark, low-glare, and still. You can change any part of the plan. |
+| George · Alex | Thank you. What does Friday look like? |
+| Jessica · Agent | There's an eight-fifteen showing. That leaves time for dinner first. I found two seats together: you're at the aisle, with Lea right beside you. |
+| George · Alex | Could we move one row further back? |
+| Jessica · Agent | Of course. Row G instead — same arrangement. You're still at the aisle. Have a look. |
+| George · Alex | That's right. Let's keep those. |
+| Jessica · Agent | Done. For dinner, there's a quiet garden table at six. Your mushroom risotto is on the shortlist — plus two other dishes. None lists peanut or avocado in the recipe, but the kitchen still needs to confirm cross-contact. |
+| George · Alex | Perfect. Let's book the table. |
+| Jessica · Agent | All set. One evening, planned together — with the web adapting around you. |
 
-1. **A familiar request.** The supplied history explains the known preferences. Today's calm
-   planning view is separate from the date of next week's outing.
-2. **A website that responds.** Native tools apply dark appearance, lower glare and stopped
-   animation. The site retains its own design and usable controls.
-3. **A personal choice.** The recorded showing is Friday 11 September at 20:15. F1/F2 puts Alex
-   at the aisle and Lea inside. Their explicit correction moves both to G1/G2; the showing stays.
-4. **An evening that fits.** Dinner availability is checked before ticket confirmation. After
-   the visible confirmation, the agent reads the confirmed date/time and carries the display
-   receipt separately to OLIVA. The 18:00/T4 proposal permits 90 minutes to eat, 15 to walk and
-   arrival at 19:45.
-5. **A useful shortlist.** Three pictured recipes replace a long list. Mushroom risotto comes
-   first only if it passes the explicit peanut and avocado ingredient filter. The kitchen
-   cross-contact check is spoken and remains visible.
-6. **The person decides.** The full menu and original appearance remain accessible. The table
-   is confirmed through the restaurant's visible control. Both bookings are synthetic.
+## Exact picture triggers
 
-## Production choices
+These points come from `tools/clickthru/out/warm-flow/story-timing.json`. Each visual response
+appears only after its subject has entered the spoken conversation.
 
-Keep one main action on screen at a time. Use short captions outside the captured website;
-do not compete with them using explanatory paragraphs or large tool transcripts. The opening
-and closing have room to breathe. The two voices take turns instead of narrating every click.
+| At | Picture state |
+| ---: | --- |
+| 0.000 | Warm opening; no speech yet. |
+| 4.165 | Alex's first audible words. |
+| 6.407 | Supplied fictional context. |
+| 17.936 | Calm display preferences applied. |
+| 28.029 | Friday 20:15 showing. |
+| 32.578 | F1/F2 aisle pair. |
+| 39.867 | Alex's G1/G2 correction. |
+| 49.548 | Tickets confirmed. |
+| 51.228 | OLIVA in the same chosen calm view. |
+| 54.748 | 18:00 quiet garden table. |
+| 55.452 | Three pictured menu recommendations. |
+| 63.088 | Kitchen cross-contact confirmation remains open. |
+| 68.668 | Table confirmed. |
+| 70.349 | The complete evening. |
+| 72.889 | Closing frame. |
+| 75.569 | Spoken dialogue ends. |
+| 79.600 | Film ends. |
 
-The current edit preserves the actual source images and tool-result order while shortening
-waiting time. The audio edit schedules utterances with deliberate pauses at a documented 0.94
-playback rate. It does not claim real-time, continuous conversation. Retain the source captures,
-native-call evidence, dialogue, shot list and audio edit with the deliverable.
+## Picture language and claim boundaries
 
-The home route is a labelled preset walkthrough; it must not be represented as an embedded
-model. Real external-agent testing is documented in [judge testing](judge-testing.md).
-The advanced pointing/reading/cognitive journey remains at `/guided`.
+The film uses a warm cream frame, one fixed browser position and consistent scale. It avoids
+pans and rapid reframing. LUNA and OLIVA appear in Alex's deliberately chosen calm view: dark,
+low-glare and still. The changed page state does the explaining; captions do not compete with
+large technical callouts.
 
-The 117-second and 123-second previous films, their longer narrations and the earlier capture
-failure are historical. They do not describe this cut. Public deployment, public video playback
-and submission are separate from rendering this local film. Current claims and research limits
-are in [inclusion evidence](inclusion-evidence.md).
+Visuals follow the spoken trigger rather than anticipating it. The sequence keeps Alex's row
+correction, both visible demo confirmations, dinner timing and three recipe cards. “None lists
+peanut or avocado” describes the supplied recipe declarations; the next line keeps kitchen
+confirmation and cross-contact visibly unresolved.
+
+The home route is a labelled preset walkthrough, not an embedded autonomous model. Alex and
+Lea's dialogue is scripted and is not participant research or a real customer's health history.
+Native WebMCP evidence and current claim boundaries are documented in
+[verification](verification.md) and [inclusion evidence](inclusion-evidence.md).
+
+The earlier 112-second film is superseded and historical. Export and playback details for the
+selected film are in [recording](recording.md); its exact visual sequence is in the
+[beat sheet](video-beat-sheet.md).
