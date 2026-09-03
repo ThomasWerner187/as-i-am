@@ -37,6 +37,7 @@ export function profileToTokenOps(profile: Record<string, Record<string, unknown
 
   if (vis.contrast) flags["contrast"] = String(vis.contrast);
   if (vis.glare) flags["glare"] = String(vis.glare);
+  if (vis.color_scheme) flags["color-scheme"] = String(vis.color_scheme);
   if (vis.color_mode) flags["color-mode"] = String(vis.color_mode);
   if (vis.font_style) flags["font-style"] = String(vis.font_style);
   if (vis.color_independent_status === true) flags["status-labels"] = "on";
@@ -115,6 +116,7 @@ export function explainChange(key: string, to: unknown): string {
     case "visual.contrast": return `Contrast scheme set to ${v}.`;
     case "visual.brightness": return `Brightness reduced to ${Math.round(Number(v) * 100)}%.`;
     case "visual.glare": return v === "normal" ? "Restored the default glare setting." : "Glare reduced with a softer palette.";
+    case "visual.color_scheme": return v === "default" ? "Restored the website's original appearance." : "Your dark appearance is active.";
     case "visual.color_mode": return `Colour mode set to ${String(v).replace("-", " ")}; status colours remapped to a safe palette.`;
     case "visual.color_independent_status": return "Status is now shown with labels, icons and patterns — never colour alone.";
     case "visual.font_style": return v === "default" ? "Restored the default typeface." : "Switched to a highly readable typeface.";

@@ -393,7 +393,7 @@ export class AdaptationEngine {
     root.style.removeProperty("--aia-brightness-value");
     for (const [k, v] of Object.entries(tokens)) root.style.setProperty(k, v);
     for (const name of [
-      "contrast", "glare", "color-mode", "font-style", "status-labels", "focus",
+      "contrast", "glare", "color-scheme", "color-mode", "font-style", "status-labels", "focus",
       "keyboard-first", "no-drag", "no-dblclick", "cursor-size", "min-target", "density",
       "hide-nonessential", "labels", "steps", "progress", "help", "plain-errors", "confirmation",
       "motion", "autoplay", "parallax", "captions", "transcripts", "static-media",

@@ -28,6 +28,8 @@ export interface VisualPreferences {
   contrast?: "normal" | "high" | "maximum";
   brightness?: number; // 0.55 – 1.0 (1.0 = unchanged)
   glare?: "normal" | "low";
+  /** Site-owned appearance; independent of colour-vision remapping. */
+  color_scheme?: "default" | "dark";
   color_mode?:
     | "normal"
     | "grayscale"
@@ -245,6 +247,7 @@ const RANGES: Record<string, [number, number]> = {
 const ENUMS: Record<string, readonly string[]> = {
   "visual.contrast": ["normal", "high", "maximum"],
   "visual.glare": ["normal", "low"],
+  "visual.color_scheme": ["default", "dark"],
   "visual.color_mode": [
     "normal",
     "grayscale",
@@ -405,7 +408,7 @@ export function profileJsonSchema(): Record<string, unknown> {
       visual: section([
           "visual.text_scale", "visual.important_text_scale", "visual.line_height",
           "visual.letter_spacing", "visual.word_spacing", "visual.max_line_length",
-          "visual.contrast", "visual.brightness", "visual.glare", "visual.color_mode",
+          "visual.contrast", "visual.brightness", "visual.glare", "visual.color_scheme", "visual.color_mode",
           "visual.color_independent_status", "visual.font_style",
         ]),
       interaction: section([
