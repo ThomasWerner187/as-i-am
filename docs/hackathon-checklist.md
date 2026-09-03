@@ -13,8 +13,9 @@ These times follow the organizer's reminder; recheck the
 - [x] English project description, agent request and [judge testing instructions](judge-testing.md).
 - [x] MIT source license, generated-artwork provenance and redistributed font notices.
 - [x] Current 93-second English recording with audio and captions prepared locally.
-- [x] Pre-polish baseline: 67 unit, 39 browser and 15 recorder tests pass; see [verification](verification.md).
-- [ ] Record the final release commit and fresh checks after all polish is integrated.
+- [x] Final integrated checks: 90 unit, 46 browser and 15 recorder tests pass; see [verification](verification.md).
+- [x] Application source `d6cc3a1` verified with native tools against the production build.
+- [x] Zero dependency vulnerabilities, no detected secrets, desktop/mobile visual review complete.
 - [ ] Watch and listen to the selected video; verify it still matches the final live behavior.
 
 ## Publication and submission — still outstanding

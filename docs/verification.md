@@ -16,6 +16,61 @@ gitleaks git --redact=100 --no-banner --log-opts=--all .
 The recorder tests also run independently with `npm run test:recording` or
 `node --test tools/clickthru/*.test.mjs`.
 
+## Final integrated review — September 3, 2026
+
+Application source commit: **`d6cc3a1`**. Subsequent release documentation does not change
+the tested application. The complete `npm run check` passed: TypeScript, **90 unit tests,
+15 recorder tests, 46 browser tests**, and the production build. This is **151 passing tests**.
+`npm audit` reported **zero vulnerabilities**, including development dependencies. Gitleaks
+scanned all 25 commits with no leaks; tracked text and the production output contained no
+secrets, machine paths or email addresses. All 49 relative links in the 16 existing Markdown
+documents resolved before the final verification notes were added.
+
+The final regressions cover reversible boolean and enum preferences, exact undo including
+accepted inherent preferences and task focus, closed-schema prototype-key rejection,
+local-only speech fallback, integer cart quantities and complete price totals. Browser checks
+also cover mobile focus, the adaptation control above the site, 2.2× text reflow, a contained
+large-target seat map, delayed connection recovery and correct standalone production URLs.
+
+### Native execution against the production build
+
+Served the built `dist/` at `http://localhost:4173/` with no development shim and used the
+in-app browser's WebMCP capability:
+
+1. Discovered the controller's two tools. `get_evening_context` returned working top-level
+   cinema/restaurant routes, separate embedded URLs and `cross_origin: false`.
+2. Independently discovered **19 registered tools on each top-level site**.
+3. LUNA accepted six preferences: 56px targets, 12px spacing, strong focus, guided steps,
+   hidden nonessential content and reduced motion. Its measured fit was `satisfied`, with
+   56px minimum targets and no horizontal page overflow.
+4. Exported LUNA's real functional receipt and imported it into OLIVA. All six preferences
+   were accepted with `satisfied` fit, 56px minimum targets and no horizontal page overflow.
+5. Native availability tools returned the selected synthetic F6–F7 seats (€26 total) and
+   18:30 table. Each preparation tool returned `requires_human_confirmation: true` and
+   booking state `review`. Only clicking the visible confirmation changed state to `confirmed`.
+
+This production preview uses **one origin and separate documents**, not separate businesses.
+The September 2 native test below separately verifies the three-origin development topology.
+The embedded guided journey still displays **Guided demo · fallback** in this browser; native
+iframe execution is not claimed. Repeat the top-level native check after public deployment.
+
+### Final visual and media checks
+
+Reviewed the production controller and both native booking reviews at desktop width, then
+completed the guided cinema-to-restaurant journey with a 390px mobile viewport. Both sites
+retained their design; preference transfer required the visible consent action; the receipt
+explanation listed only the six functional preferences. Desktop and mobile screenshots were
+saved with the local release packet. The additional UX review found no introduced regressions.
+
+The two served artwork files total approximately **124 kB**, down from 4.3 MiB of PNGs.
+Original artwork is preserved under `docs/art-sources/`. The production JavaScript is 362.17 kB
+(109.55 kB gzip); CSS is 64.05 kB (13.47 kB gzip). Font notices ship with the build.
+
+The selected 93-second video decoded completely without error. Sampled frames match the
+guided workflow, although its older control placement differs from the final layout.
+Measured audio peak was −1.3 dB and mean −17.7 dB. This is a technical check and sampled
+visual review; final watching and listening by the owner remains open before upload.
+
 ## Pre-polish baseline — September 3, 2026
 
 At source commit `70923d9`, TypeScript and the production build passed, along with **67 unit

@@ -113,7 +113,7 @@ The video shows the guided demo; native tool calls are tested separately on top-
 - [x] Record a new English video with guide narration, captions and synthetic-data disclosure.
 - [ ] Owner reviews the [recording](recording.md) and approves the final voice and publication.
 - [ ] Obtain the owner’s approval for any repository visibility change and publication.
-- [ ] Review secrets, personal data, license, assets and source links before release.
+- [x] Review secrets, personal data, license, assets and source links before release.
 - [ ] Verify all submission links logged out and recheck the current official deadline/rules.
 - [ ] Confirm team invitations are accepted, or record that this is a solo entry.
 - [ ] Save and submit, then verify the green **Submitted** label on Devpost My Projects.
