@@ -154,7 +154,7 @@ test("the advertised confirm-all policy changes the cart to a real two-step conf
   const confirmation = capabilities.capabilities.find(
     (capability: { key: string }) => capability.key === "cognitive.confirmation_level",
   );
-  expect(confirmation.values).toEqual(["confirm-all"]);
+  expect(confirmation.values).toEqual(["normal", "confirm-risky", "confirm-all"]);
 
   const applied = await run(page, "tune_cognitive_support", { confirmation_level: "confirm-all" });
   expect(applied.ok).toBe(true);
@@ -171,4 +171,13 @@ test("the advertised confirm-all policy changes the cart to a real two-step conf
   await confirm.click();
   await expect(page.getByTestId("staged-preview")).toBeHidden();
   await expect(page.getByTestId("cart-button")).toContainText("(1)");
+
+  // The preference is reversible without removing the human confirmation boundary.
+  const reverted = await run(page, "tune_cognitive_support", { confirmation_level: "normal" });
+  expect(reverted.ok).toBe(true);
+  await run(page, "prepare_cart_change", { product_id: "aurora-anc", qty: 1 });
+  await expect(page.getByTestId("cart-button")).toContainText("(1)");
+  await confirm.click();
+  await expect(page.getByTestId("staged-preview")).toBeHidden();
+  await expect(page.getByTestId("cart-button")).toContainText("(2)");
 });
