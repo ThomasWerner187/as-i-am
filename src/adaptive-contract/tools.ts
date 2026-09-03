@@ -179,9 +179,13 @@ function applyProfileOnPage(
   profile: FunctionalProfile,
   pageId: string,
   operationLabel: string,
+  focusedTask?: string | null,
 ): { result: AdaptationResult; partition: PartitionedProfile } {
   const partition = partitionProfile(profile, pageId);
-  const result = engine.applyProfile(partition.adaptive, operationLabel);
+  const result = engine.applyProfile(partition.adaptive, operationLabel, {
+    acceptedProfile: partition.accepted,
+    focusedTask,
+  });
   const warnings = [...result.warnings];
   if (partition.inherent.length > 0) {
     warnings.push(`Already satisfied by this page: ${partition.inherent.join(", ")}.`);
@@ -372,6 +376,8 @@ const universalTools: ToolDef[] = [
         adaptation_version: snap.adaptationVersion,
         page_id: activePageId(),
         active_preferences: snap.active,
+        accepted_preferences: snap.accepted,
+        focused_task: snap.focusedTask,
         active_parameter_count: countPreferences(snap.active as unknown as FunctionalProfile),
         applied_changes_logged: snap.applied.length,
         undo,
@@ -470,9 +476,8 @@ const universalTools: ToolDef[] = [
       };
       const preset = presets[task];
       if (!preset) return err("bad_task", `Unknown task "${task}".`);
-      const { result, partition } = applyProfileOnPage(preset, pageId, `Task adaptation: ${task}`);
-      if (task === "complete_form") focusStore.set("complete_form");
-      if (task === "compare_products") focusStore.set("compare_products");
+      const focusedTask = task === "complete_form" || task === "compare_products" ? task : undefined;
+      const { result, partition } = applyProfileOnPage(preset, pageId, `Task adaptation: ${task}`, focusedTask);
       const rendered = await measuredAdaptation(pageId, result, partition.requested);
       activity.push("adapt_for_task", `Adapted the page for task "${task}" (v${rendered.adaptation_version}); verified ${rendered.verification.overall}.`);
       return j({ ...rendered, task });
@@ -651,8 +656,10 @@ const universalTools: ToolDef[] = [
     description: "Undo the last adaptation operation and restore the previous state exactly.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
     run: async () => {
+      const before = engine.getSnapshot();
       const result = engine.undo();
-      const focusRestored = focusStore.undo();
+      const after = engine.getSnapshot();
+      const focusRestored = before.focusedTask !== after.focusedTask;
       engine.syncDom();
       await waitForRenderedCommit();
       const restored = result.restored || focusRestored;
@@ -660,7 +667,7 @@ const universalTools: ToolDef[] = [
       return j({
         ...result,
         restored,
-        adaptation_restored: result.restored,
+        adaptation_restored: result.applied.length > 0,
         focus_restored: focusRestored,
       });
     },
@@ -672,7 +679,6 @@ const universalTools: ToolDef[] = [
     run: async () => {
       const result = engine.reset();
       engine.syncDom();
-      focusStore.reset();
       await waitForRenderedCommit();
       activity.push("reset_adaptations", "Reset to the normal base view.");
       return j(result);
@@ -707,7 +713,7 @@ const universalTools: ToolDef[] = [
       try {
         const receipt = buildReceipt({
           origin_site: page.site_name,
-          profile: { version: CONTRACT_VERSION, ...(snap.active as object) } as unknown as FunctionalProfile,
+          profile: { version: CONTRACT_VERSION, ...(snap.accepted as object) } as unknown as FunctionalProfile,
           adaptations_applied: snap.stats.adaptations_applied,
           refinements: snap.stats.refinements,
         });
@@ -847,7 +853,7 @@ const semanticTools: ToolDef[] = [
           }
         : page;
       activity.push("explain_page", `Explained the page (${brief ? "brief" : "full"}).`);
-      return j({ ...out, tools_hint: "get_adaptation_capabilities, apply_adaptation_profile, adapt_for_task, measure_rendered_ui" });
+      return j({ ok: true, ...out, tools_hint: "get_adaptation_capabilities, apply_adaptation_profile, measure_rendered_ui" });
     },
   },
   {
@@ -888,11 +894,14 @@ const semanticTools: ToolDef[] = [
       } else if (scope === "appointments") {
         summary = APPOINTMENTS.map((a) => `${a.topic}: ${a.date} ${a.time}, ${a.location} (${a.slots} slots)`).join(" | ");
       } else if (scope === "comparison" || scope === "products") {
-        const list = filteredProducts();
+        const list = scope === "comparison"
+          ? shopStore.get().compare.map(findProduct).filter((product): product is Product => Boolean(product))
+          : filteredProducts();
         summary = plain
           ? list.slice(0, 4).map((p) => `${p.name}. Costs ${money(p.price)}. ${p.plain_description}`).join(" | ")
           : list.slice(0, 6).map(productPriceLine).join(" | ");
-        if (args.include_prices) {
+        if (list.length === 0) summary = scope === "comparison" ? "No products are selected for comparison yet." : "No products match the current filters.";
+        if (args.include_prices && list.length > 0) {
           summary += ` Totals include shipping. Example: ${productPriceLine(list[0])}.`;
         }
       } else {
@@ -1115,7 +1124,7 @@ const domainTools: ToolDef[] = [
     inputSchema: {
       type: "object",
       properties: {
-        items: { type: "array", items: { type: "object", properties: { product_id: { type: "string" }, qty: { type: "number", minimum: 1 } }, required: ["product_id"] } },
+        items: { type: "array", items: { type: "object", properties: { product_id: { type: "string" }, qty: { type: "integer", minimum: 1 } }, required: ["product_id"], additionalProperties: false } },
         coupon_code: { type: "string" },
       },
       required: ["items"],
@@ -1217,19 +1226,20 @@ const domainTools: ToolDef[] = [
       "STAGE a cart change (product_id + qty). Nothing is added until the human confirms visibly in the page. Returns a preview the agent can describe; the site always keeps the confirmation.",
     inputSchema: {
       type: "object",
-      properties: { product_id: { type: "string" }, qty: { type: "number", minimum: 1, maximum: 9 } },
+      properties: { product_id: { type: "string" }, qty: { type: "integer", minimum: 1, maximum: 9 } },
       required: ["product_id"],
       additionalProperties: false,
     },
     run: (_pageId, args) => {
       const p = findProduct(String(args.product_id ?? ""));
       if (!p) return err("not_found", `No product "${String(args.product_id)}".`);
-      const qty = Math.max(1, Math.min(9, Number(args.qty ?? 1)));
+      const qty = Number(args.qty ?? 1);
       const staged = shopStore.stageAdd(p.id, qty);
       engine.announceNow(`Cart change staged: ${qty}× ${p.name}. Awaiting your confirmation.`);
       activity.push("prepare_cart_change", `Staged ${qty}× ${p.name} — waiting for human confirmation.`);
       return j({
-        ok: true, staged: true, product: p.name, qty, preview_total: money(staged!.total),
+        ok: true, staged: true, product: p.name, qty: staged!.qty,
+        preview_total: money(priceBreakdown(p, shopStore.get().active_coupon ? findCoupon(shopStore.get().active_coupon!) : undefined, staged!.qty).total),
         requires: "explicit human confirmation in the page (button) — the agent cannot confirm for the user",
         cancel: "undo_cart_change",
       });

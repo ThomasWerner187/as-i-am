@@ -90,6 +90,21 @@ export function profileToTokenOps(profile: Record<string, Record<string, unknown
 /** Plain-language explanations per profile key (used by explain_adaptation + timeline). */
 export function explainChange(key: string, to: unknown): string {
   const v = to as string | number | boolean;
+  if (v === false) {
+    const reversals: Record<string, string> = {
+      "visual.color_independent_status": "Restored the page's default status presentation.",
+      "interaction.keyboard_first": "Restored the default keyboard-navigation presentation.",
+      "cognitive.step_by_step": "Turned off the guided-step presentation.",
+      "cognitive.hide_nonessential": "Nonessential content is visible again.",
+      "cognitive.persistent_labels": "Restored the page's default control labels.",
+      "cognitive.progress_indicators": "Restored the page's default progress presentation.",
+      "cognitive.plain_error_messages": "Restored the page's default error messages.",
+      "motion_media.reduce_motion": "Removed the requested motion reduction.",
+      "motion_media.disable_animation": "Animations may follow the page's default settings again.",
+      "motion_media.disable_autoplay": "Autoplay may follow the page's default settings again.",
+    };
+    return reversals[key] ?? `Turned off ${key.replace(/[_\.]/g, " ")}.`;
+  }
   switch (key) {
     case "visual.text_scale": return `Text size increased to ${Math.round(Number(v) * 100)}%.`;
     case "visual.important_text_scale": return `Key information like prices scaled up additionally (${Math.round(Number(v) * 100)}%).`;
@@ -99,10 +114,10 @@ export function explainChange(key: string, to: unknown): string {
     case "visual.max_line_length": return `Lines limited to about ${v} characters.`;
     case "visual.contrast": return `Contrast scheme set to ${v}.`;
     case "visual.brightness": return `Brightness reduced to ${Math.round(Number(v) * 100)}%.`;
-    case "visual.glare": return "Glare reduced with a softer palette.";
+    case "visual.glare": return v === "normal" ? "Restored the default glare setting." : "Glare reduced with a softer palette.";
     case "visual.color_mode": return `Colour mode set to ${String(v).replace("-", " ")}; status colours remapped to a safe palette.`;
     case "visual.color_independent_status": return "Status is now shown with labels, icons and patterns — never colour alone.";
-    case "visual.font_style": return "Switched to a highly readable typeface.";
+    case "visual.font_style": return v === "default" ? "Restored the default typeface." : "Switched to a highly readable typeface.";
     case "interaction.minimum_target_size": return `All touch and click targets are at least ${v}×${v} pixels.`;
     case "interaction.target_spacing": return `At least ${v}px of space between adjacent controls.`;
     case "interaction.keyboard_first": return "Keyboard navigation is front and centre, with visible shortcuts.";

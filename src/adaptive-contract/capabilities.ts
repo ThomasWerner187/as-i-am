@@ -144,9 +144,9 @@ const PAGE_SUPPORT: Record<string, PageSupport> = {
     ],
     valueOverrides: {
       "reading.mode": ["original", "plain_language", "key_points", "step_by_step"],
-      // The shop already confirms cart changes by construction. Only the
-      // stricter two-step policy changes behaviour beyond that baseline.
-      "cognitive.confirmation_level": ["confirm-all"],
+      // The baseline still requires human confirmation. These values also
+      // let an agent reverse a previously requested two-step policy.
+      "cognitive.confirmation_level": ["normal", "confirm-risky", "confirm-all"],
     },
   },
   "services-portal": {
@@ -191,7 +191,11 @@ export function discoverCapabilities(pageId: string, siteName: string): Capabili
         ...support.inherent.map((key) => ({ ...BY_KEY.get(key)!, status: "inherent" as const })),
       ].map((capability) => ({
         ...capability,
-        supported_values: support.valueOverrides?.[capability.key] ?? capability.supported_values,
+        supported_values: support.valueOverrides?.[capability.key]
+          ?? (capability.status === "adaptive" && Array.isArray(capability.supported_values)
+            && capability.supported_values.length === 1 && capability.supported_values[0] === true
+            ? [true, false]
+            : capability.supported_values),
       }))
     : [];
   const presentDomains = new Set(capabilities.map((capability) => capability.domain));
