@@ -87,12 +87,12 @@ have the reviewed commit, preview deployment, final video and exact submission c
    Verify successful CI and the expected source, setup instructions and root MIT license.
 2. With approval, make the project repository public. Check its logged-out page: the actual
    application is visible and GitHub detects the MIT license in the About section.
-3. Review the completed matching film in `tools/clickthru/out/inclusion-premiere/delivery/`.
-   It runs 122.980 seconds and includes actual native evidence, continuous English narration
-   and 40 captions. Watch/listen once before upload and check correspondence with the final
-   released UI. Use the clean version plus the SRT for switchable YouTube captions, or the
-   captioned MP4 for always-visible subtitles. The earlier 117-second cut is historical.
-   See [recording](recording.md) for the current hash and technical verification.
+3. Review the current Alex/Lea film in `tools/clickthru/out/calm-evening/delivery/`.
+   It runs 112 seconds, with two voices, 101 spoken words and 15 caption cues. Watch/listen
+   once before upload and compare it with the final released UI. Use `as-i-am-calm.mp4` for
+   always-visible subtitles, or `as-i-am-calm-clean.mp4` with `as-i-am-calm.srt` for switchable
+   YouTube captions; `as-i-am-calm.vtt` is also supplied. The older `inclusion-premiere` film
+   is historical. Verify the selected file against the hash and checks in [recording](recording.md).
 4. Upload the selected file to public YouTube early. Wait for video/audio processing, verify
    playback logged out, and add the supplied English captions. Copy its public URL.
 5. Fill Devpost with the [English submission copy](devpost-submission.md), verified live/repo/video

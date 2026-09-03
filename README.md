@@ -111,9 +111,11 @@ the selected access needs, inspect the changed page and read its rendered measur
 The [native walkthrough](docs/judge-testing.md) makes that sequence reproducible. Current
 measurements demonstrate specific rendered properties, not a person's comfort or task success.
 
-Use **Use WebMCP ↗** for the English request and direct site links. Some browsers expose
-native WebMCP only to top-level documents. In that case, use the direct links for native calls;
-do not describe the embedded guided view as native. See [verification](docs/verification.md).
+On `/`, open **How this works** for the direct venue links; the English agent request is in
+the [personal story](docs/personal-evening.md#native-request-for-the-fictional-scenario).
+On `/guided`, **Use WebMCP ↗** contains the request and links. Some browsers expose native
+WebMCP only to top-level documents. Use the direct links in that case, and identify the actual
+transport used. See [verification](docs/verification.md).
 
 ## What makes the protocol useful
 
@@ -197,8 +199,11 @@ this repository during the challenge's submission period. See the
 [submission draft](docs/devpost-submission.md#built-during-the-submission-period) for the
 development history and third-party building blocks.
 
-The current [123-second film](docs/recording.md) shows the revised access choices, changing
-needs and real native execution. It combines actual browser footage with recorded-result
-callouts, a continuous English voice-over and 40 caption cues. The controls and native calls
-are verified with 196 passing tests. Local media is complete; public upload and final
-submission remain pending.
+The current [112-second film](docs/recording.md) follows Alex and Lea's personal evening:
+calm display settings, an aisle-seat correction, dinner timing and three illustrated dishes.
+It uses two voices, 101 spoken words and 15 caption cues. The captioned and clean exports
+are in `tools/clickthru/out/calm-evening/delivery/`.
+
+The [verification report](docs/verification.md) records separate component runs totaling
+215 passing tests: 128 unit, 72 browser and 15 recorder tests. Eight focused browser cases
+were rerun after the final CSS change. Public upload and final submission remain pending.
