@@ -1,54 +1,65 @@
-# As I Am — recorded demo
+# As I Am — recording status
 
-The preferred cut is **1:33**, with a **9.1-second elevator pitch** followed by
-one continuous story. Both original websites work before adaptation; the full restaurant is
-shown again before the person explicitly brings their preferences over.
+**A new recording is required for the inclusion, dinner-planning and menu experience.** The
+previous 93-second cinema-to-dinner cut is superseded as a submission candidate. It does not
+show the two help modes, source-backed dinner proposal or six-dish menu.
 
-The selected file was checked on September 3, 2026: **93.000 seconds**, H.264 video at
-**1416 × 1440**, AAC audio and an embedded subtitle track. The accompanying SRT has
-**29 English cues**. Its SHA-256 is
+## New narration and capture
+
+The authoritative [continuous-story.json](../tools/clickthru/continuous-story.json) contains
+**304 English words**. It opens with “Let my agent help. Let me stay in charge.” The 24-word
+opening is intended for about ten seconds. Target a natural continuous performance below
+three minutes; final duration must be measured after generation.
+
+The [demo script](demo-script.md) and [beat sheet](video-beat-sheet.md) map the story to exact
+capture markers. The two modes are **Help me choose** and **Prepare for me**. Show the full
+menu as well as focused choices, the editable fictional request, source-backed 18:00 table
+proposal and both visible human confirmations. Keep the distinction between the functional
+receipt and the separate film-time planning input readable.
+
+The guide uses preset requests, with a visible native/demo transport label. It is not an
+embedded autonomous LLM. Native external-agent calls must be demonstrated or verified separately;
+do not present guided clicks as autonomous native execution.
+
+Record the integrated app in a new ignored output directory. Generate the full narration in
+one request, preserve the performance, and let its timestamps control the edit. Retime static
+holds while preserving click-motion speed. Rendering alone must not make another paid speech
+request. Never overwrite the old footage or audio to make it look like the new version.
+
+## New candidate record — pending capture
+
+| Item | Status |
+| --- | --- |
+| Integrated-flow capture | Not yet recorded in this document |
+| Continuous narration | Script prepared; new generated performance pending |
+| MP4 and standalone player | Pending |
+| Runtime, dimensions and codecs | Must be measured from the new export |
+| English captions | Must be aligned to the new performance |
+| SHA-256 | Must be computed for the selected new file |
+| Watch/listen review | Pending |
+| Public YouTube link | Not yet recorded |
+
+When the new files exist, replace these statuses with observed evidence. Check that the video
+matches the released app and that the public upload has finished processing. Existing test or
+playback results for an older cut do not verify the replacement.
+
+## Previous cut — archive only
+
+`tools/clickthru/out/chris-v3-oyj7sk/as-i-am-continuous.mp4` is the September 2 guided recording
+of the previous flow. It was checked on September 3: **93.000 seconds**, H.264 video at
+**1416 × 1440**, AAC audio, an embedded subtitle track and 29 accompanying English SRT cues.
+A full FFmpeg decode passed. Its SHA-256 is
 `a96f7e71944e693561afbb89abaf70a597484ca5a6021eabc8b61ba43cbb623b`.
-This identifies the current local candidate, not a public upload.
 
-Generated locally in `tools/clickthru/out/chris-v3-oyj7sk/`:
+That archive includes its HTML player, SRT/VTT, untouched `continuous-master.mp3`, speech plan
+and edit plan. It used the premade Chris voice with Eleven v3, one 260-word request and no
+joined speech clips or post-generation speed change. Earlier takes remain in the ignored
+`continuous-zpfCY5`, `take-mTiagF` and `take-7ARmxF` output directories.
 
-- `as-i-am-continuous.mp4` — English demo with ElevenLabs' premade Chris voice and Eleven v3.
-- `as-i-am-continuous.html` — standalone player, chapter jumps and a visible captions toggle.
-- `as-i-am-continuous.srt` / `.vtt` — captions aligned to the continuous performance.
-- `continuous-master.mp3` — the untouched voice generation, also usable separately.
-- `speech-plan.json` / `edit-plan.json` — speech timings and the corresponding screen edit.
+Ignored media lives in the recording worktree; a fresh clone or another worktree does not
+contain those files. Provider credentials, voice identifiers and API responses stay outside
+Git. Running the application and its tests requires no speech-provider account or API key.
 
-These ignored outputs live in the worktree where the recording was made; a fresh clone or
-another worktree will not contain them. The committed scripts and instructions describe how
-to produce a new recording. Recording narration requires its own optional provider credentials;
-running the application and its tests does not.
-
-The entire 260-word script, including the pitch, was sent to ElevenLabs in **one request**.
-Chris was selected for his conversational, down-to-earth profile. The shortlist also included
-Liam (energetic social-media delivery) and George (warm British storytelling). These are
-published voice profiles, not a claim that the finished performances were auditioned by ear.
-The direction is an approachable person explaining what they built, with no dramatic tags.
-Eleven v3 uses Natural stability (0.5); it does not support the v2 speed control. No clone was made.
-See ElevenLabs' [voice and model guidance](https://elevenlabs.io/docs/eleven-creative/playground/text-to-speech).
-There are no joined speech clips, inserted chapter silences, or post-generation speed changes.
-The full audio receives one loudness-normalization pass and AAC encoding for the video.
-
-The screen edit follows the returned speech timestamps. It preserves every recorded chapter
-and the original click-motion speed, changing only long static holds. The opening holds the
-original cinema page during the pitch; the end has a 0.6-second hold. This is edited real
-footage, not an uncut real-time session. The native/fallback disclosure stays visible.
-
-Voice identifiers, API responses and generated media stay in the ignored output folder.
-Rendering is a separate, local command and cannot incur another speech-generation charge.
-The previous 97-second continuous take with the owner's voice remains in
-`tools/clickthru/out/continuous-zpfCY5/` for comparison. It used Multilingual v2 at generation speed 0.9.
-The original 122-second capture and segmented narration remain in `tools/clickthru/out/take-mTiagF/`;
-the earlier 68-second cut remains in `tools/clickthru/out/take-7ARmxF/`. Nothing was deleted.
-
-The readable explanation still shows **Discover → Adapt → Carry**, the actual shared
-preferences, and possible uses for shopping, travel and forms on supporting websites.
-This guided fallback is not presented as autonomous native agent execution.
-
-Before submission, review the recording and upload the selected version to public YouTube.
-No demo video has been publicly uploaded, and no submission has been made.
-See the [entry checklist](hackathon-checklist.md) and [capture instructions](../tools/clickthru/README.md).
+See the [capture instructions](../tools/clickthru/README.md), [entry checklist](hackathon-checklist.md)
+and [release runbook](release-runbook.md). Public upload and Devpost submission remain separate,
+visible release gates.

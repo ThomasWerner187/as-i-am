@@ -2,56 +2,56 @@
   {
     "chapter": "The ten-second pitch",
     "sourceChapter": null,
-    "text": "What if the web adapted to you? As I Am makes supporting websites easier to use, with preferences that travel with you, not your personal details."
+    "text": "Let my agent help. Let me stay in charge. As I Am makes an ordinary night out easier to plan, with support I choose."
   },
   {
-    "chapter": "A simple night out",
-    "sourceChapter": "A simple night out.",
-    "text": "Let me show you with a simple night out. I want two seats together, and dinner before the film."
+    "chapter": "A night out, on my terms",
+    "sourceChapter": "A night out, on my terms.",
+    "text": "I want two seats together and dinner before the film. Precise clicking and crowded information can make that harder. I should still get to shape my evening."
   },
   {
-    "chapter": "Two working websites",
-    "sourceChapter": "Working websites. Different people.",
-    "text": "Here are two working websites: a cinema and a restaurant. I can pick seats and a table already."
+    "chapter": "Help me choose",
+    "sourceChapter": "Help me choose.",
+    "text": "Help me choose gives me larger seat choices and clearer information. The cinema keeps its own design and the seats I picked. I can return to the original."
   },
   {
-    "chapter": "Different needs",
-    "sourceChapter": "What works for you?",
-    "text": "But a busy screen can be hard to navigate, whether you have an accessibility need, find clutter distracting, or just prefer a calmer layout."
+    "chapter": "My ticket, my decision",
+    "sourceChapter": "My ticket, my decision.",
+    "text": "I review the full price and confirm my demo tickets myself. The same tools let an external agent prepare a review, while confirmation stays with me."
   },
   {
-    "chapter": "Ask for a better fit",
-    "sourceChapter": "Ask for a better fit.",
-    "text": "So I ask for bigger buttons and fewer distractions. The cinema responds with clear seat pairs, while keeping the seats I already chose."
+    "chapter": "Prepare for me",
+    "sourceChapter": "Prepare for me.",
+    "text": "Now I ask for more help: Prepare for me. Using my confirmed film time, the guided workflow demonstrates an agent researching dinner options and preparing a table review."
   },
   {
-    "chapter": "Your choices stay yours",
-    "sourceChapter": "Same cinema. Easier choices.",
-    "text": "I can switch back to the original whenever I want. I still review the price and confirm the booking myself."
+    "chapter": "A plan I can check",
+    "sourceChapter": "A plan I can check.",
+    "text": "The film starts at eight fifteen. Allow ninety minutes to eat, fifteen to walk, and a buffer. Six o'clock is the latest available fit, getting me there thirty minutes early."
   },
   {
-    "chapter": "The restaurant, before",
-    "sourceChapter": "Dinner, before any changes.",
-    "text": "Now look at the restaurant before any changes. All the details and times are still there, including my table choice."
+    "chapter": "Food preferences I choose",
+    "sourceChapter": "Food preferences I choose.",
+    "text": "My editable example asks for vegan dishes within twenty euros each. The menu returns matching dishes with prices and ingredient information. Uncertain allergen or cross-contact questions belong with the restaurant."
   },
   {
-    "chapter": "Bring your preferences",
-    "sourceChapter": "My preferences. Another website.",
-    "text": "I choose to bring my preferences over, and the restaurant gives me bigger controls and clearer steps. It keeps its own design and my selection, without receiving my cinema booking or personal reasons."
+    "chapter": "My choices, my view",
+    "sourceChapter": "My choices, my view.",
+    "text": "I can explore the full menu or switch to My choices. The agent reduces the research; I keep the information, the choice, and the final table confirmation."
+  },
+  {
+    "chapter": "Only what each task needs",
+    "sourceChapter": "Only what each task needs.",
+    "text": "Interface preferences travel in a functional receipt. Food preferences and booking details stay out of it. Dinner planning receives the film time separately, because I asked it to."
   },
   {
     "chapter": "Why WebMCP matters",
     "sourceChapter": "Why WebMCP matters.",
-    "text": "Here's where Web M C P comes in. The site tells an agent what it supports, the agent asks for changes, and the site applies and checks them. These guided buttons demonstrate that conversation."
+    "text": "Web M C P makes those actions discoverable: understand the page, request changes, check the result, prepare a review. These buttons use preset requests; an external agent can call the native tools."
   },
   {
-    "chapter": "Beyond a night out",
-    "sourceChapter": "Not just a night out.",
-    "text": "That same approach can help with shopping, travel, or everyday forms on supporting websites. You might want larger text, easier tapping, or simply less to take in."
-  },
-  {
-    "chapter": "The web adapts to you",
-    "sourceChapter": "Your needs. Your preferences. Your web.",
-    "text": "It's your needs, your preferences, and your choice. As I Am: the web adapts to you."
+    "chapter": "The web adapts",
+    "sourceChapter": "The web adapts.",
+    "text": "Free and open source. More ways to take part, with help on my terms. As I Am. The web adapts. You don't have to."
   }
 ]

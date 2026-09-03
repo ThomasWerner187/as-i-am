@@ -1,63 +1,74 @@
-# Accessibility position
+# Inclusion and accessibility
 
-## Baseline first
+## Participation with a choice of help
 
-As I Am is a personalization layer, not an accessibility repair tool and not assistive
-technology. A participating site still needs a semantic, keyboard-operable and perceivable
-baseline. WebMCP complements HTML, WCAG-oriented engineering and assistive technology; it does
-not excuse defects underneath the adaptation layer.
+An ordinary evening should leave room for different ways of taking part. Precise pointing
+can make small seat controls difficult to use. A dense menu or several decisions at once can
+make it harder to find and compare information. As I Am responds to those functional needs
+without assigning a diagnosis or assuming one preferred experience for a group of people.
 
-The demo uses landmarks, labelled controls, live-region announcements, visible focus, textual
-status alongside colour, explicit form errors and human confirmation for staged actions.
+The person chooses between two forms of help:
 
-## Functional, not medical
+- **Help me choose:** clearer information and larger controls support the person's own exploration.
+- **Prepare for me:** the agent researches options and stages a proposal the person can inspect,
+  change and confirm.
 
-Preferences are combinable functional values grouped into visual, interaction, cognitive,
-motion/media, reading and safety domains. They can describe permanent, temporary or situational
-needs without asking a participating website to classify the person.
+Delegating research is one option; exploring the complete interface is another. Both preserve
+self-determination. The example does not claim to work for every person, and no user study has
+been conducted as part of the evidence documented here.
 
-Examples:
+## A usable baseline
 
-- Increase body and important text independently.
-- Enforce a larger effective click target and wider action spacing.
-- Remove autoplay and authored animation.
-- Reduce visible primary actions and present a task step by step.
-- Keep labels and progress visible.
-- Preserve full prices and confirmations around risky actions.
+A participating website still needs semantic, keyboard-operable and perceivable HTML. WebMCP
+and interface preferences complement that baseline, WCAG-oriented engineering and assistive
+technology. An adaptation layer does not excuse an inaccessible original page.
 
-## Adaptation invariants
+The demo uses landmarks, labelled controls, live-region announcements, visible focus, text
+alongside colour, explicit errors and human confirmation for staged actions. The original
+cinema, full restaurant menu and manual selection controls remain available.
 
-- The agent never sends CSS or DOM selectors.
-- Reduced density collapses or hides only designated nonessential content; reset restores it.
-- Reading presentations retain access to the original content.
-- Status never relies on colour alone.
-- Keyboard focus remains visible and task-focus changes move to a known page region.
+## Different requests, different responsibilities
+
+Functional interface preferences describe presentation: target size, action spacing, text size,
+focus visibility, reduced motion or clearer steps. They can be combined, refined and undone.
+The receiving website accepts only the subset it supports.
+
+Task requirements describe what the person is trying to arrange: adjacent seats, a dinner time,
+a quiet table, a budget or a chosen eating preference. These remain separate from interface preferences.
+The menu can show the full selection or a view focused on the stated request, with prices,
+ingredient information, exclusions and uncertainty still available for inspection.
+
+The fictional **Example request** is visibly editable. Vegan food, €20 per dish and a quiet
+table are defaults for demonstration, not facts inferred about the person. Allergen constraints
+must be chosen explicitly. A dish match means it matches declared menu data; it does not
+establish allergy safety or resolve unknown cross-contact information.
+This distinction follows the Food Standards Agency's [guidance on vegan food and allergens](https://www.food.gov.uk/safety-hygiene/vegan-food-and-allergens).
+
+## Invariants
+
+- Agents send supported functional values and domain inputs, not CSS or DOM selectors.
+- The person can return to the original presentation and the full menu.
+- Presentation changes preserve the current booking selection.
+- A filtered view keeps relevant price, ingredient and uncertainty information available.
+- Status does not rely on colour alone; focus and labels remain visible.
 - The interface respects operating-system reduced-motion preference independently of an agent.
-- Adaptations are reversible and announced.
+- Adaptation changes are reversible and announced.
+- Research and preparation tools never confirm tickets or tables.
+- Functional receipts contain no diet, allergen requirements, budget or booking selections.
 
 ## Evidence model
 
-The prototype distinguishes three kinds of evidence:
+The contract distinguishes rendered measurements, rendered component signals and implementation
+support. Measurements include text and target size, action gaps, contrast samples, motion,
+horizontal overflow and occluded focusable elements. Not every feature can be summarized by
+a browser metric. A satisfied fit report is specific evidence about requested fields and a
+rendered viewport, not a universal accessibility score.
 
-1. **Rendered measurements** — text size, effective target size, action gap, contrast samples,
-   visible primary actions, running animations, horizontal overflow and occluded focusables.
-2. **Rendered signals** — document flags and component state that can be inspected after commit.
-3. **Implementation support** — capabilities that exist in code but cannot be reduced to one
-   browser metric. These must not be described as measured conformance.
+The unit and browser suites exercise validation, state preservation, keyboard interaction,
+overflow, receipt portability and normal/adapted axe scans. The final integrated feature set
+must be rerun before release; [verification](verification.md) records the actual tested commits.
 
-Fit reporting marks each requested value satisfied, partial or unsupported and returns suggested
-refinements where an actionable rendered miss exists.
-
-## Automated checks and their limits
-
-Unit tests exercise schema validation, privacy rejection, token mapping, measurement and state
-reversibility. Playwright covers normal and adapted flows, keyboard interaction, overflow,
-portability and axe scans for serious/critical issues.
-
-These checks are engineering evidence, not a WCAG conformance claim. Axe cannot establish full
-accessibility, and automated tests cannot determine whether a cognitive adaptation is genuinely
-usable. Production work requires manual review with assistive technology and research with people
-who use adaptive interfaces.
-
-See [standards mapping](standards-mapping.md) for the project’s non-normative relationship to
-WAI-Adapt, COGA guidance and WCAG 2.2.
+Automated checks do not establish WCAG conformance or show whether a cognitive presentation
+works well for a particular person. Assistive-technology review and research with people who
+use adaptive interfaces remain necessary production work. See [standards mapping](standards-mapping.md)
+for the project's non-normative relationship to WAI-Adapt, COGA guidance and WCAG 2.2.

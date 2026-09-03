@@ -1,91 +1,127 @@
-# Demo script — one evening, two websites
+# Demo script — inclusion, with help on my terms
 
-The current Chris / Eleven v3 cut is 93 seconds, beginning with a ten-second pitch. The entire script is
-generated as one continuous performance, including the opening. Chapters are editing markers,
-not separate audio clips. All interface text and narration are English. The authoritative
-voice-over is [`continuous-story.json`](../tools/clickthru/continuous-story.json).
+The authoritative narration is [continuous-story.json](../tools/clickthru/continuous-story.json):
+**304 English words**, intended for one continuous performance under three minutes. The opening
+is 24 words, intended to land within about ten seconds. Final runtime and chapter timings must
+come from the generated speech alignment; no new video has been measured yet.
 
-## 0:00–0:09 — The elevator pitch
+The previous 93-second cut is an archive of the earlier flow. Record the integrated inclusion,
+dinner-planning and menu experience before generating the replacement. See
+[recording status](recording.md) and the [beat sheet](video-beat-sheet.md).
 
-Hold the original cinema page. Start immediately with the idea, before explaining the example:
+The story offers two forms of help: clearer information for independent decisions, and delegated
+research with a proposal for review. Neither path removes the person's final say. The spoken
+“I” belongs to a fictional demo scenario; it is not a user interview or evidence of a diagnosis.
 
-> What if the web adapted to you? As I Am makes supporting websites easier to use, with
-> preferences that travel with you, not your personal details.
+## Opening, about ten seconds
 
-The actual opening is 9.1 seconds. Flow directly into “Let me show you with a simple night out.”
-Do not add silence or a separate vocal take at the transition.
+Hold the original cinema and the two visible help choices. Start with the pitch immediately. Do not add an extra captured chapter for this opening hold.
 
-## 0:09–0:30 — A simple night out
+Source chapter: opening hold (`null`).
 
-Start on the original LUNA seat map. Select F6 and F7 using the normal small controls.
-Switch to the original OLIVA page and select 18:30 in the full time grid. Hold long enough
-to see the restaurant details and surrounding content, then return to cinema.
+> Let my agent help. Let me stay in charge. As I Am makes an ordinary night out easier to plan, with support I choose.
 
-> I want two seats together, and dinner before the film.
+## An ordinary evening
 
-Both websites already work. The story is about different people, not broken websites.
-Someone may have an accessibility need, find clutter distracting, or simply prefer a different
-layout. Do not imply that every person with a disability wants the same adaptation.
+Show the original working seat map. Choose F6 and F7 with the normal controls. The person has a goal, and the interface gives them several ways to pursue it.
 
-## 0:30–0:44 — Ask for a better fit
+Source chapter: `A night out, on my terms.`.
 
-Let the request be read, then click **Make it easier →**. Hold on the three large seat-pair
-choices. The selected F6/F7 pair stays selected. Compare **Original** → **My view** before
-confirming the tickets.
+> I want two seats together and dinner before the film. Precise clicking and crowded information can make that harder. I should still get to shape my evening.
 
-> The cinema responds with clear seat pairs, while keeping the seats I already chose.
+## Clearer information for my own choice
 
-Click **Review selection**, pause on the price, then **Confirm demo tickets**. The person
-still reviews and confirms. These are synthetic bookings; no tickets are purchased.
+Keep Help me choose selected. Click Make it easier. Show the real larger pair controls and preserved selection; briefly compare Original / My view.
 
-## 0:44–1:02 — The restaurant, before and after
+Source chapter: `Help me choose.`.
 
-Click **Continue to dinner →**. This only navigates: it does not transfer preferences.
-Show the complete original restaurant again for about six seconds, including the selected
-18:30 time. The audience must see what is about to change.
+> Help me choose gives me larger seat choices and clearer information. The cinema keeps its own design and the seats I picked. I can return to the original.
 
-> All the details and times are still there, including my table choice.
+## The person confirms
 
-Click **Use my preferences here →**. The restaurant applies the functional preferences only
-after this explicit action. Hold on its calmer layout and larger controls; the cream-and-olive
-design and 18:30 choice remain. Briefly compare **Original** → **My view**.
+Open Review selection, pause on the complete price, then visibly click Confirm demo tickets. The recording must show the confirmation rather than imply that an agent completed it.
 
-Click **Review selection**, then **Confirm demo table**. Explain that cinema booking details
-and personal reasons are not in the shared receipt.
+Source chapter: `My ticket, my decision.`.
 
-## 1:02–1:15 — Why WebMCP matters
+> I review the full price and confirm my demo tickets myself. The same tools let an external agent prepare a review, while confirmation stays with me.
 
-Open **How it works** and frame the readable explanation: **Discover → Adapt → Carry**.
-The visible preference chips come from the actual transferred receipt. Keep **Actual tools
-& data** collapsed; judges can inspect it separately.
+## Research and preparation by request
 
-> The site tells an agent what it supports, the agent asks for changes, and the site applies
-> and checks them. These guided buttons demonstrate that conversation.
+Select Prepare for me. Keep the editable Example request visible, then click Plan dinner from my tickets. The tickets must already be confirmed. This action is a guided preset demonstrating the agent workflow.
 
-This recording is the labelled guided fallback. It is not autonomous native WebMCP footage.
-Native requests were verified separately on the direct top-level sites; see
-[verification](verification.md). Do not splice the guided clicks into footage presented as
-native agent execution.
+Source chapter: `Prepare for me.`.
 
-## 1:15–1:33 — Your needs. Your preferences. Your web.
+> Now I ask for more help: Prepare for me. Using my confirmed film time, the guided workflow demonstrates an agent researching dinner options and preparing a table review.
 
-Return to cinema and click **Larger text** twice to show another supported preference.
-Briefly revisit **Not just a night out**, then close on the hero.
+## Explain the actual plan
 
-> That same approach can help with shopping, travel, or everyday forms on supporting websites.
+Hold the actual itinerary: film 20:15; meal 90 min; walk 15 min; requested minimum buffer 15 min. Latest theoretical start 18:15 is unavailable, so 18:00 is proposed. The result arrives at 19:45, giving 30 min actual buffer. Do not animate an invented result over the page.
 
-These are possible applications of the contract, not additional integrations demonstrated
-in this recording. The website must expose the supported adaptations; this is not an
-automatic rewrite of every website on the internet.
+Source chapter: `A plan I can check.`.
 
-> It's your needs, your preferences, and your choice. As I Am: the web adapts to you.
+> The film starts at eight fifteen. Allow ninety minutes to eat, fifteen to walk, and a buffer. Six o'clock is the latest available fit, getting me there thirty minutes early.
 
-## External-agent request
+## Explicit example, source-backed menu
 
-> Help me plan a cinema-and-dinner evening. Open LUNA and discover its WebMCP tools.
-> I want larger click targets, one step at a time, and less visual clutter. Apply only supported
-> functional preferences, measure the rendered result, and correct any unmet requests.
-> Show me available adjacent seat pairs and let me choose. Never confirm a booking for me.
-> Ask before carrying only my functional adaptation receipt to OLIVA. Discover OLIVA’s
-> capabilities, import what it supports, and show me dinner times. Do not send personal
-> reasons, identity, or cinema selections to the restaurant.
+Show the visible vegan / €20 per dish example and matching menu dishes, including prices and source ingredient information. Show uncertainty if the example produces it; otherwise keep the restaurant-question wording visible without inventing an alert. No allergen is selected by default.
+
+Source chapter: `Food preferences I choose.`.
+
+> My editable example asks for vegan dishes within twenty euros each. The menu returns matching dishes with prices and ingredient information. Uncertain allergen or cross-contact questions belong with the restaurant.
+
+## The complete menu and a reviewable proposal
+
+Show Full menu, then My choices. Keep ingredient details reachable. Return to the table proposal, use Review suggested table, pause on it, then visibly Confirm demo table.
+
+Source chapter: `My choices, my view.`.
+
+> I can explore the full menu or switch to My choices. The agent reduces the research; I keep the information, the choice, and the final table confirmation.
+
+## Separate interface and task information
+
+Open How it works and its real receipt/data view. Show that the interface receipt excludes food and booking fields. Identify film time as a separate requested planning input; do not claim that no information ever passes between tasks.
+
+Source chapter: `Only what each task needs.`.
+
+> Interface preferences travel in a functional receipt. Food preferences and booking details stay out of it. Dinner planning receives the film time separately, because I asked it to.
+
+## The WebMCP mechanism
+
+Show Discover / Adapt / Carry and the actual planning/menu tool trace. Keep the native-versus-demo transport label visible. The narration explicitly describes preset guided requests and a separate native external-agent path.
+
+Source chapter: `Why WebMCP matters.`.
+
+> Web M C P makes those actions discoverable: understand the page, request changes, check the result, prepare a review. These buttons use preset requests; an external agent can call the native tools.
+
+## Close on choice and the brand
+
+Return to the hero and both help modes. Keep the free/open-source statement and original brand intact. Do not add commercial pricing, broad compliance badges or claims of user validation.
+
+Source chapter: `The web adapts.`.
+
+> Free and open source. More ways to take part, with help on my terms. As I Am. The web adapts. You don't have to.
+
+## Recording requirements
+
+Use the real interface and source tool results. Both mode labels must be visible at least once:
+**Help me choose** and **Prepare for me**. Keep the editable **Example request** readable and
+synthetic-data disclosure visible. Do not imply that the app guessed a person's food requirements,
+that a menu filter guarantees allergy safety, or that an embedded LLM is running the guided buttons.
+
+The capture must follow the source chapter names exactly and in order. The first spoken block
+uses an opening hold; each subsequent block maps to one real capture marker. Preserve the user's
+confirmation clicks and the full-menu comparison. Hold the itinerary long enough to read why
+18:00 was selected and distinguish the requested 15-minute minimum from the actual 30-minute buffer.
+
+Generate the entire script in one speech request. Preserve the performance and actual click-motion
+speed; retime static holds rather than joining separate narration clips or stretching audio.
+Review the completed video by watching and listening, then verify captions and runtime before
+publication. A native WebMCP demonstration requires native tool calls in the browser; guided
+preset footage must remain labelled as a guided demonstration.
+
+## Native agent request
+
+Use the [paste-ready request](judge-testing.md#paste-ready-agent-request). It asks which level
+of help the person wants, discovers supported capabilities, checks the confirmed ticket state,
+uses only required timing information for the dinner task and keeps food inputs outside the
+functional receipt. The person confirms both bookings.

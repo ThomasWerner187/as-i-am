@@ -2,9 +2,26 @@
 
 **The web adapts. You don’t have to.**
 
-One evening. Two websites. Your agent makes tiny cinema seats easier to choose, then carries
-the same functional preferences to a restaurant. Different designs, familiar comfort.
-The site receives how its interface should change—not your personal reasons.
+**Inclusion means having a choice.** Choosing seats together and dinner before a film should
+be an ordinary evening. Precise pointing or a screen full of information can get in the way.
+As I Am gives a person two ways to get help: clearer information to make their own choices,
+or an agent that researches options and prepares a plan for review.
+
+**Let my agent help. Let me stay in charge.** Both paths keep confirmation with the person.
+This is a free, MIT-licensed prototype for participating websites.
+
+## Two forms of help
+
+**Help me choose** makes the interface easier to use: larger seat-pair choices, a clearer
+menu, readable prices and reversible presentation changes. The person explores and decides.
+
+**Prepare for me** delegates the research. Tools can find a compatible seat pair, read the
+confirmed film time, work out a dinner slot, check menu options against an explicit request,
+and prepare a review. The person can inspect, change and confirm the proposal.
+
+The editable **Example request** starts with vegan food, €20 per dish and a quiet table.
+Those are visible fictional defaults, not preferences inferred about the person. Ingredient
+and allergen information comes from the demo menu; uncertainty is a question for the restaurant.
 
 ## Try it
 
@@ -25,20 +42,36 @@ will not stop existing servers. Run one server manually with `npm run dev:site -
 | LUNA Cinema                     | http://localhost:5274/cinema     |
 | OLIVA Restaurant                | http://localhost:5275/restaurant |
 
-1. Notice the working seat map. Click **Make it easier →**.
-2. The map becomes three large adjacent-pair choices. Choose one; review and confirm the demo tickets yourself.
-3. Click **Continue to dinner →**. OLIVA's full time grid still works; nothing has been shared yet.
-4. Click **Use my preferences here →**. Only the functional receipt crosses the boundary. OLIVA adapts in its own design and keeps any table time already selected. Review and confirm the demo table.
-5. Try **Larger text**, **Original**, **Undo**, and **How it works**.
+Start with **Help me choose**:
 
-All bookings are fictional. There is no payment, real reservation or personal-data collection.
+1. Try the original seat map, then **Make it easier →**. Larger adjacent-pair choices keep
+   the seats already selected. Compare **Original** and **My view**.
+2. Review the complete price and confirm the demo tickets yourself.
+3. **Continue to dinner →** opens OLIVA. **Use my preferences here →** explicitly carries
+   the functional interface receipt. Navigation alone does not share it.
+4. **Find dinner that fits →** researches the timing and menu. Explore **Full menu** or
+   **My choices**, inspect ingredients and prices, and choose whether to review a table.
+
+Or choose **Prepare for me**:
+
+1. Check or edit **Example request**. **Prepare my seats →** finds a compatible pair and
+   stages its review; confirm the demo tickets yourself.
+2. **Plan dinner from my tickets →** reads the confirmed 20:15 film time. With 90 minutes
+   for dinner, a 15-minute walk and at least 15 minutes of buffer, 18:15 is the latest start.
+   That slot is unavailable, so the proposal is **18:00**, arriving at the cinema at **19:45**.
+3. Inspect the suggested table and menu options, open **Review suggested table**, then
+   confirm only if the proposal suits you. **Full menu** remains available.
+
+All bookings and menu data are fictional. There is no payment or real reservation. No login
+is required. Use only example food requirements when exploring the demo.
 
 ## Native WebMCP, not an invented agent
 
-Each site registers 19 page-specific tools through `document.modelContext.registerTool`.
+Each site registers page-specific tools through `document.modelContext.registerTool`.
 An external agent can discover capabilities, apply a validated profile, measure the rendered
 result, refine it, and export/import a functional receipt. Booking tools find actual synthetic
-inventory and prepare a review. **There is no confirmation tool.**
+inventory and prepare a review. Dinner and menu tools return inspectable calculations,
+prices, ingredients and uncertainty from their source data. **There is no confirmation tool.**
 
 The guided buttons run preset requests, not an embedded language model. They use native
 `getTools` / `executeTool` when available in the participating frames; otherwise they use an
@@ -56,7 +89,12 @@ do not describe the embedded guided view as native. See [verification](docs/veri
 - **Measure:** tools wait for rendering and report targets, text, gaps, motion and overflow.
 - **Refine:** change only what needs improvement; undo preserves the booking selection.
 - **Carry:** the next site validates the receipt and accepts only its supported subset.
-- **Choose:** the person owns the final decision and the explicit preference-transfer action.
+- **Research:** task tools return timing, availability and menu evidence for a reviewable plan.
+- **Choose:** the person decides how much help to use and owns the final confirmation.
+
+The functional receipt contains interface preferences, never food requirements or booking
+selections. Dinner planning receives the film time separately under the person's explicit
+request. Diet, budget and declared allergen filters are separate, editable task inputs.
 
 This is a prototype contract for participating websites, not an automatic restyler for arbitrary
 sites. Measurements are evidence for specific rendered properties, not a complete accessibility
@@ -102,7 +140,7 @@ the new cinema/restaurant experience.
 - [Judge testing instructions and native tool walkthrough](docs/judge-testing.md)
 - [Recorded demo and narration](docs/recording.md)
 - [Hackathon entry checklist](docs/hackathon-checklist.md)
-- [93-second English demo script](docs/demo-script.md)
+- [Inclusion-led English demo script](docs/demo-script.md)
 - [Recording beat sheet](docs/video-beat-sheet.md)
 - [Submission draft and release gate](docs/devpost-submission.md)
 - [Tool reference](docs/tool-reference.md)
@@ -123,3 +161,7 @@ working websites, WebMCP registration, tests and recorded demonstration were dev
 this repository during the challenge's submission period. See the
 [submission draft](docs/devpost-submission.md#built-during-the-submission-period) for the
 development history and third-party building blocks.
+
+The earlier 93-second recording documents the previous flow. A new capture and narration
+are required for the inclusion story, dinner planning and menu experience; see
+[recording status](docs/recording.md).
