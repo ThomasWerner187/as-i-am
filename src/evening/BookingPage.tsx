@@ -1,14 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { useEngineState, LiveRegion } from "../components/Primitives";
 import { engine } from "../engine/adaptationEngine";
 import { dispatchTool, toolsForEvening } from "../adaptive-contract/tools";
 import { registerTools } from "../webmcp/register";
 import { AGENT_ORIGIN } from "./config";
 import { connectDemoBridge } from "./bridge";
+import MenuPanel from "./MenuPanel";
+import { menuStore, useMenu } from "./menuState";
+import "../styles/menu.css";
 import {
   FILM,
   SEATS,
   TABLE_TIMES,
+  TABLES,
   eveningStore,
   isTimeAvailable,
   money,
@@ -21,13 +25,17 @@ import {
 export function BookingPage({ site }: { site: EveningSite }) {
   const adaptation = useEngineState();
   const booking = useBooking();
+  const menu = useMenu();
   const [showAll, setShowAll] = useState(false);
   const [originalLayout, setOriginalLayout] = useState(false);
   const [native, setNative] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const bookingRoot = useRef<HTMLElement>(null);
+  const tableTab = useRef<HTMLButtonElement>(null);
+  const menuTab = useRef<HTMLButtonElement>(null);
   const cinema = site === "cinema";
   const stage = cinema ? booking.cinemaStage : booking.restaurantStage;
+  const selectedTable = TABLES.find((table) => table.id === booking.tableId);
   const previousView = useRef({ stage, originalLayout });
   const largeTargets =
     Number(adaptation.active.interaction?.minimum_target_size ?? 44) > 44;
@@ -78,6 +86,21 @@ export function BookingPage({ site }: { site: EveningSite }) {
   const chosenTimeOutsideSuggestions =
     booking.tableTime &&
     !options.some((option) => option.time === booking.tableTime);
+
+  function navigateRestaurantSections(event: KeyboardEvent<HTMLButtonElement>) {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    const next = event.key === "Home" ? "table"
+      : event.key === "End" ? "menu"
+        : menu.surface === "menu" ? "table" : "menu";
+    if (next === "menu") {
+      menuStore.showMenu();
+      menuTab.current?.focus();
+    } else {
+      menuStore.showTable();
+      tableTab.current?.focus();
+    }
+  }
 
   useEffect(() => {
     document.documentElement.dataset.evening = site;
@@ -149,6 +172,13 @@ export function BookingPage({ site }: { site: EveningSite }) {
     setShowAll(false);
   }, [guided]);
   useEffect(() => {
+    if (window.parent !== window)
+      window.parent.postMessage(
+        { channel: "as-i-am-booking", site, stage },
+        AGENT_ORIGIN,
+      );
+  }, [site, stage]);
+  useEffect(() => {
     if (
       previousView.current.stage !== stage ||
       previousView.current.originalLayout !== originalLayout
@@ -173,7 +203,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
               {cinema ? "INDEPENDENT CINEMA" : "KITCHEN & GOOD COMPANY"}
             </small>
           </span>
-          <p data-aia="progress">
+          {!cinema && menu.surface === "menu" ? <p>Seasonal menu</p> : <p data-aia="progress">
             <span>{stage === "choose" ? "2" : "3"} of 3</span> ·{" "}
             {stage === "choose"
               ? cinema
@@ -182,8 +212,34 @@ export function BookingPage({ site }: { site: EveningSite }) {
               : stage === "review"
                 ? "Review"
                 : "Done"}
-          </p>
+          </p>}
         </header>
+        {!cinema && (
+          <div className="restaurant-sections" role="tablist" aria-label="Explore OLIVA">
+            <button
+              ref={tableTab}
+              type="button"
+              id="restaurant-table-tab"
+              role="tab"
+              aria-selected={menu.surface === "table"}
+              aria-controls="restaurant-table-panel"
+              tabIndex={menu.surface === "table" ? 0 : -1}
+              onClick={() => menuStore.showTable()}
+              onKeyDown={navigateRestaurantSections}
+            >Your table</button>
+            <button
+              ref={menuTab}
+              type="button"
+              id="restaurant-menu-tab"
+              role="tab"
+              aria-selected={menu.surface === "menu"}
+              aria-controls="restaurant-menu-panel"
+              tabIndex={menu.surface === "menu" ? 0 : -1}
+              onClick={() => menuStore.showMenu()}
+              onKeyDown={navigateRestaurantSections}
+            >Menu</button>
+          </div>
+        )}
         <div className="booking-body">
           <aside
             className="venue-story"
@@ -233,7 +289,11 @@ export function BookingPage({ site }: { site: EveningSite }) {
 
           <section
             className="booking-task"
-            aria-label={cinema ? "Seat selection" : "Table selection"}
+            aria-label={cinema ? "Seat selection" : undefined}
+            id={cinema ? undefined : "restaurant-table-panel"}
+            role={cinema ? undefined : "tabpanel"}
+            aria-labelledby={cinema ? undefined : "restaurant-table-tab"}
+            hidden={!cinema && menu.surface !== "table"}
           >
             {stage === "confirmed" ? (
               <div className="booking-success">
@@ -249,7 +309,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                 <p>
                   {cinema
                     ? `${booking.selectedSeats.join(" + ")} · Tonight at 20:15 · ${money(total)} total`
-                    : `Two people · Tonight at ${booking.tableTime} · No deposit`}
+                    : `Two people · Tonight at ${booking.tableTime} · ${selectedTable?.name ?? "Your table"} · No deposit`}
                 </p>
                 <p className="demo-notice">
                   Demo confirmation only.{" "}
@@ -270,7 +330,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                     <dd>
                       {cinema
                         ? "LUNA · Tonight at 20:15"
-                        : "Two people · indoors"}
+                        : `Two people · ${selectedTable?.area === "garden" ? "garden" : "main room"}`}
                     </dd>
                   </div>
                   <div>
@@ -285,7 +345,14 @@ export function BookingPage({ site }: { site: EveningSite }) {
                     <dt>{cinema ? "Total, including all fees" : "Deposit"}</dt>
                     <dd data-aia="price">{cinema ? money(total) : "None"}</dd>
                   </div>
+                  {!cinema && selectedTable && (
+                    <div>
+                      <dt>Table</dt>
+                      <dd>{selectedTable.name} · {selectedTable.id}</dd>
+                    </div>
+                  )}
                 </dl>
+                {!cinema && selectedTable && <p className="table-arrival-note">{selectedTable.description}</p>}
                 <p>
                   {cinema
                     ? "Nothing is purchased until you confirm. This demonstration never takes a payment."
@@ -338,7 +405,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                         : "Choose two seats for tonight’s 20:15 screening."
                       : calm
                         ? "These times leave room to eat and walk to LUNA."
-                        : "Tonight · Two people · Indoors"}
+                        : "Tonight · Two people · A place for your evening"}
                   </p>
                 </div>
 
@@ -525,7 +592,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                     <div className="table-date">
                       <span>TONIGHT</span>
                       <strong>A table for two</strong>
-                      <span>Inside, by the window if possible.</span>
+                      <span>Choose a time, then a table that suits you.</span>
                     </div>
                     <div className="time-grid">
                       {TABLE_TIMES.map((time) => (
@@ -558,6 +625,28 @@ export function BookingPage({ site }: { site: EveningSite }) {
                     )}
                   </div>
                 )}
+                {!cinema && booking.tableTime && (
+                  <fieldset className="table-location-choice">
+                    <legend>Where would you like to sit?</legend>
+                    <div className="table-location-options" data-aia="actions">
+                      {TABLES.map((table) => {
+                        const available = table.available_times.includes(booking.tableTime!);
+                        return (
+                          <button
+                            key={table.id}
+                            type="button"
+                            disabled={!available}
+                            aria-pressed={booking.tableId === table.id}
+                            onClick={() => eveningStore.selectTable(booking.tableTime!, table.id)}
+                          >
+                            <strong>{table.name} · {table.id}</strong>
+                            <span>{available ? table.description : `Not available at ${booking.tableTime}`}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </fieldset>
+                )}
                 <div className="selection-footer">
                   <p aria-live="polite">
                     {cinema
@@ -565,7 +654,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                         ? `${booking.selectedSeats.join(" + ")} · ${money(total)} total`
                         : "Your seats are waiting."
                       : booking.tableTime
-                        ? `${booking.tableTime} · Two people · No deposit`
+                        ? `${booking.tableTime} · ${selectedTable?.name ?? "Two people"} · No deposit`
                         : "A good evening starts around a table."}
                   </p>
                   <button
@@ -580,6 +669,17 @@ export function BookingPage({ site }: { site: EveningSite }) {
               </>
             )}
           </section>
+          {!cinema && (
+            <section
+              className="booking-task"
+              id="restaurant-menu-panel"
+              role="tabpanel"
+              aria-labelledby="restaurant-menu-tab"
+              hidden={menu.surface !== "menu"}
+            >
+              <MenuPanel />
+            </section>
+          )}
         </div>
         <footer className="booking-footer">
           <span>

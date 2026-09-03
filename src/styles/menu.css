@@ -1,0 +1,323 @@
+/* OLIVA's menu continues the warm paper, olive ink and editorial type of the table flow. */
+.restaurant-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--aia-target-gap);
+  padding-block: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.restaurant-sections button {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--ink-soft);
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.restaurant-sections button[aria-selected="true"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+.restaurant-menu {
+  min-width: 0;
+  color: var(--ink);
+}
+.restaurant-menu ::selection {
+  background: #dbe3c8;
+  color: #26341d;
+}
+.restaurant-menu :is(input, select) {
+  accent-color: var(--accent);
+  caret-color: var(--accent);
+}
+.restaurant-menu .menu-heading h1 {
+  font-family: var(--serif);
+  margin-bottom: 10px;
+  text-wrap: balance;
+}
+.menu-heading > p {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  margin: 0;
+}
+.menu-preferences {
+  border-block: 1px solid var(--line);
+  margin-block: 24px;
+  padding-block: 18px;
+}
+.menu-filter-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: max(16px, var(--aia-target-gap));
+}
+.menu-filter-fields label {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 0.75rem;
+}
+.menu-filter-fields :is(select, input) {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--aia-target-min);
+  border: 1px solid #b9bca8;
+  background: #fffaf1;
+  border-radius: 5px;
+  padding: 9px 10px;
+  font-size: 0.85rem;
+}
+.menu-filter-fields input::placeholder {
+  color: #69624e;
+  opacity: 1;
+}
+.menu-allergen-filter {
+  margin-top: 12px;
+  font-size: 0.76rem;
+}
+.menu-allergen-filter > summary,
+.menu-excluded > summary {
+  cursor: pointer;
+  color: var(--accent);
+  padding-block: 10px;
+  text-underline-offset: 4px;
+}
+.menu-allergen-filter fieldset {
+  min-width: 0;
+  border: 0;
+  padding: 8px 0;
+  margin: 0;
+}
+.menu-allergen-filter legend {
+  font-weight: 600;
+}
+.menu-allergen-filter fieldset > p {
+  color: var(--ink-soft);
+  margin: 4px 0 12px;
+}
+.menu-allergen-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--aia-target-gap);
+}
+.menu-allergen-options label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+.menu-allergen-options input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+.menu-allergen-options span {
+  overflow-wrap: anywhere;
+}
+.menu-filter-actions {
+  margin-top: 12px;
+}
+.menu-view-controls {
+  padding-bottom: 8px;
+}
+.menu-view-controls button {
+  padding: 9px 14px;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+.menu-view-controls button[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fffaf0;
+}
+.restaurant-menu .menu-result-intro h2,
+.restaurant-menu .menu-uncertain h2 {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  margin: 20px 0 8px;
+  font-weight: 500;
+}
+.menu-result-summary {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+.menu-allergy-note {
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 12px;
+}
+.menu-dishes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.menu-dish {
+  padding-block: 22px;
+  border-bottom: 1px solid var(--line);
+}
+.menu-dish-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+.restaurant-menu .menu-dish h3 {
+  font-family: var(--serif);
+  font-size: 1.17rem;
+  font-weight: 500;
+  line-height: 1.2;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.menu-dish-price {
+  font-size: 0.98rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.menu-dish-description {
+  font-size: 0.82rem;
+  margin: 8px 0;
+  color: var(--ink-soft);
+}
+.menu-dish-diet {
+  font-size: 0.71rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.menu-ingredients,
+.menu-kitchen-note,
+.menu-assessment,
+.menu-source-warning {
+  font-size: 0.74rem;
+  line-height: 1.55;
+  margin: 8px 0;
+}
+.menu-ingredients,
+.menu-kitchen-note {
+  color: var(--ink-soft);
+}
+.menu-allergen-facts {
+  margin: 10px 0;
+  display: grid;
+  gap: 4px;
+  font-size: 0.74rem;
+}
+.menu-allergen-facts > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+.menu-allergen-facts dt {
+  font-weight: 600;
+}
+.menu-allergen-facts dd {
+  margin: 0;
+}
+.menu-source-warning,
+.menu-assessment {
+  color: #714922;
+}
+.menu-source {
+  font-size: 0.65rem;
+  color: var(--ink-soft);
+  margin: 10px 0 0;
+}
+.menu-uncertain > p,
+.menu-empty > p {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+.menu-empty {
+  padding-block: 24px;
+  border-block: 1px solid var(--line);
+}
+.menu-empty h3 {
+  font-size: 1.1rem;
+}
+.menu-excluded {
+  margin-top: 20px;
+  font-size: 0.76rem;
+}
+.menu-excluded li {
+  margin-block: 12px;
+}
+.menu-demo-source {
+  font-size: 0.69rem;
+  color: var(--ink-soft);
+  margin: 24px 0 0;
+}
+.table-location-choice {
+  border: 0;
+  padding: 0;
+  margin: 0 0 20px;
+  min-width: 0;
+}
+.table-location-choice legend {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: 10px;
+}
+.table-location-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--aia-target-gap);
+}
+.table-location-options button {
+  flex: 1 1 180px;
+  min-width: 0;
+  text-align: left;
+  padding: 12px;
+  border: 1px solid #b9bca8;
+  border-radius: 5px;
+  background: #fffaf1;
+  color: var(--ink);
+  cursor: pointer;
+}
+.table-location-options button[aria-pressed="true"] {
+  background: #edf0df;
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.table-location-options button:disabled {
+  color: var(--ink-soft);
+  background: #eceadf;
+  cursor: not-allowed;
+}
+.table-location-options :is(strong, span) {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.table-location-options strong {
+  font-size: 0.76rem;
+}
+.table-location-options span {
+  font-size: 0.69rem;
+  margin-top: 5px;
+}
+.table-arrival-note {
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+}
+@media (max-width: 720px) {
+  .menu-filter-fields,
+  .menu-allergen-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .restaurant-sections button {
+    flex: 1 1 100px;
+  }
+}
