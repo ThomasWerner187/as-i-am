@@ -2,214 +2,121 @@
 
 **The web adapts. You don’t have to.**
 
-**New: A night for two.** The home page follows Alex and Lea through a quiet, visual evening
-plan. A familiar agent uses explicitly shared example preferences: today's calm view, an aisle
-seat beside a spouse, dinner before next week's film, and three ingredient-checked dishes.
-The person can change the proposal and confirms each demo booking. Read the
-[current story and native agent request](docs/personal-evening.md).
+As I Am explores a web where your agent can ask a website to meet your access needs,
+then help you use it. The website changes its own controls and layout. You can
+inspect the result, change your mind and keep the final say.
 
-**An ordinary evening should be yours to arrange.** As I Am is a prototype for disabled
-people who want participating websites to respond to the access needs they choose to express.
-Small controls can be a barrier with reduced dexterity or tremor. Low vision can make default
-text difficult to read; cognitive overload or fatigue can make dense choices harder to manage.
-The person chooses what should change and how much help their agent should provide.
+The demo is an ordinary evening: **a film and dinner for two**. Alex wants a calmer
+screen today and an aisle seat beside Lea. The agent uses preferences they have
+chosen to share, finds two suitable seats, makes room for dinner before the film,
+and brings three relevant dishes into view. Alex’s favorite risotto is there;
+Lea’s peanut and avocado exclusions remain visible, along with questions for the kitchen.
 
-**Let my agent help. Let me stay in charge.** Both paths keep confirmation with the person.
-This is a free, MIT-licensed prototype for participating websites.
+![The deployed restaurant view: three pictured dishes, ingredient information and a dinner-before-cinema itinerary.](docs/screenshots/dinner-options.png)
 
-## Choose the access you need
+[Watch the 80-second demo](https://youtu.be/r40L1yJhNyc) · [Try it](https://asiam.wernerverse.de/) · [Judge walkthrough](docs/judge-testing.md)
 
-Three explicit choices can be combined:
+The hosted demo uses the jury login supplied privately with the submission. Anyone
+can run the same app locally without an account, payment or API key.
 
-- **Make pointing easier for me:** larger targets, more space between controls and strong focus.
-- **Make reading easier for me:** larger text, more line spacing and a readable font.
-- **Give me less to process:** guided steps, reduced nonessential content and reduced motion.
+## Try it locally
 
-Choose what helps today, use **Make it easier →**, and inspect the result. A changed selection
-uses **Update my support**; with none selected, **Use original view** keeps the journey available.
-These choices describe a functional
-request; the app does not infer a diagnosis. The original view and the person's selections
-remain available. The receiving site applies only the preferences it supports.
-
-W3C WAI documents diverse access needs and barriers. Our mappings are prototype design choices,
-not user-validated prescriptions. See [inclusion evidence](docs/inclusion-evidence.md) for the
-primary sources, measured results and the work still needed with real participants.
-
-## Two forms of help
-
-**Help me choose** makes the interface easier to use: larger seat-pair choices, a clearer
-menu, readable prices and reversible presentation changes. The person explores and decides.
-
-**Prepare for me** delegates the research. Tools can find a compatible seat pair, read the
-confirmed film time, work out a dinner slot, check menu options against an explicit request,
-and prepare a review. The person can inspect, change and confirm the proposal.
-
-The editable **Example request** starts with vegan food, €20 per dish and a quiet table.
-Those are visible fictional defaults, not preferences inferred about the person. Ingredient
-and allergen information comes from the demo menu; uncertainty is a question for the restaurant.
-
-## Try it
-
-Use **Node.js 22** and npm. No account, credentials or API key is needed to run the app.
+Requires Node.js 22 or later.
 
 ```bash
 npm ci
 npm run dev
-# Open http://localhost:5273
 ```
 
-This starts three separate local origins. Ports 5273–5275 must be available; the launcher
-will not stop existing servers. Run one server manually with `npm run dev:site -- --port 5274`.
+Open **http://localhost:5273/** and choose **Plan our evening**. Try **One row further
+back**, review the seats and confirm the demo tickets. Continue to dinner, inspect
+the dishes, then review the table. Both confirmations stay with you.
 
-| Experience                      | Address                          |
-| ------------------------------- | -------------------------------- |
-| A night for two / agent entry point | http://localhost:5273        |
-| Advanced access choices         | http://localhost:5273/guided     |
-| LUNA Cinema                     | http://localhost:5274/cinema     |
-| OLIVA Restaurant                | http://localhost:5275/restaurant |
+The launcher needs ports 5273–5275. It runs the companion, cinema and restaurant on
+separate local origins. The hosted version uses separate pages on one HTTPS origin.
 
-The home page starts with **Plan our evening**. The following advanced paths are available
-at `/guided`. Start there with **Help me choose**:
+| Page | Local URL | Hosted path |
+| --- | --- | --- |
+| A night for two | `http://localhost:5273/` | `/` |
+| More access choices | `http://localhost:5273/guided` | `/guided` |
+| LUNA Cinema | `http://localhost:5274/cinema` | `/cinema` |
+| OLIVA Restaurant | `http://localhost:5275/restaurant` | `/restaurant` |
 
-1. Try the original seat map. Choose **Make pointing easier for me** and **Give me less to process**, then apply
-   the selected needs with **Make it easier →**. Compare the real controls, **Original** and **My view**; the selected
-   seats should remain. Add **Make reading easier for me** when you want larger text.
-2. Review the complete price and confirm the demo tickets yourself.
-3. **Continue to dinner →** opens OLIVA. **Use my preferences here →** explicitly carries
-   the functional interface receipt. Navigation alone does not share it.
-4. **Find dinner that fits →** researches the timing and menu. Explore **Full menu** or
-   **My choices**, inspect ingredients and prices, and choose whether to review a table.
+## Why WebMCP
 
-Or choose **Prepare for me**:
+The agent works with the website’s own tools. It can discover supported changes,
+apply a profile, measure the rendered result and carry the supported display
+preferences to another participating page. It can also research seats, meal times
+and ingredients, or prepare a booking for review. **Final booking confirmation stays with the person.**
 
-1. Check or edit **Example request**. **Prepare my seats →** finds a compatible pair and
-   stages its review; confirm the demo tickets yourself.
-2. **Plan dinner from my tickets →** reads the confirmed 20:15 film time. With 90 minutes
-   for dinner, a 15-minute walk and at least 15 minutes of buffer, 18:15 is the latest start.
-   That slot is unavailable, so the proposal is **18:00**, arriving at the cinema at **19:45**.
-3. Inspect the suggested table and menu options, open **Review suggested table**, then
-   confirm only if the proposal suits you. **Full menu** remains available.
+For example, a person can request dark appearance, lower glare and stopped
+animations without sending the website a diagnosis:
 
-All bookings and menu data are fictional. There is no payment or real reservation. No login
-is required. Use only example food requirements when exploring the demo.
+```json
+{
+  "profile": {
+    "version": "0.1",
+    "visual": { "color_scheme": "dark", "glare": "low" },
+    "motion_media": { "reduce_motion": true, "disable_animation": true }
+  }
+}
+```
 
-## Native WebMCP and the guided demo
+An external agent passes this to `apply_adaptation_profile`, then checks
+`measure_rendered_ui` and `verify_profile_fit`. The `/guided` experience also offers
+larger controls, more readable text and fewer competing choices. Adaptations keep
+the current selection intact.
 
-Each site registers page-specific tools through `document.modelContext.registerTool`.
-An external agent can discover capabilities, apply a validated profile, measure the rendered
-result, refine it, and export/import a functional receipt. Booking tools find actual synthetic
-inventory and prepare a review. Dinner and menu tools return inspectable calculations,
-prices, ingredients and uncertainty from their source data. **There is no confirmation tool.**
+The registration is in [src/webmcp/register.ts](src/webmcp/register.ts). See the
+[tool reference](docs/tool-reference.md), [schemas and contract](docs/adaptive-web-contract.md)
+and [native agent walkthrough](docs/judge-testing.md#native-external-agent-walkthrough).
+Use a WebMCP-capable browser and open the cinema and restaurant as top-level pages
+for native tool discovery. The manual walkthrough works in an ordinary browser too.
 
-The guided buttons run preset requests, not an embedded language model. They use native
-`getTools` / `executeTool` when available in the participating frames; otherwise they use an
-explicitly labelled, source-and-origin-checked demo bridge to the same validated handlers.
-Native failures are surfaced, not silently retried through the fallback.
+## Scope and limits
 
-For the central proof, use a real external agent: discover supported capabilities, request
-the selected access needs, inspect the changed page and read its rendered measurements.
-The [native walkthrough](docs/judge-testing.md) makes that sequence reproducible. Current
-measurements demonstrate specific rendered properties, not a person's comfort or task success.
+Alex and Lea, their saved context, menu and bookings are fictional. The home
+walkthrough runs labelled presets; it does not contain a language model or a
+production memory service. Real external agents can discover and call the native
+page tools. The optional demo bridge is labelled separately.
 
-On `/`, open **How this works** for the direct venue links; the English agent request is in
-the [personal story](docs/personal-evening.md#native-request-for-the-fictional-scenario).
-On `/guided`, **Use WebMCP ↗** contains the request and links. Some browsers expose native
-WebMCP only to top-level documents. Use the direct links in that case, and identify the actual
-transport used. See [verification](docs/verification.md).
+This contract is for websites that implement it. It does not restyle arbitrary
+sites. The display receipt contains functional preferences, not names, diagnoses,
+allergies or booking details. Food requirements and film times are separate task
+inputs. [Privacy and data boundaries](docs/privacy-model.md)
 
-## What makes the protocol useful
+Calm settings are a personal preference, not a treatment. A recipe match is not an
+allergy-safety guarantee: missing ingredients and cross-contact still need kitchen
+confirmation. Our checks verify software behavior and rendered properties; work
+with disabled participants is still needed. [Inclusion evidence](docs/inclusion-evidence.md)
 
-- **Discover:** each page reports supported, inherent and unsupported preferences.
-- **Adapt:** functional values map into the website’s own components and design tokens.
-- **Measure:** tools wait for rendering and report targets, text, gaps, motion and overflow.
-- **Refine:** change only what needs improvement; undo preserves the booking selection.
-- **Carry:** the next site validates the receipt and accepts only its supported subset.
-- **Research:** task tools return timing, availability and menu evidence for a reviewable plan.
-- **Choose:** the person decides how much help to use and owns the final confirmation.
-
-The functional receipt contains interface preferences, never food requirements or booking
-selections. Dinner planning receives the film time separately under the person's explicit
-request. Diet, budget and declared allergen filters are separate, editable task inputs.
-
-This is a prototype contract for participating websites, not an automatic restyler for arbitrary
-sites. Measurements are evidence for specific rendered properties, not a complete accessibility
-audit. Functional preferences can still be sensitive. Receipts are unsigned session objects,
-not credentials. See [privacy](docs/privacy-model.md) and [architecture](docs/architecture.md).
-
-## Build, test and deploy
+## Build and contribute
 
 ```bash
-npx playwright install chromium # once after npm ci; Linux CI also needs --with-deps
-npm run check
+npm run build                  # static output in dist/
+npx playwright install chromium
+npm run check                  # types, unit, recorder and browser tests, build
 ```
 
-`check` runs TypeScript, unit tests, recorder tests, browser tests and the production build.
-Run the recorder checks alone with `npm run test:recording`.
-Playwright starts/reuses all three local servers. Coverage includes both booking flows,
-cross-origin receipt transfer, invalid inputs, human confirmation, keyboard/mobile layouts,
-normal/adapted axe scans, native registration and the older product demos.
+Serve `dist/` with a fallback to `index.html` for page routes. No application server
+or database is needed. [Hosting notes](docs/hosting.md) cover the deployed Netcup
+setup; Netlify and Vercel configurations are included as alternatives.
 
-Serve `dist/` with SPA fallback. A single static deployment works with separate documents on
-one origin and labels that topology honestly. For a three-origin deployment, build with:
+Contributions are welcome. Describe the access need or behavior you want to improve,
+keep changes focused, and run the relevant checks. Preserve the person’s selections,
+consent and ability to undo presentation changes. [Architecture](docs/architecture.md)
+and [verification](docs/verification.md) explain the implementation and existing evidence.
 
-```text
-VITE_AGENT_ORIGIN=https://your-controller.example
-VITE_CINEMA_URL=https://your-cinema.example/cinema
-VITE_RESTAURANT_URL=https://your-restaurant.example/restaurant
-```
+## Demo and license
 
-Use the same configuration for each deployment. Allow framing only by the controller in the
-hosting policy; native cross-origin tool exposure is scoped to that controller origin. Verify
-the actual browser policy and mode after deployment. The local build does not publish the app
-or change repository visibility.
+The [79.6-second demo film](https://youtu.be/r40L1yJhNyc) has English narration and subtitles.
+The screenshots above and [cinema view](docs/screenshots/cinema-calm.png) were captured
+from the deployed application. Earlier shop and services examples remain under
+`/legacy`, `/shop` and `/services`; historical screenshots remain in `docs/screenshots/`.
 
-The [deployment and freeze runbook](docs/release-runbook.md) covers both topologies,
-production checks, publication gates and preservation of the submitted build.
-
-The previous examples remain at `/legacy`, `/shop` and `/services`. Existing shop/services
-screenshots and `demo-clickthru.mp4` document that older version; they are not footage of
-the new cinema/restaurant experience.
-
-## Presentation materials
-
-- [Judge testing instructions and native tool walkthrough](docs/judge-testing.md)
-- [Inclusion claims and evidence](docs/inclusion-evidence.md)
-- [Practical worksheet for genuine user research](docs/user-validation-guide.md)
-- [Recorded demo and narration](docs/recording.md)
-- [Hackathon entry checklist](docs/hackathon-checklist.md)
-- [Inclusion-led English demo script](docs/demo-script.md)
-- [Recording beat sheet](docs/video-beat-sheet.md)
-- [Submission draft and release gate](docs/devpost-submission.md)
-- [Tool reference](docs/tool-reference.md)
-- [Adaptive Web Contract](docs/adaptive-web-contract.md)
-- [Design and asset provenance](docs/art-direction.md)
-
-Stack: React 18, TypeScript, Vite, hand-written CSS, locally bundled fonts, Vitest, Playwright
-and axe-core. Changes belong in isolated branches/worktrees and should pass the checks above.
-
-## License and build period
-
-Source code is [MIT licensed](LICENSE). Bundled fonts retain their [SIL Open Font License
-notices](public/third-party-licenses.txt); artwork provenance is recorded in
-[art direction](docs/art-direction.md).
-
-The first repository commit was made on **September 1, 2026** (`d49bf40`). The contract,
-working websites, WebMCP registration, tests and recorded demonstration were developed in
-this repository during the challenge's submission period. See the
-[submission draft](docs/devpost-submission.md#built-during-the-submission-period) for the
-development history and third-party building blocks.
-
-The selected [79.6-second film](docs/recording.md) follows Alex and Lea's personal evening:
-calm display settings, an aisle-seat correction, dinner timing and three illustrated dishes.
-George voices Alex and Jessica voices the agent in one continuous, uncut performance. Speech
-begins at 4.165 seconds; 32 English caption cues cover the complete dialogue. Visual changes
-follow the spoken trigger in a warm cream layout with one fixed browser position. LUNA and
-OLIVA appear in Alex's deliberately chosen calm view.
-
-The 1920 × 1080, 30 fps captioned and clean exports, SRT, VTT, poster and local player are in
-`tools/clickthru/out/warm-flow/delivery/`. Serve the player at `http://127.0.0.1:4382/` with
-`node tools/clickthru/out/warm-flow/serve-player.mjs`. The earlier 112-second film is historical.
-
-The [verification report](docs/verification.md) records separate component runs totaling
-215 passing tests: 128 unit, 72 browser and 15 recorder tests. Eight focused browser cases
-were rerun after the final CSS change. Public upload and final submission remain pending.
+Built during the WebMCP Challenge submission period with React, TypeScript, Vite
+and locally hosted fonts. Code and generated demo artwork are [MIT licensed](LICENSE).
+Bundled fonts retain
+their [original notices](public/third-party-licenses.txt); generated demo artwork
+and voice provenance are documented in [art direction](docs/art-direction.md) and
+[the recording notes](docs/recording.md).

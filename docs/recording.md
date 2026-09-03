@@ -5,6 +5,11 @@ The selected local film is **A night for two**, completed September 3, 2026. It 
 dinner timing and three pictured dishes. The earlier 112-second film is superseded and belongs
 to the historical record below.
 
+Video: [As I Am — A night for two | WebMCP Challenge](https://youtu.be/r40L1yJhNyc).
+The captioned export and poster were uploaded, and the English SRT track was added.
+YouTube's copyright and community checks reported no issues. Final public playback
+verification is recorded separately from Devpost submission.
+
 ## Delivery
 
 The complete local delivery is in `tools/clickthru/out/warm-flow/delivery/`:
@@ -62,8 +67,8 @@ the [demo script](demo-script.md), sourced from
 | `as-i-am-warm.vtt` | `e64bf6aa7fdea6a435d1f573956cc98f398216190dbadc68b67653c6ee00c1d1` |
 
 The exact dialogue, timing plan, edit metadata, renderer and source materials remain in
-`tools/clickthru/out/warm-flow/`. The owner's final watch/listen, public upload and logged-out
-link checks remain open.
+`tools/clickthru/out/warm-flow/`. The captioned file has been uploaded to the link above.
+Verify its public playback and captions before submitting that URL.
 
 ---
 

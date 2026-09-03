@@ -1,10 +1,9 @@
 # WebMCP Challenge — submission checklist
 
-Submission deadline: **September 3, 2026, 22:00 Europe/Berlin** (13:00 PDT / 20:00 UTC).
-Target with buffer: **19:00 Berlin**. Keep the submitted materials unchanged and the project
-available until **September 22, 2026, 02:00 Berlin** (September 21, 17:00 PDT).
-These times follow the organizer's reminder; recheck the
-[official rules](https://webmcp.devpost.com/rules) before submission.
+Confirm the current submission deadline on the [challenge page](https://webmcp.devpost.com/)
+and in the [official rules](https://webmcp.devpost.com/rules) before submitting.
+Keep the submitted materials unchanged after the submission period and the project
+available throughout judging. Record the actual submission time and final URLs.
 
 ## Local preparation
 
@@ -25,22 +24,23 @@ These times follow the organizer's reminder; recheck the
 
 - [ ] Join the challenge and confirm entrant eligibility, or verify existing registration.
 - [ ] Publish the reviewed application and root MIT license on canonical `main`.
-- [ ] Obtain owner approval for public publication and repository visibility change.
+- [x] Obtain owner approval for public publication and repository visibility change.
 - [ ] Make the source repository public; verify code and detectable license while logged out.
-- [ ] Deploy a stable public URL with no login, password or payment requirement.
-- [ ] Reload the controller and both direct routes in a fresh WebMCP-capable browser.
-- [ ] Successfully discover and call native tools on the public top-level LUNA and OLIVA pages.
-- [ ] Complete both booking flows; verify receipt consent, native/fallback label and actual topology.
+- [x] Deploy a stable HTTPS URL with a shared jury login and no registration or payment requirement.
+- [x] Reload the controller and both direct routes in a fresh WebMCP-capable browser.
+- [x] Successfully discover and call native tools on the hosted top-level LUNA and OLIVA pages.
+- [x] Complete the personal booking flow and verify the same-origin topology; see [hosting](hosting.md).
 - [ ] Upload the selected 79.6-second video to public YouTube, wait for processing and verify audio/32 captions.
-- [ ] Fill Devpost with English copy, live/repo/video links and no-login testing instructions.
+- [ ] Fill Devpost with English copy, live/repo/video links and private jury credentials.
 - [ ] Include development-period provenance and accepted teammate invitations, or confirm solo entry.
 - [ ] Save and submit; verify green **Submitted** on My Projects rather than a saved draft.
 - [ ] Record the exact commit, deployment ID, video hash and submission evidence.
 - [ ] Freeze submitted repo, website, video and entry at the deadline; keep the site available through judging.
 
-No verified public deployment, YouTube link or submitted Devpost entry is recorded yet.
-Work is prepared on a private review branch. Recheck remote visibility and the selected release
-commit before publication. Local readiness does not complete the public checks.
+The protected [Netcup deployment](hosting.md) is verified. The selected film is at
+https://youtu.be/r40L1yJhNyc; publication and playback verification are tracked in
+[recording](recording.md). Recheck remote source visibility and the selected commit
+before submission. A green **Submitted** status must be verified on Devpost separately.
 
 ## The pitch
 

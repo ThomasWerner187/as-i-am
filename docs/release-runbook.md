@@ -3,11 +3,10 @@
 This is the publication handoff for the WebMCP Challenge entry. Preparing files locally does
 not deploy the app, make the repository public, upload a video or submit to Devpost.
 
-The organizer's reminder gives a submission deadline of **September 3, 2026 at 13:00 PDT**:
-**20:00 UTC / 22:00 Europe/Berlin**. Aim to submit by **19:00 Berlin** for a three-hour buffer.
-The submitted repo, website, video and entry must then remain unchanged and available through
-the end of judging: **September 21 at 17:00 PDT / September 22 at 00:00 UTC / 02:00 Berlin**.
-Recheck the [official rules](https://webmcp.devpost.com/rules) before publication.
+Confirm the current deadline on the [challenge page](https://webmcp.devpost.com/) and
+in the [official rules](https://webmcp.devpost.com/rules) before publication. Record
+the actual submission time. Keep the submitted repository, website, video and entry
+unchanged after the submission period and available for the whole judging period.
 
 ## 1. Prepare one release candidate
 
@@ -34,9 +33,10 @@ If a check fails, resolve the failure and repeat the relevant checks before free
 
 The app is a static Vite SPA: build with `npm run build`, publish `dist/`, and route direct
 requests such as `/cinema` and `/restaurant` to `index.html`. Hosting configuration is included
-for Vercel and Netlify. Hosting must permit public access without an account or deployment
-password. `npm run preview` provides a local production smoke check after building; it is
-not a public hosting service.
+for Netcup, Vercel and Netlify. The current Netcup deployment is documented in
+[hosting.md](hosting.md). Its shared jury login must be included privately in the
+submission's testing credentials. Check access in a fresh browser using those credentials.
+`npm run preview` provides a local production smoke check after building; it is not hosting.
 
 **One public origin** runs the controller and both sites as separate documents at `/`,
 `/cinema` and `/restaurant`. It needs no custom `VITE_*` URLs. The UI must identify this as
@@ -64,7 +64,8 @@ Verify that the controller's links point to the intended public site URLs.
 
 ## 3. Run the public judge check
 
-Use a fresh browser session with no cached login. Follow [judge-testing.md](judge-testing.md):
+Use a fresh browser session with no cached login, then sign in using the private
+jury credentials. Follow [judge-testing.md](judge-testing.md):
 
 - Complete both chosen help modes and verify that navigation alone does not transfer a receipt.
 - Confirm cinema tickets, derive the 18:00/T4 suggestion from their 20:15 film time, and inspect the menu.
@@ -73,15 +74,15 @@ Use a fresh browser session with no cached login. Follow [judge-testing.md](judg
 - Apply and measure supported preferences, transfer the actual receipt with consent, and prepare
   both booking reviews. Confirm only through the visible human interface.
 - Check the actual native/fallback label, topology, keyboard focus and narrow-screen layout.
-- Reload each direct route and ensure the deployment remains publicly accessible.
+- Reload each direct route and ensure it remains accessible with the jury login.
 
 Record the browser, date, viewport, native results, URLs and deployment identifier. Local
 shim tests or guided bridge results do not replace this public native execution check.
 
 ## 4. Publish the matching materials
 
-Repository visibility and public publication require the owner's approval. Before that step,
-have the reviewed commit, preview deployment, final video and exact submission copy ready.
+The owner has authorized publication and submission. Before executing those steps,
+have the reviewed commit, verified deployment, final video and exact submission copy ready.
 
 1. Merge the reviewed application branch into canonical `main` through the normal review path.
    Verify successful CI and the expected source, setup instructions and root MIT license.
@@ -121,13 +122,13 @@ frozen submitted repository if recording them after the freeze would require a n
 | Video | YouTube URL, selected local filename, duration and SHA-256 |
 | Entry | Devpost URL, submission time and green Submitted evidence |
 | Team | Entrants listed and invitations accepted, or confirmed solo entry |
-| Accessibility | Public logged-out checks and limitations disclosed in the copy |
+| Accessibility | Fresh-browser jury access, public repo/video checks and disclosed limitations |
 
 Before the freeze, disconnect automatic deployments from branches that will continue to change
 or lock the deployment target to the submitted release. Preserve the exact artifact and stable
 public URLs. Check hosting account/quota availability for the whole judging period.
 
-From **September 3 at 22:00 Berlin**, do not edit the submitted repository, live content, video,
+Once the submission period ends, do not edit the submitted repository, live content, video,
 captions, description or links. Keep later development in a separate unpublished worktree and
 deployment target. Do not take the submitted project offline. If hosting fails, restore the
 same frozen artifact without changing its content; contact the organizers if resolution would

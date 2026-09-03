@@ -79,8 +79,11 @@ selection landed on the last chosen chapter and displayed its current menu capti
 off/on, mute/unmute, replay and full-screen entry/exit worked. The player was then returned to its
 opening frame. These playback checks do not replace the owner's final listening review.
 
-Public hosting, repository visibility, YouTube publication, the owner's final watch/listen
-and Devpost submission remain separate outstanding gates.
+The subsequent [Netcup hosting verification](hosting.md) records valid HTTPS,
+protected jury access, the complete browser flow and native WebMCP calls on the live pages.
+The selected film has been uploaded to [YouTube](https://youtu.be/r40L1yJhNyc).
+Repository publication, final public video checks and Devpost Submitted status are
+separate publication steps; the historical results below describe earlier builds.
 
 ## Historical disability access release — September 3, 2026
 

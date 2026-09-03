@@ -38,10 +38,12 @@ Prompt:
 
 > Use case: photorealistic-natural. Generate a production website asset: a beautiful realistic editorial photograph for an intimate Mediterranean restaurant called OLIVA (do not include text). Portrait 3:4 crop, close tabletop scene with a rustic ceramic plate of fresh hand-shaped pasta with basil, olive oil and cherry tomatoes, beside a softly folded linen napkin and a small glass of water. Warm late-afternoon sunlight raking across a pale stone table, gentle long shadows, glimpse of olive foliage at the edge. Sophisticated food magazine quality, real tactile ingredients, natural imperfect plating, peaceful inviting mood. Keep the food recognizable even as a small side panel. No people, no letters, no logo, no watermark, no UI, no border.
 
-Images are static, locally served and have meaningful alt text. Review final artwork and
-licensing requirements before public submission. No third-party cinema or restaurant is implied.
+Images are static, locally served and have meaningful alt text. No third-party cinema
+or restaurant is implied.
 The two deployed WebP files total approximately 124 KiB, about 97% smaller than the original
 PNGs. The source images remain in the repository for provenance and future exports.
+The three food illustrations and their prompts are documented in
+[menu image provenance](art-sources/menu-images.md).
 
 ## Fonts and code
 
@@ -49,8 +51,11 @@ Fraunces, Instrument Sans and Atkinson Hyperlegible are installed through Fontso
 served locally. Their original copyright and SIL Open Font License 1.1 notices are preserved
 in [third-party-licenses.txt](../public/third-party-licenses.txt), which is included in the
 static deployment at `/third-party-licenses.txt`. The project's [MIT license](../LICENSE)
-applies to its source code; it does not replace those font licenses.
+applies to its code and generated demo artwork in `public/art/` and `docs/art-sources/`;
+it does not replace those font licenses.
 
 The cinema and restaurant names, film, inventory and bookings are fictional. SVG interface
-icons are authored in the source. The video uses the ElevenLabs premade Chris voice; details
-and the publication review step are in [recording](recording.md).
+icons are authored in the source. The selected video uses ElevenLabs George for Alex and
+Jessica for the agent in one continuous performance; details are in [recording](recording.md).
+Narration audio is part of the demonstration video and is not included in this
+repository's MIT grant for code and artwork.

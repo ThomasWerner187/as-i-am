@@ -1,27 +1,30 @@
 # Testing As I Am
 
-No account, credentials, API key or payment is required. Alex and Lea, their shared history,
-bookings and menu are fictional. Reload the experience to begin a fresh session.
-See [verification.md](verification.md) for current build evidence and [recording.md](recording.md)
-for the matching film and completed media checks. Neither this guide nor the playable demo
-establishes public deployment or Devpost Submitted status.
+Open [asiam.wernerverse.de](https://asiam.wernerverse.de/) and use the jury login
+provided privately in the Devpost testing instructions. The hosting login requires
+no account registration or payment. Do not commit the credentials or include them
+in public recordings. A local installation needs no login or API key.
+
+Alex and Lea, their shared history, bookings and menu are fictional. Reload the
+experience to begin a fresh session. See [hosting.md](hosting.md) for the live
+checks, [verification.md](verification.md) for engineering evidence, and
+[the demo film](https://youtu.be/r40L1yJhNyc) for the short story.
 
 ## Entry points
 
-Use the verified live URL supplied with the entry. Locally, use Node.js 22 or later, run
+The hosted entry points are on `https://asiam.wernerverse.de`. Locally, use Node.js 22 or later, run
 `npm ci`, then `npm run dev`. Ports 5273–5275 must be available.
 
-| Experience | Development URL |
-| --- | --- |
-| A night for two — primary story | `http://localhost:5273/` |
-| Advanced access choices | `http://localhost:5273/guided` |
-| Direct LUNA Cinema | `http://localhost:5274/cinema` |
-| Direct OLIVA Restaurant | `http://localhost:5275/restaurant` |
+| Experience | Hosted URL | Development URL |
+| --- | --- | --- |
+| A night for two — primary story | [Home](https://asiam.wernerverse.de/) | `http://localhost:5273/` |
+| Advanced access choices | [Guided](https://asiam.wernerverse.de/guided) | `http://localhost:5273/guided` |
+| Direct LUNA Cinema | [Cinema](https://asiam.wernerverse.de/cinema) | `http://localhost:5274/cinema` |
+| Direct OLIVA Restaurant | [Restaurant](https://asiam.wernerverse.de/restaurant) | `http://localhost:5275/restaurant` |
 
-A production build defaults to `/`, `/guided`, `/cinema` and `/restaurant` on the serving
-origin, unless venue URLs are configured separately. Follow **How this works → Open LUNA /
-Open OLIVA** for the actual direct URLs. The development ports demonstrate separate origins;
-they do not establish the topology of a published deployment.
+The live deployment uses one HTTPS origin with separate documents. The development
+ports demonstrate separate origins. Follow **How this works → Open LUNA / Open OLIVA**
+to open each venue directly for native tool discovery.
 
 ## Try the personal story
 
@@ -209,8 +212,12 @@ reading and cognitive-support controls for additional exploration.
 
 ## Compact Devpost testing field
 
-> No login, credentials, API key or payment is needed. Start at the submitted live URL’s home
-> page and inspect Saved preferences, then choose Plan our evening. Try One row further back,
+Enter the shared jury username and password in Devpost's private credentials field.
+Keep those values out of this public guide. The following text describes the test:
+
+> Open https://asiam.wernerverse.de/ and sign in with the jury credentials supplied privately
+> in this entry. No registration, API key or payment is needed. Inspect Saved preferences,
+> then choose Plan our evening. Try One row further back,
 > confirm the demo tickets, and continue with Dinner, next. Inspect the three menu cards,
 > ingredient details and full menu, then confirm the table yourself. How this works exposes
 > actual results and direct venue links for native WebMCP testing. The walkthrough is a labelled
