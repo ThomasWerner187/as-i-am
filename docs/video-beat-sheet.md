@@ -1,63 +1,44 @@
-# Recording beat sheet — two forms of help
+# Recording beat sheet — a night for two
 
-The inclusion narration has **304 words**. These measured windows follow the single generated
-Chris / Eleven v3 performance. The final export is **117 seconds**, including a short end hold.
-The [script](demo-script.md) and [continuous story](../tools/clickthru/continuous-story.json)
-are the authoritative words and source chapter names.
+**Current rendered cut: 112 seconds.** Two voices share 101 words across 15 caption cues.
+The first spoken request begins at second 7. The [script](demo-script.md) contains the exact
+dialogue; [recording](recording.md) tracks the finished files and playback checks.
 
-| Measured window | Source chapter / capture marker | Screen and purpose |
+| Edit window | Source shot | Picture and purpose |
 | --- | --- | --- |
-| 0:00–0:08 | Opening hold (`null`) | Original cinema, both help modes. “Let my agent help. Let me stay in charge.” |
-| 0:08–0:17 | `A night out, on my terms.` | Use the original seat map; select F6 and F7. An ordinary goal and working controls. |
-| 0:17–0:27 | `Help me choose.` | Make it easier; larger real pair choices, preserved seats, Original/My view comparison. |
-| 0:27–0:36 | `My ticket, my decision.` | Review full price; person visibly confirms demo tickets. |
-| 0:36–0:46 | `Prepare for me.` | Switch help mode, show editable Example request, click Plan dinner from my tickets. |
-| 0:46–0:57 | `A plan I can check.` | Read the real plan: 18:00 meal, 19:30 departure, 19:45 arrival, 20:15 film. |
-| 0:57–1:11 | `Food preferences I choose.` | Vegan and €20 per dish are explicit example inputs. Show source dishes, prices and ingredients. |
-| 1:11–1:21 | `My choices, my view.` | Full menu/My choices comparison; Review suggested table; person confirms demo table. |
-| 1:21–1:33 | `Only what each task needs.` | Real functional receipt and separate film-time planning input; food and bookings stay outside the receipt. |
-| 1:33–1:46 | `Why WebMCP matters.` | Discovery, adaptation, source-backed planning and menu tools; truthful transport disclosure. |
-| 1:46–1:57 | `The web adapts.` | Return to both help modes and the original brand. Free and open source; support on the person's terms. |
+| 0:00–0:12 | A familiar request | Quiet opening; Alex's request begins at 0:07. Establish an ordinary evening for two. |
+| 0:12–0:17 | Already shared with the agent | Brief view of the supplied fictional context. Explain familiarity visually. |
+| 0:17–0:29 | Calm view final | Actual native adaptation: dark appearance, lower glare, reduced motion and disabled animation. |
+| 0:29–0:37 | Aisle seats final | Next Friday at 20:15; the showing leaves room for dinner first. |
+| 0:37–0:42 | You at the aisle · Lea beside you | Hold the actual F1/F2 selection long enough to understand the seating arrangement. |
+| 0:42–0:52 | One row back | Alex asks; G1/G2 replaces F1/F2. The outside/inside assignment and showing remain. |
+| 0:52–0:55.5 | Tickets confirmed | Preserve the visible ticket-confirmation action and result. |
+| 0:55.5–0:58 | Carry calm view | Transfer the real functional receipt to OLIVA, separate from booking context. |
+| 0:58–1:09 | Dinner at six | Show the 18:00/T4 proposal with time to eat and walk before the 20:15 film. |
+| 1:09–1:27 | Three personal dishes | Three actual recommendation cards, with the qualifying favorite first. Keep the kitchen cross-contact check readable. |
+| 1:27–1:33 | Return to table | Alex reviews the proposal; the final decision stays visible. |
+| 1:33–1:38 | Table confirmed | Preserve the visible synthetic table confirmation. |
+| 1:38–1:42 | The evening fits | Brief outcome: one date, dinner first, two seats together. |
+| 1:42–1:52 | As I Am | Calm closing. Final line starts at 1:43, followed by a visual hold. |
 
-## Before capture
+## Editing rules
 
-Start the integrated app and complete both help paths manually. Confirm that the new timing and
-menu tools are present; the earlier 93-second recording does not show these features. Reload for
-a fresh session, leaving **Example request** visibly editable. Vegan, €20 per dish and a quiet
-table are fictional defaults; no allergen exclusions are selected unless explicitly chosen.
+- Let the image establish a change before adding another spoken thought.
+- Keep captions outside the captured interface and show one main action at a time.
+- Use actual returned seats, dates, table inventory and menu results. No invented tool output.
+- Preserve the person's correction and both visible confirmations.
+- Keep “no ingredients listed” distinct from “allergen-free”; cross-contact still needs the kitchen.
+- Label the supplied fictional context and preset walkthrough honestly. Native footage must use actual native execution.
 
-Use the existing browser aspect ratio and keep the pointer deliberate. Preserve visible focus,
-price and booking confirmations. Use actual DOM-targeted controls and real tool results; never
-illustrate a calculation or dish that the app did not return. Hide unrelated personal tabs and
-notifications without hiding the native/demo transport label.
+Static waiting is shortened in the current edit. The source frame sequence and tool-call order
+are retained. Utterances are scheduled with pauses at the documented 0.94 audio playback rate;
+the film does not represent a continuous real-time conversation. Source captures, `dialogue.json`,
+`shots.json` and `audio-edit.json` are retained with the local production materials.
 
-The theoretical latest dinner start is 18:15 with a 15-minute minimum buffer. Since that slot
-is unavailable, the source-backed recommendation is 18:00. Arrival at 19:45 gives 30 minutes of
-actual buffer before the 20:15 film. Show the explanation long enough to understand that difference.
+The recorded case uses Friday 11 September, F1/F2 → G1/G2, a 20:15 film and 18:00/T4 dinner.
+The application derives the next ISO week from its explicit calendar context instead of
+hardcoding that date. Both venues and their transactions are synthetic.
 
-## Capture contract
-
-Use exactly the ten non-null `sourceChapter` labels above as capture markers, once each and in
-that order. The opening pitch holds the first source frame and does not add a recorded chapter.
-The retimer preserves every source chapter and rejects missing, extra or reordered source time.
-Coordinate the real explicit receipt-transfer action with the displayed task scope before showing
-a receipt; do not imply that navigation silently shares preferences.
-The delegated planning action carries the receipt if needed, under its visible hint about using
-the confirmed film time and chosen preferences at OLIVA. Keep that hint in the capture.
-
-Keep research and human confirmation distinguishable. **Prepare for me** authorizes a proposed
-plan, not a confirmed transaction. The guided controls remain presets. A native external agent
-can use the same exposed capabilities; native execution needs its own observed browser calls.
-
-## After capture
-
-Generate the entire narration as one performance. Fit static holds to its timing without
-splicing speech, adding chapter silences or speeding up the recorded clicks. Keep the original
-and focused menu views visible long enough to compare. Preserve ingredient uncertainty and the
-fictional-booking disclosure.
-
-Watch and listen to the final export. Check the opening, table timing, both confirmation clicks,
-menu legibility, captions and final runtime. Record the new media path, duration and hash in
-[recording](recording.md). The old 93-second cut and legacy shop/services media are historical
-materials, not the current submission video. Upload only the reviewed new cut and verify its
-public playback before putting the link into Devpost.
+The old 117-second beat sheet, older narration counts and zero-frame capture failure are
+historical; see [verification](verification.md). The current film is rendered. Public upload,
+public playback and submission status must be checked separately.
