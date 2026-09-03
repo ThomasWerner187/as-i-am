@@ -977,11 +977,30 @@ html[data-aia-min-target="on"] .seat-row {
   color: var(--ink-soft);
   margin: 14px 0 20px;
 }
-html[data-aia-font-style="readable"] .booking {
+html[data-aia-font-style="readable"] .booking,
+html[data-aia-font-style="readable"] .booking * {
   font-family: var(--font-readable);
 }
-html[data-aia-font-style="readable"] .booking h1 {
-  font-family: var(--font-readable);
+.booking-page[data-line-spacing="custom"] .booking :is(p, li, dt, dd, label, button, input, select, summary) {
+  line-height: var(--aia-line-height);
+}
+.booking-page-update {
+  padding: 12px 16px;
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  background: var(--paper-raised);
+  overflow-wrap: anywhere;
+}
+.booking-page-update p {
+  margin: 0;
+  font-size: 0.85rem;
+}
+.booking-page-update .booking-current-settings {
+  margin-top: 4px;
+  color: var(--ink-soft);
+  font-size: 0.75rem;
 }
 html[data-aia-min-target="on"] .booking :is(button, a) {
   min-height: var(--aia-target-min);

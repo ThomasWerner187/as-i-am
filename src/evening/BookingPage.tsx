@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
-import { useEngineState, LiveRegion } from "../components/Primitives";
+import { useEngineState } from "../components/Primitives";
 import { engine } from "../engine/adaptationEngine";
 import { dispatchTool, toolsForEvening } from "../adaptive-contract/tools";
 import { registerTools } from "../webmcp/register";
@@ -36,7 +36,6 @@ export function BookingPage({ site }: { site: EveningSite }) {
   const cinema = site === "cinema";
   const stage = cinema ? booking.cinemaStage : booking.restaurantStage;
   const selectedTable = TABLES.find((table) => table.id === booking.tableId);
-  const previousView = useRef({ stage, originalLayout });
   const largeTargets =
     Number(adaptation.active.interaction?.minimum_target_size ?? 44) > 44;
   const guided =
@@ -46,6 +45,23 @@ export function BookingPage({ site }: { site: EveningSite }) {
       String(adaptation.active.cognitive?.information_density),
     );
   const calm = guided && !originalLayout;
+  const previousView = useRef({ stage, originalLayout, calm, surface: menu.surface });
+  const visual = adaptation.active.visual;
+  const interaction = adaptation.active.interaction;
+  const currentAdjustments = [
+    visual?.text_scale !== undefined && `Text at ${Math.round(Number(visual.text_scale) * 100)}%`,
+    visual?.font_style === "readable" && "Readable typeface",
+    visual?.line_height !== undefined && `Line spacing ${visual.line_height}`,
+    interaction?.minimum_target_size !== undefined && `Targets at least ${interaction.minimum_target_size} pixels`,
+    interaction?.target_spacing !== undefined && `${interaction.target_spacing}-pixel control spacing`,
+    ["strong", "maximum"].includes(String(interaction?.focus_strength)) && "Stronger keyboard focus",
+    calm && "Clear booking choices",
+    adaptation.active.cognitive?.hide_nonessential === true && "Optional description hidden",
+    (adaptation.active.motion_media?.reduce_motion === true || adaptation.active.motion_media?.disable_animation === true) && "Reduced motion",
+  ].filter(Boolean).join(" · ");
+  const pageUpdate = adaptation.announcement.startsWith("Adaptation applied:")
+    ? "Page settings updated. Your booking choice is kept."
+    : adaptation.announcement;
   const selectedSeats = booking.selectedSeats.map(
     (id) => SEATS.find((seat) => seat.id === id)!,
   );
@@ -179,22 +195,29 @@ export function BookingPage({ site }: { site: EveningSite }) {
       );
   }, [site, stage]);
   useEffect(() => {
-    if (
-      previousView.current.stage !== stage ||
-      previousView.current.originalLayout !== originalLayout
-    )
+    const previous = previousView.current;
+    const active = document.activeElement;
+    const focusIsVisible = active instanceof HTMLElement && active !== document.body
+      && !active.closest("[hidden]");
+    const tableVisible = cinema || menu.surface === "table";
+    if (tableVisible && (previous.stage !== stage || previous.originalLayout !== originalLayout)) {
       heading.current?.focus({ preventScroll: true });
-    previousView.current = { stage, originalLayout };
-  }, [stage, originalLayout]);
+    } else if (!focusIsVisible && (previous.calm !== calm || previous.surface !== menu.surface)) {
+      // A tool may replace the focused map control or hide its panel. Keep the
+      // keyboard in the task, without moving focus from an input that survived.
+      (tableVisible ? heading.current : menuTab.current)?.focus({ preventScroll: true });
+    }
+    previousView.current = { stage, originalLayout, calm, surface: menu.surface };
+  }, [stage, originalLayout, calm, menu.surface, cinema]);
 
   return (
     <div
       className={`booking-page booking-page--${site}${calm ? " is-guided" : ""}`}
+      data-line-spacing={visual?.line_height !== undefined ? "custom" : undefined}
     >
       <a className="skip-link" href="#main">
         Skip to selection
       </a>
-      <LiveRegion />
       <main id="main" className="booking" tabIndex={-1} ref={bookingRoot}>
         <header className="booking-masthead">
           <span className="venue-logo">
@@ -214,6 +237,19 @@ export function BookingPage({ site }: { site: EveningSite }) {
                 : "Done"}
           </p>}
         </header>
+        <div
+          className={pageUpdate ? "booking-page-update" : "visually-hidden"}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          aria-label="Latest page update"
+          data-testid="live-region"
+        >
+          {pageUpdate && <>
+            <p>{pageUpdate}</p>
+            <p className="booking-current-settings">{currentAdjustments || (adaptation.isBase ? "Original page settings are in use." : "Page adjustments are active.")}</p>
+          </>}
+        </div>
         {!cinema && (
           <div className="restaurant-sections" role="tablist" aria-label="Explore OLIVA">
             <button
