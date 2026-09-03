@@ -87,12 +87,12 @@ have the reviewed commit, preview deployment, final video and exact submission c
    Verify successful CI and the expected source, setup instructions and root MIT license.
 2. With approval, make the project repository public. Check its logged-out page: the actual
    application is visible and GitHub detects the MIT license in the About section.
-3. Complete a matching recording after browser recording access is restored and a new attempt is approved.
-   The new 315-word Chris / Eleven v3 narration is ready, but the capture failed with zero frames.
-   Automatic approval review rejected renewed access as a bypass; do not retry indirectly.
-   The earlier 117-second video is historical and must not stand in for this revised interface.
-   Once a supported new capture succeeds, verify runtime below three minutes, actual native
-   evidence, narration, captions and correspondence with the released UI. See [recording](recording.md).
+3. Review the completed matching film in `tools/clickthru/out/inclusion-premiere/delivery/`.
+   It runs 122.980 seconds and includes actual native evidence, continuous English narration
+   and 40 captions. Watch/listen once before upload and check correspondence with the final
+   released UI. Use the clean version plus the SRT for switchable YouTube captions, or the
+   captioned MP4 for always-visible subtitles. The earlier 117-second cut is historical.
+   See [recording](recording.md) for the current hash and technical verification.
 4. Upload the selected file to public YouTube early. Wait for video/audio processing, verify
    playback logged out, and add the supplied English captions. Copy its public URL.
 5. Fill Devpost with the [English submission copy](devpost-submission.md), verified live/repo/video

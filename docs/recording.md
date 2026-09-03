@@ -1,8 +1,9 @@
 # As I Am — recording status
 
-The previous local candidate is **117 seconds** and shows both help modes, the dinner plan
-from confirmed cinema tickets, the full/focused restaurant menu, and both human confirmations.
-It replaces the earlier 93-second submission candidate. All earlier recordings are preserved.
+The current local candidate is **122.980 seconds**: a Full HD inclusion-led film with real
+browser footage, recorded native WebMCP results, one continuous English voice-over and
+40 English caption cues. It replaces the previous 117-second guided candidate. Earlier
+recordings and failed-capture metadata are preserved.
 
 
 ## Current disability access revision
@@ -13,7 +14,38 @@ The new narration is ready at `tools/clickthru/out/disability-native-chris-v3/`:
 performance, **122.32 seconds**, with an edit plan of **122.92 seconds**. The original
 140–160-second target was a production estimate, not a requirement; the voice was not stretched.
 
-**No new matching video is complete.** The capture at
+The new user-authorized recording succeeded through the supported in-app Browser on
+September 3, after the local preview was restarted. Short captures were started and stopped
+inside their active browser calls. The film uses 13 captured scenes (120 actual browser
+frames), 21 successful native calls, edited static holds and brief editorial dissolves.
+The demonstrator performs the visible synthetic booking confirmations; this is not user research.
+
+Current media is in `tools/clickthru/out/inclusion-premiere/delivery/`:
+
+- `as-i-am-demo.mp4`: H.264, 1920 × 1080, 30 fps, AAC, always-visible English captions.
+- `as-i-am-demo-clean.mp4`: the same film with an embedded English subtitle track.
+- `as-i-am-demo.srt` and `.vtt`: 40 cues preserving all 315 spoken words.
+- `index.html`: local player with captions, chapters and transcript.
+- `poster.jpg`: matching opening image.
+
+The unchanged Chris master was reused without another TTS request or time stretching.
+The mix adds a quiet original procedural ambient score, measured at −16.5 LUFS integrated
+and −1.9 dBFS true peak. Editorial callouts reproduce the
+actual results in `../evidence.json`; raw scenes, renderer and edit plan remain in the
+ignored production folder. Both final exports pass complete FFmpeg decode checks.
+
+Captioned MP4 SHA-256: `84594fc2358e34c4fbf698eb5bda0057ee750fa6f3d9061929b3385155e5afc8`.
+
+Browser playback, chapter seeking, caption switching and full-screen captions were checked.
+For serving the player locally, `node tools/clickthru/out/inclusion-premiere/serve-player.mjs`
+provides HTTP Range support at `http://127.0.0.1:4380/`, so chapter jumps can seek correctly.
+The delivery folder also opens directly through its `index.html` file.
+
+Owner watch/listen, public upload and logged-out link verification remain open.
+
+### Preserved earlier failure
+
+The earlier capture at
 `tools/clickthru/out/disability-native-captures/take-XFjUBq/manifest.json` has zero frames.
 The browser security policy could not be verified. Automatic approval review rejected renewed
 recording access as a prohibited bypass, so retries stopped. Keep this as failed capture
@@ -21,8 +53,7 @@ metadata; do not export it or remove the failure flag. The native calls succeede
 and are preserved in the local review packet. See [verification](verification.md).
 
 The previous 117-second video belongs to the earlier worktree and does not show the new needs
-chooser or native execution. Do not submit it as a demonstration of this revision. Recording,
-owner watch/listen, public upload and link verification remain open.
+chooser or native execution. Do not submit it as a demonstration of this revision.
 
 ## Previous 117-second files and checks
 

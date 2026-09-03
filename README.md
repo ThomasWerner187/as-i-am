@@ -189,7 +189,8 @@ this repository during the challenge's submission period. See the
 [submission draft](docs/devpost-submission.md#built-during-the-submission-period) for the
 development history and third-party building blocks.
 
-The existing [117-second recording](docs/recording.md) shows the previous revision's guided
-flow. A matching replacement must show the new access choices, changing needs and real native
-execution. The new controls and native calls are verified with 196 passing tests. New narration is ready,
-but browser recording is blocked; no new completed video is claimed here.
+The current [123-second film](docs/recording.md) shows the revised access choices, changing
+needs and real native execution. It combines actual browser footage with recorded-result
+callouts, a continuous English voice-over and 40 caption cues. The controls and native calls
+are verified with 196 passing tests. Local media is complete; public upload and final
+submission remain pending.

@@ -49,19 +49,32 @@ These measurements describe the tested properties and state, not complete access
 benefit proven with disabled users. No participant research or independent operator integration
 has been completed. See [inclusion evidence](inclusion-evidence.md).
 
-### Recording limitation
+### Matching film completed
+
+The subsequent user-authorized run captured the revised app through the supported in-app
+Browser: 13 short scenes, 120 actual browser frames and 21 successful native calls. The
+same 30px to 56px target change, six-preference receipt import, 18:00/T4 dinner plan and
+9.9px to 12.9px reading refinement were observed again. Both visible demo confirmations
+were exercised by the demonstrator, not by a research participant.
+
+The completed film is **122.980 seconds**, H.264 **1920 × 1080 at 30 fps**, with AAC audio,
+40 English captions and an unchanged 315-word continuous Chris narration. Static waits
+are edited to match speech. Titles and result callouts are editorial renderings of recorded
+evidence; no fabricated chat or app state is shown. Both final exports decode fully without errors.
+See [recording](recording.md) for files, source provenance and the media hash.
+
+### Preserved recording limitation from the earlier attempt
 
 A new 315-word continuous English Chris / Eleven v3 narration was generated once: **122.32s**,
 with captions and a **122.92s** edit plan including the final hold. The browser capture returned
 **zero frames** because its security policy could not be verified. Automatic approval review
 then rejected an attempt to restore recording access as a prohibited bypass. Recording retries
-were stopped. There is **no completed new video**; the failed manifest is retained as failure
-evidence, and the earlier 117-second guided cut is historical only.
+were stopped at that point. The failed manifest is retained as failure evidence, and the
+earlier 117-second guided cut is historical only.
 
-A new supported recording requires restored browser authorization and explicit approval before
-retrying. No alternative capture mechanism was used to bypass the rejection. App checks,
-native tool results, source and narration are unaffected. Public deployment, repository
-visibility, YouTube publication and Devpost submission remain outstanding.
+The later run followed a new explicit user request and used the supported browser API.
+No alternative browser-control mechanism was used to bypass the rejection. Public deployment,
+repository visibility, YouTube publication and Devpost submission remain outstanding.
 
 ## Inclusion release review — September 3, 2026
 

@@ -1,8 +1,10 @@
 # Demo script — access chosen by the person
 
-**Production plan: 150 seconds, acceptable final range 140–160 seconds.** This is a new script
-for the revised access-choice interface and a visible native-agent proof. The previous
-117-second guided recording is historical. The resulting narration is 122.32 seconds (122.92 with end hold). Video capture is blocked; see recording.md.
+**Final film: 122.980 seconds.** This is the recorded script for the revised access-choice
+interface and native-agent proof. The previous 117-second guided recording is historical.
+The continuous narration is 122.32 seconds; the 122.92-second edit plan rounds to 122.933
+seconds at 30 fps; the final AAC container runs 122.980 seconds. The earlier 150-second
+planning estimate is superseded. See [recording](recording.md).
 
 The spoken draft below has **315 words**. The time windows include readable native results,
 short visual holds and two-way UI comparison. Measure the real final edit; do not infer runtime
@@ -15,49 +17,49 @@ context. A narrator may demonstrate the prototype, but must not pretend to be a 
 participant or present an invented diagnosis as lived experience. Background sources and
 current proof limits are in [inclusion-evidence.md](inclusion-evidence.md).
 
-## 0:00–0:14 — An ordinary evening
+## 0:00–0:09.31 — An ordinary evening
 
 Show the actual booking page and the project name. No staged failed clicks, simulated tremor, disability impersonation or borrowed persona. The narrator introduces the problem; this is not a participant testimonial.
 
 > Two seats together. A night out with friends. For disabled people, the booking page can be the first barrier. As I Am starts with the access you choose.
 
-## 0:14–0:29 — Different needs, explicit choices
+## 0:09.31–0:21.824 — Different needs, explicit choices
 
 Show Make pointing easier for me, Make reading easier for me and Give me less to process together. Select Make pointing easier for me plus Give me less to process for this demonstration. Keep the request readable and do not attach a medical label to its values.
 
 > Someone with hand tremor may want larger targets. Someone with low vision may want larger text. With cognitive overload or fatigue, less to process can matter. Different people need different combinations.
 
-## 0:29–0:55 — Real native WebMCP proof
+## 0:21.824–0:42.176 — Real native WebMCP proof
 
 Show the real external-agent request and successful native discovery/application/measurement on the tested page, with its changed UI. Capture actual get_adaptation_capabilities, apply_adaptation_profile and measure_rendered_ui or verify_profile_fit results. Keep at least one measured value readable. This segment must be genuine native execution; if it cannot be captured, do not substitute the guided preset buttons or a fabricated chat transcript.
 
 > Here, the person asks for easier pointing and less to process. A real external agent discovers what LUNA supports, sends those functional preferences, and the page changes. Then the agent calls the measurement tool. We can inspect the actual target size and any unmet request. The website keeps its own controls and design.
 
-## 0:55–1:11 — The same person keeps the choice
+## 0:42.176–0:55.888 — The same person keeps the choice
 
 Show preserved seats, the Original/My view comparison and the complete price. Briefly identify the two help modes. The actual person uses the visible Confirm demo tickets control. Preserve that confirmation in the edit.
 
 > With Help me choose, the person explores the clearer page. Prepare for me can research options and stage a review. Either way, their seats stay selected, the original remains reachable, and they confirm the demo tickets.
 
-## 1:11–1:32 — Carry the request, retain the site
+## 0:55.888–1:13.253 — Carry the request, retain the site
 
 Capture authorized export of the actual receipt and import at OLIVA. Show the supported subset applied in the restaurant design. Keep the receipt separate from the confirmed film-time planning argument. State the actual topology: one origin with separate documents, or three origins if that is what was deployed. Do not imply two independent operators.
 
 > With permission, the agent exports the functional receipt and imports it at OLIVA. The restaurant accepts what it supports, in its own design. The receipt contains interface preferences, not a diagnosis or booking history. The person does not have to explain that request again.
 
-## 1:32–1:47 — Dinner planning supports the evening
+## 1:13.253–1:25.960 — Dinner planning supports the evening
 
 Briefly show the source-backed 18:00/T4 recommendation, 19:45 arrival and 20:15 film. Read the actual result. Fresh session: no earlier restaurant selection that would make the timeline an alternative. Keep menu filters and allergy discussion secondary to the access story.
 
 > Planning dinner is secondary help. The confirmed film starts at eight fifteen. The available six o’clock table leaves time to eat and walk, arriving thirty minutes early. The proposed table still needs confirmation.
 
-## 1:47–2:10 — Needs can change
+## 1:25.960–1:44.640 — Needs can change
 
 Select Make reading easier for me while retaining Make pointing easier for me. Explicitly apply the change and capture the supported text_scale 1.3, line_height 1.7 and readable-font request, the actual text change and a fresh measurement. Keep table/seat choices intact and show that the full menu remains reachable. Do not describe an unmeasurable or unsupported field as satisfied.
 
 > Now the person adds Easier reading. Larger readable text joins the pointing changes; the existing choices remain. The agent applies the supported values and checks the result again. The full menu stays available. What helps today can change, and choosing a clearer view should not hand over the decision.
 
-## 2:10–2:30 — Evidence, limits and the point
+## 1:44.640–2:02.933 — Evidence, limits and the point
 
 End with the person-visible choice controls and original brand. If desired, show a concise link to the real evidence. Do not show simulated testimonials, user-study badges, WCAG certification or a predicted judging score. The source must be publicly available before the final submitted cut describes it as open source.
 
@@ -95,7 +97,10 @@ reservations or proven benefit for every disabled person.
 Before replacing the 117-second candidate, record the new source revision, browser, actual
 native calls, before/after measurements, edit duration, caption/audio review and media hash.
 Update [verification](verification.md) and [recording](recording.md) from that evidence.
-The combinable controls and native calls are now verified; the matching video is blocked by the browser recording security failure.
+The matching film is complete. It includes 13 real browser scenes and evidence-derived
+editorial callouts from 21 successful native calls. The demonstrator exercised the visible
+confirmation controls. The untouched voice master, source captures, native results and edit
+plan are retained; public upload and owner watch/listen remain pending.
 
 For a reproducible request use [judge-testing.md](judge-testing.md). For actual participant
 feedback use the unfilled [user-validation worksheet](user-validation-guide.md); a model-generated
