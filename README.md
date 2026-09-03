@@ -8,6 +8,8 @@ The site receives how its interface should change—not your personal reasons.
 
 ## Try it
 
+Use **Node.js 22** and npm. No account, credentials or API key is needed to run the app.
+
 ```bash
 npm ci
 npm run dev
@@ -64,12 +66,12 @@ not credentials. See [privacy](docs/privacy-model.md) and [architecture](docs/ar
 ## Build, test and deploy
 
 ```bash
-npm run typecheck
-npm test
-npm run test:e2e
-npm run build
+npx playwright install chromium # once after npm ci; Linux CI also needs --with-deps
+npm run check
 ```
 
+`check` runs TypeScript, unit tests, recorder tests, browser tests and the production build.
+Run the recorder checks alone with `npm run test:recording`.
 Playwright starts/reuses all three local servers. Coverage includes both booking flows,
 cross-origin receipt transfer, invalid inputs, human confirmation, keyboard/mobile layouts,
 normal/adapted axe scans, native registration and the older product demos.
@@ -88,15 +90,19 @@ hosting policy; native cross-origin tool exposure is scoped to that controller o
 the actual browser policy and mode after deployment. The local build does not publish the app
 or change repository visibility.
 
+The [deployment and freeze runbook](docs/release-runbook.md) covers both topologies,
+production checks, publication gates and preservation of the submitted build.
+
 The previous examples remain at `/legacy`, `/shop` and `/services`. Existing shop/services
 screenshots and `demo-clickthru.mp4` document that older version; they are not footage of
 the new cinema/restaurant experience.
 
 ## Presentation materials
 
+- [Judge testing instructions and native tool walkthrough](docs/judge-testing.md)
 - [Recorded demo and narration](docs/recording.md)
 - [Hackathon entry checklist](docs/hackathon-checklist.md)
-- [Two-minute English demo script](docs/demo-script.md)
+- [93-second English demo script](docs/demo-script.md)
 - [Recording beat sheet](docs/video-beat-sheet.md)
 - [Submission draft and release gate](docs/devpost-submission.md)
 - [Tool reference](docs/tool-reference.md)
@@ -105,3 +111,15 @@ the new cinema/restaurant experience.
 
 Stack: React 18, TypeScript, Vite, hand-written CSS, locally bundled fonts, Vitest, Playwright
 and axe-core. Changes belong in isolated branches/worktrees and should pass the checks above.
+
+## License and build period
+
+Source code is [MIT licensed](LICENSE). Bundled fonts retain their [SIL Open Font License
+notices](public/third-party-licenses.txt); artwork provenance is recorded in
+[art direction](docs/art-direction.md).
+
+The first repository commit was made on **September 1, 2026** (`d49bf40`). The contract,
+working websites, WebMCP registration, tests and recorded demonstration were developed in
+this repository during the challenge's submission period. See the
+[submission draft](docs/devpost-submission.md#built-during-the-submission-period) for the
+development history and third-party building blocks.

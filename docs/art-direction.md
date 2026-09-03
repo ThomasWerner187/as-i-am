@@ -20,13 +20,19 @@ target size and content priority, not a decorative animation or screenshot swap.
 Both assets were generated specifically for this fictional demo on 2026-09-02 with the
 image-generation tool. They contain no UI text. Text overlays and labels are rendered as HTML.
 
-### `public/art/luna-poster.png`
+### `public/art/luna-poster.webp`
+
+The lossless source is preserved at `docs/art-sources/luna-poster.png`. The website serves
+an optimized 640px-wide WebP.
 
 Prompt:
 
 > Use case: stylized-concept. Generate a production website asset: a cinematic science fiction film poster ARTWORK ONLY, portrait 2:3 aspect. A huge richly textured amber moon hangs above a majestic quiet ochre desert with layered sand dunes and a single tiny silhouetted traveler. Rich almost-black sky, luminous bronze moon, fine analog photographic film grain, art-house science fiction tone, dramatic composition. Carefully composed vast scale, controlled deep dark shadows, warm amber highlights. No text, no logos, no watermarks, no UI, no frames. This will be used as the LUNA cinema film poster in an accessibility demo; retain large quiet lower area suitable for text overlay added in code.
 
-### `public/art/oliva-table.png`
+### `public/art/oliva-table.webp`
+
+The lossless source is preserved at `docs/art-sources/oliva-table.png`. The website serves
+an optimized 640px-wide WebP.
 
 Prompt:
 
@@ -34,3 +40,17 @@ Prompt:
 
 Images are static, locally served and have meaningful alt text. Review final artwork and
 licensing requirements before public submission. No third-party cinema or restaurant is implied.
+The two deployed WebP files total approximately 124 KiB, about 97% smaller than the original
+PNGs. The source images remain in the repository for provenance and future exports.
+
+## Fonts and code
+
+Fraunces, Instrument Sans and Atkinson Hyperlegible are installed through Fontsource and
+served locally. Their original copyright and SIL Open Font License 1.1 notices are preserved
+in [third-party-licenses.txt](../public/third-party-licenses.txt), which is included in the
+static deployment at `/third-party-licenses.txt`. The project's [MIT license](../LICENSE)
+applies to its source code; it does not replace those font licenses.
+
+The cinema and restaurant names, film, inventory and bookings are fictional. SVG interface
+icons are authored in the source. The video uses the ElevenLabs premade Chris voice; details
+and the publication review step are in [recording](recording.md).

@@ -1,8 +1,9 @@
 # Submission draft — As I Am
 
-English copy for review. This document does not publish the project, change repository
-visibility, or submit the entry. Recheck the [official hackathon page](https://webmcp.devpost.com/)
-and rules before submission; publishing requires the owner’s decision.
+English copy for the submission form. The final section is an internal release gate, not
+part of the project story. This document does not publish the project, change repository
+visibility or submit the entry. See [testing instructions](judge-testing.md) and the
+[release runbook](release-runbook.md) for the remaining publication steps.
 
 ## Title and one-line description
 
@@ -76,11 +77,35 @@ separately and expose a truthful fallback instead of claiming native execution e
 
 ## What’s next
 
-Deploy and verify the three public origins; review and publish the recorded English demonstration. Then extract
-a small integration kit and conformance fixture, test with people who use adaptive interfaces,
-and add agent-side consent, minimisation, receipt expiry and integrity protection.
+Extract a small integration kit and conformance fixture so another website can implement
+the contract. Test the experience with people who use adaptive interfaces. Add agent-side
+consent, minimisation, receipt expiry and integrity protection before treating receipts as
+production infrastructure.
 
-## Release gate
+## Built during the submission period
+
+The repository began on September 1, 2026 (`d49bf40`). Its September 1–2 implementation
+history records the functional contract and adaptation engine, WebMCP registration, the
+original shop/services examples, the cinema-to-dinner experience, validation and accessibility
+tests, and the narrated demonstration. The final polish and release preparation continue
+during the submission period.
+
+React, TypeScript, Vite, Fontsource fonts, Playwright, Vitest and axe-core are existing
+third-party building blocks. The fictional cinema and restaurant artwork was generated for
+the demo, and ElevenLabs generated the English guide narration. The app does not require
+an ElevenLabs account or API key. Asset provenance and font notices are included in the repo.
+
+## Built with
+
+WebMCP, React, TypeScript, Vite, CSS, Vitest, Playwright, axe-core, Fontsource, ElevenLabs.
+
+## Testing instructions
+
+Paste the [compact Devpost testing field](judge-testing.md#compact-devpost-testing-field),
+then supply the verified public controller and direct site URLs. No credentials are needed.
+The video shows the guided demo; native tool calls are tested separately on top-level pages.
+
+## Internal release gate — do not paste into the project story
 
 - [ ] Verify public controller, cinema and restaurant URLs and actual origin topology.
 - [ ] Run both booking flows twice in the intended presentation browser.
@@ -90,5 +115,10 @@ and add agent-side consent, minimisation, receipt expiry and integrity protectio
 - [ ] Obtain the owner’s approval for any repository visibility change and publication.
 - [ ] Review secrets, personal data, license, assets and source links before release.
 - [ ] Verify all submission links logged out and recheck the current official deadline/rules.
+- [ ] Confirm team invitations are accepted, or record that this is a solo entry.
+- [ ] Save and submit, then verify the green **Submitted** label on Devpost My Projects.
+- [ ] Preserve the exact submitted commit, deployment, video and entry through judging.
 
-Project URL, video URL and submission URL remain intentionally unset until verified.
+Project URL, video URL and submission URL remain unset until verified. Before submission,
+replace deployment-dependent statements with the observed public topology. The current local
+setup has three origins; a single-host production deployment must be described as one origin.
