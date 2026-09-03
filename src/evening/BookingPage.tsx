@@ -10,6 +10,9 @@ import { menuStore, useMenu } from "./menuState";
 import "../styles/menu.css";
 import {
   FILM,
+  SHOWTIMES,
+  nextWeekDates,
+  formatBookingDate,
   SEATS,
   TABLE_TIMES,
   TABLES,
@@ -85,7 +88,16 @@ export function BookingPage({ site }: { site: EveningSite }) {
           ...recommendations.filter((pair) => pair.id !== chosenPair.id),
         ].slice(0, 3)
       : recommendations;
-  const options = tableOptions();
+  const options = tableOptions(booking.showing.time, { date: booking.tableDate ?? booking.showing.date, today: booking.today });
+  const bookingDate = formatBookingDate(cinema ? booking.showing.date : booking.tableDate ?? booking.showing.date);
+  const seatPlacement = booking.seatAssignments ? (
+    <div className="personal-seat-placement" aria-label={`Aisle, you in ${booking.seatAssignments.user}, your wife in ${booking.seatAssignments.spouse}`} data-testid="personal-seat-placement" style={booking.seatAssignments.user.endsWith("12") ? { flexDirection: "row-reverse" } : undefined}>
+      <span className="placement-aisle">Aisle</span>
+      <span><strong>You</strong><small>{booking.seatAssignments.user}</small></span>
+      <span><strong>Your wife</strong><small>{booking.seatAssignments.spouse}</small></span>
+      <span className="placement-others" aria-hidden="true">○ ○ ○</span>
+    </div>
+  ) : null;
   const chosenTime = options.find(
     (option) => option.time === booking.tableTime,
   );
@@ -212,7 +224,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
 
   return (
     <div
-      className={`booking-page booking-page--${site}${calm ? " is-guided" : ""}`}
+      className={`booking-page booking-page--${site}${calm ? " is-guided" : ""}${booking.seatAssignments ? " has-personal-seats" : ""}`}
       data-line-spacing={visual?.line_height !== undefined ? "custom" : undefined}
     >
       <a className="skip-link" href="#main">
@@ -305,7 +317,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                   : "Good food. Time together."}
               </h2>
               <p className="venue-time">
-                {cinema ? "Tonight · 20:15" : "Dinner before the film"}
+                {cinema ? `${bookingDate} · ${booking.showing.time}` : bookingDate}
               </p>
               <p className="venue-details">
                 {cinema
@@ -344,8 +356,8 @@ export function BookingPage({ site }: { site: EveningSite }) {
                 </h1>
                 <p>
                   {cinema
-                    ? `${booking.selectedSeats.join(" + ")} · Tonight at 20:15 · ${money(total)} total`
-                    : `Two people · Tonight at ${booking.tableTime} · ${selectedTable?.name ?? "Your table"} · No deposit`}
+                    ? `${booking.selectedSeats.join(" + ")} · ${bookingDate} at ${booking.showing.time} · ${money(total)} total`
+                    : `Two people · ${bookingDate} at ${booking.tableTime} · ${selectedTable?.name ?? "Your table"} · No deposit`}
                 </p>
                 <p className="demo-notice">
                   Demo confirmation only.{" "}
@@ -360,12 +372,13 @@ export function BookingPage({ site }: { site: EveningSite }) {
                 <h1 ref={heading} tabIndex={-1}>
                   {cinema ? "Your night at LUNA." : "Your table at OLIVA."}
                 </h1>
+                {cinema && seatPlacement}
                 <dl className="review-lines">
                   <div>
                     <dt>{cinema ? "Film" : "Guests"}</dt>
                     <dd>
                       {cinema
-                        ? "LUNA · Tonight at 20:15"
+                        ? `LUNA · ${bookingDate} at ${booking.showing.time}`
                         : `Two people · ${selectedTable?.area === "garden" ? "garden" : "main room"}`}
                     </dd>
                   </div>
@@ -374,7 +387,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                     <dd>
                       {cinema
                         ? booking.selectedSeats.join(" + ")
-                        : `Tonight at ${booking.tableTime}`}
+                        : `${bookingDate} at ${booking.tableTime}`}
                     </dd>
                   </div>
                   <div>
@@ -388,12 +401,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                     </div>
                   )}
                 </dl>
-                {!cinema && selectedTable && <p className="table-arrival-note">{selectedTable.description}</p>}
-                <p>
-                  {cinema
-                    ? "Nothing is purchased until you confirm. This demonstration never takes a payment."
-                    : "Pay for your meal at the restaurant. This demonstration does not create a real reservation."}
-                </p>
+                <p>Confirm when you’re ready.</p>
                 <div className="review-actions" data-aia="actions">
                   <button
                     className="booking-primary"
@@ -410,10 +418,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                     Change selection
                   </button>
                 </div>
-                <p className="human-note">
-                  You make the final decision. The agent cannot press this
-                  confirmation through a tool.
-                </p>
+                <p className="human-note">Demo only · No real {cinema ? "purchase" : "reservation"}.</p>
               </div>
             ) : (
               <>
@@ -438,15 +443,28 @@ export function BookingPage({ site }: { site: EveningSite }) {
                     {cinema
                       ? calm
                         ? "Choose a pair. We’ll keep the next step simple."
-                        : "Choose two seats for tonight’s 20:15 screening."
+                        : `Two seats · ${bookingDate} · ${booking.showing.time}`
                       : calm
                         ? "These times leave room to eat and walk to LUNA."
-                        : "Tonight · Two people · A place for your evening"}
+                        : `${bookingDate} · Two people`}
                   </p>
                 </div>
 
+                {cinema && (
+                  <div className="showing-choice" aria-label="Choose a showing">
+                    <label>
+                      <span className="visually-hidden">Film date</span>
+                      <select aria-label="Film date" value={booking.showing.date} onChange={(event) => eveningStore.selectShowing(event.target.value, booking.showing.time)}>
+                        {nextWeekDates(booking.today).map((date) => <option key={date} value={date}>{formatBookingDate(date)}</option>)}
+                      </select>
+                    </label>
+                    <div className="showing-times" role="group" aria-label="Film time">
+                      {SHOWTIMES.map((time) => <button key={time} type="button" aria-pressed={booking.showing.time === time} onClick={() => eveningStore.selectShowing(booking.showing.date, time)}>{time}</button>)}
+                    </div>
+                  </div>
+                )}
                 {cinema ? (
-                  calm ? (
+                  calm && !booking.seatAssignments ? (
                     <div className="choice-list" data-testid="seat-pair-list">
                       {pairChoices.map((pair) => (
                         <button
@@ -510,6 +528,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                     </div>
                   ) : (
                     <div className="seat-map" data-testid="seat-map">
+                      {seatPlacement}
                       <div className="cinema-screen">
                         <span>SCREEN</span>
                       </div>
@@ -531,7 +550,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                                     key={seat.id}
                                     className={`seat${!seat.available ? " is-taken" : ""}${booking.selectedSeats.includes(seat.id) ? " is-selected" : ""}`}
                                     disabled={!seat.available}
-                                    aria-label={`Row ${seat.row}, seat ${seat.number}, ${seat.available ? money(seat.price) : "unavailable"}`}
+                                    aria-label={`Row ${seat.row}, seat ${seat.number}, ${seat.available ? money(seat.price) : "unavailable"}${seat.aisle ? ", aisle" : ""}${booking.seatAssignments?.user === seat.id ? ", You" : booking.seatAssignments?.spouse === seat.id ? ", Your wife" : ""}`}
                                     aria-pressed={booking.selectedSeats.includes(
                                       seat.id,
                                     )}
@@ -551,6 +570,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                                           ? "✓"
                                           : ""}
                                     </span>
+                                    {(booking.seatAssignments?.user === seat.id || booking.seatAssignments?.spouse === seat.id) && <span className="seat-person">{booking.seatAssignments.user === seat.id ? "You" : "Wife"}</span>}
                                   </button>
                                 ),
                               )}
@@ -563,7 +583,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                         <span>□ Row F · Comfort {money(13)}</span>
                         <span>× Unavailable</span>
                       </div>
-                      {guided && (
+                      {guided && !booking.seatAssignments && (
                         <button
                           className="booking-link"
                           onClick={() => setOriginalLayout(false)}
@@ -626,7 +646,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                     data-testid="table-time-grid"
                   >
                     <div className="table-date">
-                      <span>TONIGHT</span>
+                      <span>{bookingDate}</span>
                       <strong>A table for two</strong>
                       <span>Choose a time, then a table that suits you.</span>
                     </div>
