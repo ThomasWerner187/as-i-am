@@ -60,17 +60,24 @@ including earlier layout-check takes. The selected observed results are:
 - The demonstrator used the visible restaurant control to confirm the synthetic table.
   Final booking state was read back. No native confirmation tool or real transaction is claimed.
 
-Raw recordings, structured results and matching screenshots are retained locally. The final
-film lasts 112 seconds with two voices, 101 words and 15 captions; speech begins at 7 seconds.
-Both media exports decode completely without errors. See [recording](recording.md) for the
-selected files, exact hashes, audio measurements and production provenance.
+Raw recordings, structured results and matching screenshots are retained locally. The selected
+film lasts **79.600 seconds** with a single uncut **71.520-second** two-voice performance and
+32 English caption cues; speech begins at 4.165 seconds. Both 1920 × 1080, 30 fps media exports
+decode completely without errors. The captioned file has subtitles burned into the picture.
+The clean file uses independently rendered caption-free frames and carries one optional English
+subtitle stream. See [recording](recording.md) for exact hashes, audio measurements and production
+provenance.
 
-The completed player was checked at `http://127.0.0.1:4381/`: the video loaded at full
-1920 × 1080 with a 112-second duration and played without a reported media error. Chapter
-seeking, replay and keyboard seeking worked. At 76.79 seconds, the menu subtitle was visible
-below the dish cards in full screen; turning captions off hid it, and turning them back on
-restored it. Mute/unmute and exiting full screen worked. These playback checks do not replace
-the owner's final listening review.
+Every film transition was inspected immediately before, at and after its trigger. Row, ticket,
+table and outcome changes occur 300 ms after the complete triggering phrase. Page-state changes
+within LUNA and OLIVA are direct, the restaurant keeps one scale and position, and the venue
+transition passes through the cream frame without overlapping interfaces or headings.
+
+The rebuilt player was checked at `http://127.0.0.1:4382/`: the clean video loaded at full
+1920 × 1080 with a 79.6-second duration and played without a reported media error. Rapid chapter
+selection landed on the last chosen chapter and displayed its current menu caption. Captions
+off/on, mute/unmute, replay and full-screen entry/exit worked. The player was then returned to its
+opening frame. These playback checks do not replace the owner's final listening review.
 
 Public hosting, repository visibility, YouTube publication, the owner's final watch/listen
 and Devpost submission remain separate outstanding gates.
