@@ -292,6 +292,14 @@ function collectRenderedSignals(
   numericToken("visual.brightness", "--aia-brightness-value");
   attr("visual.contrast", "contrast");
   attr("visual.glare", "glare");
+  const requestedScheme = root.getAttribute("data-aia-color-scheme");
+  // A flag alone does not prove that the site's dark stylesheet is loaded.
+  const renderedScheme = getComputedStyle(root).colorScheme;
+  if (requestedScheme === "dark" && renderedScheme === "dark") {
+    signals["visual.color_scheme"] = "dark";
+  } else if (requestedScheme === "default") {
+    signals["visual.color_scheme"] = "default";
+  }
   attr("visual.color_mode", "color-mode");
   attr("visual.font_style", "font-style");
   on("visual.color_independent_status", "status-labels");
@@ -468,6 +476,7 @@ export function verifyFit(
       case "visual.max_line_length":
       case "visual.brightness":
       case "visual.glare":
+      case "visual.color_scheme":
       case "visual.color_mode":
       case "visual.color_independent_status":
       case "visual.font_style":

@@ -29,6 +29,7 @@ const CAPABILITIES: Capability[] = [
   cap("visual.contrast", "visual", "Contrast scheme", "", ["normal", "high", "maximum"]),
   cap("visual.brightness", "visual", "Overall brightness", "×", "continuous"),
   cap("visual.glare", "visual", "Glare reduction (softer palette)", "", ["normal", "low"]),
+  cap("visual.color_scheme", "visual", "Personal dark appearance using the website's own palette", "", ["default", "dark"]),
   cap("visual.color_mode", "visual", "Colour vision mode", "", [
     "normal", "grayscale", "protanopia-safe", "deuteranopia-safe", "tritanopia-safe", "invert",
   ]),
@@ -101,11 +102,11 @@ interface PageSupport {
 
 const PAGE_SUPPORT: Record<string, PageSupport> = {
   "cinema-booking": {
-    adaptive: ["visual.text_scale", "visual.important_text_scale", "visual.line_height", "visual.font_style", "interaction.minimum_target_size", "interaction.target_spacing", "interaction.focus_strength", "cognitive.information_density", "cognitive.step_by_step", "cognitive.hide_nonessential", "motion_media.reduce_motion", "motion_media.disable_animation"],
+    adaptive: ["visual.text_scale", "visual.important_text_scale", "visual.line_height", "visual.font_style", "visual.color_scheme", "visual.glare", "interaction.minimum_target_size", "interaction.target_spacing", "interaction.focus_strength", "cognitive.information_density", "cognitive.step_by_step", "cognitive.hide_nonessential", "motion_media.reduce_motion", "motion_media.disable_animation"],
     inherent: ["interaction.drag_alternatives", "interaction.double_click_disabled", "cognitive.persistent_labels", "cognitive.progress_indicators", "motion_media.disable_autoplay", "safety.confirm_destructive", "safety.complete_price_totals"],
   },
   "restaurant-booking": {
-    adaptive: ["visual.text_scale", "visual.line_height", "visual.font_style", "interaction.minimum_target_size", "interaction.target_spacing", "interaction.focus_strength", "cognitive.information_density", "cognitive.step_by_step", "cognitive.hide_nonessential", "motion_media.reduce_motion", "motion_media.disable_animation"],
+    adaptive: ["visual.text_scale", "visual.line_height", "visual.font_style", "visual.color_scheme", "visual.glare", "interaction.minimum_target_size", "interaction.target_spacing", "interaction.focus_strength", "cognitive.information_density", "cognitive.step_by_step", "cognitive.hide_nonessential", "motion_media.reduce_motion", "motion_media.disable_animation"],
     inherent: ["interaction.drag_alternatives", "interaction.double_click_disabled", "cognitive.persistent_labels", "cognitive.progress_indicators", "motion_media.disable_autoplay", "safety.confirm_destructive", "safety.complete_price_totals"],
   },
   landing: {

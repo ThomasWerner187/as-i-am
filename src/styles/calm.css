@@ -1,0 +1,150 @@
+/* Personal appearance is interpreted by each venue. No page opacity or
+   brightness filter: foreground contrast and the venue identity are preserved. */
+html[data-evening="cinema"] { color-scheme: dark; }
+html[data-evening="restaurant"] { color-scheme: light; }
+html[data-aia-color-scheme="dark"][data-evening="cinema"],
+html[data-aia-color-scheme="dark"][data-evening="restaurant"] {
+  color-scheme: dark;
+  background: #191c1b;
+}
+
+html[data-aia-color-scheme="dark"] .booking-page {
+  --paper: #191c1b;
+  --paper-raised: #252a27;
+  --ink: #eeeee5;
+  --ink-soft: #bdc4b9;
+  --ink-faint: #aeb8a7;
+  --line: #525c51;
+  --accent: #dcc488;
+  --accent-ink: #dcc488;
+  --calm-accent-text: #21241d;
+  --calm-selection: #343a2e;
+  --calm-control-border: #798575;
+  --calm-warning: #d9bc8c;
+  background: var(--paper);
+  color: var(--ink);
+}
+html[data-aia-color-scheme="dark"] .booking-page--restaurant {
+  --paper: #1c211c;
+  --paper-raised: #282f25;
+  --ink: #e7e8dc;
+  --ink-soft: #bfc7b6;
+  --ink-faint: #acb7a3;
+  --line: #56604e;
+  --accent: #b7c995;
+  --accent-ink: #b7c995;
+  --calm-selection: #343f2a;
+}
+
+/* Low glare also works without changing the chosen colour scheme. */
+html[data-aia-glare="low"] .booking-page {
+  --cinema-gold: #c9bb98;
+  --accent: #c9bb98;
+  --accent-ink: #c9bb98;
+  --ink: #e5e6de;
+  --ink-soft: #bbc2b5;
+  background: #1c201e;
+  color: var(--ink);
+}
+html[data-aia-glare="low"] .booking-page--restaurant {
+  --paper: #e9e6da;
+  --paper-raised: #eeece2;
+  --ink: #32372c;
+  --ink-soft: #525c47;
+  --accent: #4e5d43;
+  --accent-ink: #4e5d43;
+  --line: #aeb6a0;
+  background: var(--paper);
+}
+html[data-aia-color-scheme="dark"][data-aia-glare="low"] .booking-page {
+  --paper: #1c201e;
+  --paper-raised: #282e29;
+  --ink: #e5e6de;
+  --ink-soft: #bbc2b5;
+  --accent: #c9bb98;
+  --accent-ink: #c9bb98;
+  --line: #566052;
+  background: var(--paper);
+}
+html[data-aia-color-scheme="dark"][data-aia-glare="low"] .booking-page--restaurant {
+  --paper: #20251f;
+  --paper-raised: #2b3227;
+  --ink: #e0e4d7;
+  --ink-soft: #bac5ae;
+  --accent: #b9c4a3;
+  --accent-ink: #b9c4a3;
+  --line: #59664f;
+}
+
+/* Only decorative imagery is softened. Text, status and focus stay crisp. */
+html[data-aia-glare="low"] .venue-image img,
+html[data-aia-glare="low"] .menu-choice-image {
+  filter: saturate(0.7) brightness(0.88);
+}
+html[data-aia-glare="low"] .booking-primary:hover:not(:disabled) {
+  filter: none;
+}
+
+html[data-aia-color-scheme="dark"] .booking :is(
+  .booking-choice, .time-option, .table-location-options button,
+  .menu-filter-fields select, .menu-filter-fields input
+) {
+  color: var(--ink);
+  background: var(--paper-raised);
+  border-color: var(--calm-control-border);
+}
+html[data-aia-color-scheme="dark"] .booking :is(
+  .booking-choice.is-selected, .time-option.is-selected,
+  .table-location-options button[aria-pressed="true"]
+) {
+  color: var(--ink);
+  background: var(--calm-selection);
+  border-color: var(--accent);
+}
+html[data-aia-color-scheme="dark"] .booking :is(
+  .booking-primary, .menu-view-controls button[aria-pressed="true"]
+) {
+  color: var(--calm-accent-text);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+html[data-aia-color-scheme="dark"] .booking :is(
+  .booking-primary:disabled, .time-option:disabled,
+  .table-location-options button:disabled
+) {
+  color: var(--ink-soft);
+  background: var(--paper-raised);
+  border-color: var(--line);
+}
+html[data-aia-color-scheme="dark"] .menu-filter-fields input::placeholder {
+  color: var(--ink-soft);
+}
+html[data-aia-color-scheme="dark"] :is(.menu-source-warning, .menu-assessment) {
+  color: var(--calm-warning);
+}
+html[data-aia-color-scheme="dark"] .restaurant-menu ::selection {
+  color: var(--calm-accent-text);
+  background: var(--accent);
+}
+html[data-aia-color-scheme="dark"] .seat:hover:not(:disabled) .seat-shape {
+  background: var(--calm-selection);
+}
+html[data-aia-color-scheme="dark"] .seat.is-selected .seat-shape {
+  color: var(--calm-accent-text);
+  background: var(--accent);
+}
+html[data-aia-color-scheme="dark"] .seat.is-taken .seat-shape {
+  background: var(--paper-raised);
+  border-color: var(--line);
+  color: var(--ink-soft);
+}
+
+/* Respect platform colours and avoid overriding a user's forced palette. */
+@media (forced-colors: active) {
+  html[data-aia-color-scheme="dark"] .booking-page {
+    color: CanvasText;
+    background: Canvas;
+  }
+  html[data-aia-glare="low"] .venue-image img,
+  html[data-aia-glare="low"] .menu-choice-image { filter: none; }
+}

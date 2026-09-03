@@ -493,7 +493,7 @@ const universalTools: ToolDef[] = [
   {
     name: "tune_visual_presentation",
     description:
-      "Granular visual tuning: text_scale, important_text_scale, line_height, letter_spacing, word_spacing, max_line_length, contrast, brightness, glare, color_mode, color_independent_status, font_style. Atomic + undoable.",
+      "Granular visual tuning: text_scale, important_text_scale, line_height, letter_spacing, word_spacing, max_line_length, contrast, brightness, glare, color_scheme, color_mode, color_independent_status, font_style. Discover page support first. Atomic + undoable.",
     inputSchema: {
       type: "object",
       properties: {
@@ -506,6 +506,7 @@ const universalTools: ToolDef[] = [
         contrast: { type: "string", enum: ["normal", "high", "maximum"] },
         brightness: { type: "number", minimum: 0.55, maximum: 1 },
         glare: { type: "string", enum: ["normal", "low"] },
+        color_scheme: { type: "string", enum: ["default", "dark"] },
         color_mode: { type: "string", enum: ["normal", "grayscale", "protanopia-safe", "deuteranopia-safe", "tritanopia-safe", "invert"] },
         color_independent_status: { type: "boolean" },
         font_style: { type: "string", enum: ["default", "readable"] },

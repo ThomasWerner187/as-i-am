@@ -98,6 +98,13 @@ export interface DemoBundle {
   prompt: string;
 }
 
+/** A personal display choice, without a diagnosis or any other private context. */
+export const CALM_DARK_PROFILE: FunctionalProfile = {
+  version: CONTRACT_VERSION,
+  visual: { color_scheme: "dark", glare: "low" },
+  motion_media: { reduce_motion: true, disable_animation: true },
+};
+
 export const DEMO_BUNDLES: DemoBundle[] = [
   {
     id: "precision-reading",
