@@ -1,0 +1,32 @@
+# Apache 2.4 / Plesk. Upload into this project's document root only.
+# Configure TLS, the HTTP -> HTTPS redirect and jury authentication in Plesk.
+Options -Indexes -MultiViews
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Keep ACME challenges and real files/directories available to their handlers.
+  RewriteRule ^\.well-known/ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set Origin-Agent-Cluster "?1"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # The jury login protects every route. Do not allow shared caches to retain it.
+  Header set Cache-Control "private, no-cache, max-age=0, must-revalidate"
+  <FilesMatch "-[A-Za-z0-9_-]{8,}\.(js|css|woff2?)$">
+    Header set Cache-Control "private, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "private, no-cache, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# There is deliberately no Permissions-Policy denying tools and no frame DENY.
+# Plesk nginx may serve static files directly; verify the actual HTTPS headers.
