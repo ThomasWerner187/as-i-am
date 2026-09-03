@@ -1,108 +1,119 @@
 # Submission draft — As I Am
 
-English copy for the revised entry. The access-choice interface and native calls are verified;
-the matching recording is blocked by the browser recording security failure. The existing 117-second guided video shows the
-previous revision. The release gate below is internal and should not be pasted into the story.
+English copy for the personal evening story. Release evidence and media status are maintained in
+[verification.md](verification.md) and [recording.md](recording.md). This draft does not establish
+public deployment, a public video or a submitted Devpost entry.
 
 ## Title and one-line description
 
 **As I Am — The web adapts. You don’t have to.**
 
-Disabled people choose the access they need. Participating websites adapt, agents help, and
-the person keeps the final say.
+Your agent knows what matters. Participating websites adapt, and you plan the evening together.
 
 ## Inspiration
 
-Two seats together. Dinner before the film. An ordinary evening should be yours to arrange.
-But a booking page can put barriers between a disabled person and that choice: controls that
-need precise movement, text that is difficult to read, or too much information to manage at once.
+“Plan a movie night for us next week. Dinner first would be lovely.”
 
-Reduced dexterity or tremor, low vision, and cognitive overload or fatigue can create different
-access needs. W3C WAI describes this diversity and how needs can overlap or change. We use
-functional requests instead of asking the website to classify a person medically.
-[Diverse Abilities and Barriers](https://www.w3.org/WAI/people-use-web/abilities-barriers/)
+That ordinary request can involve much more than picking a film. A person may need a calmer
+screen today, a particular seat arrangement, or food information that is easy to compare.
+Having to explain those needs again on every website adds work before the evening even begins.
 
-As I Am starts with a simple question: what would help you use this page? Then a second:
-do you want to choose yourself, or ask your agent to prepare a proposal?
+As I Am explores a different experience: a trusted agent carries the preferences a person has
+chosen to share, while each participating website makes its own interface easier to use.
+Inclusion means being able to participate, change your mind and keep the final say.
 
 ## What it does
 
-The person can combine **Make pointing easier for me**, **Make reading easier for me** and **Give me less to process**. These
-produce explicit requests for larger targets, larger readable text, clearer steps or reduced
-motion. The agent discovers what a participating site supports; the site applies those requests in its own
-design and reports the rendered result. The person can change the combination and return to
-the original view.
+The demo follows **Alex and Lea**, a fictional couple with explicitly shared preferences.
+Alex has asked for his familiar calm view because he has a migraine today. He wants an aisle
+seat beside Lea. Mushroom risotto is his favorite. Lea has explicitly shared peanut and
+avocado allergies.
 
-**Help me choose** supports the person's own exploration. **Prepare for me** lets an agent
-research available options and stage a review. Both preserve the person's existing choices
-and leave confirmation in the visible interface. Clearing all support choices keeps the original
-presentation and the journey available.
+The agent applies Alex’s chosen dark appearance, lower glare and stopped animations for
+**today’s planning**. It finds next Friday’s 20:15 film and checks that dinner can fit first.
+Two seats are highlighted: Alex at the aisle, Lea immediately inside. When Alex asks for one
+row further back, both seats move together and preserve that arrangement.
 
-The example is a fictional cinema and restaurant. Cinema controls change while selected seats
-remain selected. A functional receipt carries the chosen interface preferences to the restaurant.
-The restaurant accepts its supported subset and retains its own design. Adding reading support
-later makes changing needs part of the same journey.
+After Alex confirms the demo tickets, the restaurant receives the confirmed date and film time.
+An 18:00 table allows a 90-minute meal and a 15-minute walk, arriving at 19:45. The restaurant
+also adopts the supported calm display preferences in its own visual style.
 
-Dinner planning is a useful secondary task: use the confirmed 20:15 film time, allow time to
-eat and walk, and propose an available 18:00 table with arrival at 19:45. The full menu stays
-available alongside focused options. Food requests come from an editable fictional example;
-uncertain ingredient or allergen information remains a question for the restaurant.
+Three illustrated dishes replace a long list. Risotto appears first because it is Alex’s
+favorite **and** meets the ingredient filter. Peanut and avocado exclusions are explicit;
+missing information and cross-contact remain kitchen questions. The full menu is always
+available, and the person confirms the table.
 
 ## Why WebMCP matters
 
-The agent needs a discoverable agreement with the website. WebMCP exposes capabilities,
-validated adaptation, rendered measurement and booking preparation as distinct actions.
-The agent can ask, inspect the result and refine an unmet request. The website owns its
-components and rules. No arbitrary CSS injection or booking-confirmation tool is required.
+Personal context becomes useful when the agent can do something with it on the real page.
+WebMCP gives the agent discoverable tools to inspect supported adaptations, apply functional
+settings, check the rendered result, research availability and prepare a booking review.
+Menu tools can present a smaller, relevant selection in the website’s own interface.
 
-The core proof is a real native sequence: discover the page tools, send chosen functional
-values, show the changed page and inspect its returned measurements. Existing native calls
-have been verified on the local production build; the revised sequence is being recorded.
-Guided buttons run labelled presets and are kept distinct from external-agent execution.
+The website owns its design and booking rules. The agent provides supported requests rather
+than injecting arbitrary CSS. The person sees the result, makes a correction and confirms.
+That cooperation is the core of As I Am.
 
 ## How we built it
 
-React, TypeScript and Vite render the sites. `document.modelContext.registerTool` exposes their
-page-specific tools. Closed schemas and destination capability checks bound the requests.
-The app retains state in session memory and keeps receipt export/import separate from domain tasks.
+React, TypeScript and Vite render two participating demo venues: LUNA Cinema and OLIVA
+Restaurant. Page-specific tools are registered through `document.modelContext.registerTool`.
+Validated schemas separate display adaptation, measurements, menu research and booking state.
 
-The functional receipt contains no diagnosis, diet, allergens, budget or booking selections.
-Dinner planning receives the film time separately under the person's request. The two sites
-share this implementation; they demonstrate a contract, not independent industry adoption.
-The source is MIT licensed and the demo is free to use.
+The home page is a **labelled preset walkthrough**, not an embedded autonomous language model.
+A real external agent can read the supplied fictional context and perform the corresponding
+native WebMCP calls on the direct venue pages. The advanced access-choice experience remains
+available at `/guided`.
 
-## What we can show—and what we still need to learn
+A functional receipt transfers display preferences between the venues. It contains no names,
+diagnosis, allergies, food preferences or booking selections. The dinner date, film time and
+explicit ingredient requirements are separate task inputs. Alex’s migraine message stays in
+the example agent context; the sites receive his chosen display settings.
 
-The revised build has documented native tool execution, rendered measurements,
-selection-preservation checks and 196 automated tests. These are engineering results, not
-proof that a particular disabled person finds the interface easier to use. The revised choices
-and native results are verified; a matching video remains blocked.
+The repository is MIT licensed. The app requires no account, payment or API key.
 
-No genuine user-research sessions or testimonials are documented yet. WAI's
-[Stories of Web Users](https://www.w3.org/WAI/people-use-web/user-stories/) inform our awareness
-of different experiences; those people are not our participants and their stories are not our
-validation. We have prepared a practical worksheet for voluntary testing with real people.
+## What we learned
 
-The prototype uses synthetic bookings and menu data. It requires participating sites, does not
-adapt arbitrary websites, and is not a WCAG certification or a guarantee of allergy safety.
-Functional preferences can be sensitive; unsigned receipts are not production credentials.
+A useful accessibility demo needs to show a person doing something they care about. Here,
+calmer visuals, a correctly positioned seat pair and three understandable food choices all
+serve the same evening. A small correction demonstrates cooperation better than a long
+explanation of automation.
+
+The same lesson applies to the contract: adaptations must preserve the person’s choices.
+A quieter page should keep the selected seats. A menu refinement should retain explicit
+allergy exclusions. A favorite must never outrank a conflicting ingredient requirement.
+
+## Evidence and limits
+
+The current [verification report](verification.md) records the tested build, native execution,
+automated checks and remaining limitations. The [recording report](recording.md) identifies
+the matching film and its completed media checks; this story is not a substitute for that evidence.
+
+Alex and Lea, their shared history, bookings and menu are synthetic. There is no production
+memory service or embedded model. These two venues share an implementation and demonstrate a
+contract; the prototype does not adapt arbitrary websites.
+
+Calm settings are Alex’s stated preference, not a migraine treatment. Ingredient declarations
+are not an allergy-safety guarantee. Engineering tests do not establish usability benefits for
+disabled people, and no participant research or testimonials are claimed.
 
 ## What’s next
 
-Evaluate the actual choices with disabled people using their preferred devices and access tools.
-Learn which adaptations help, which interfere and when a person wants delegated help. Then build
-an integration kit for an independent website and strengthen consent, receipt expiry and integrity.
+Test the actual experience with disabled people using their own devices and access tools.
+Learn which adaptations help, when they interfere and how much help each person wants from
+an agent. Then integrate an independent website and improve consent, receipt expiry and integrity.
 
 ## Built during the submission period
 
-The repository began on September 1, 2026 (`d49bf40`). Its September 1–3 history contains the
-contract, native registration, working examples, tests, inclusion flow, menu and dinner planning.
-The current revision adds explicit combinations of access needs and a stronger native proof.
-A replacement video must show this revision before it is submitted.
+The submission sprint produced the adaptive contract, native tool registration, participating
+venues, tests and personal evening journey. The latest story adds an explicit fictional
+context, calm display settings, dated showings, aisle-aware seating and a visual menu shortlist.
+The repository history records the implementation; the final submitted commit belongs in the
+release record.
 
-Existing building blocks include React, TypeScript, Vite, Fontsource fonts, Vitest, Playwright
-and axe-core. The fictional artwork was generated for the demo. Earlier narration used ElevenLabs;
-using the app requires no speech-provider account or API key. Licenses and provenance are in the repo.
+Existing building blocks include React, TypeScript, Vite, Fontsource, Vitest, Playwright and
+axe-core. Demo artwork and narration provenance are documented in the repository and recording
+report. The demo needs no speech-provider account to run.
 
 ## Built with
 
@@ -110,30 +121,15 @@ WebMCP, React, TypeScript, Vite, CSS, Vitest, Playwright, axe-core, Fontsource.
 
 ## Testing instructions
 
-Use [judge-testing.md](judge-testing.md) for the native-first walkthrough and compact Devpost
-field. See [inclusion-evidence.md](inclusion-evidence.md) for claim boundaries and
-[user-validation-guide.md](user-validation-guide.md) for the unfilled research worksheet.
-No login or credentials are required.
+Start at `/` for **A night for two**. Use `/guided` for advanced access choices and the direct
+`/cinema` and `/restaurant` pages for native external-agent testing. No credentials are required.
+The [judge guide](judge-testing.md) contains the short walkthrough, reproducible tool inputs and
+a paste-ready testing field.
 
-## Internal release gate — do not paste into the project story
+## Internal publication checks — do not paste into the story
 
-- [x] Check the final access-choice controls and combination mapping against this copy.
-- [x] Verify genuine native discovery, adaptation and measurement on the revised build; retain actual results.
-- [ ] Capture changed needs, retained selection and human confirmation; keep guided presets labelled.
-- [ ] Replace the previous 117-second candidate with the matching video below three minutes (narration ready; capture blocked).
-- [ ] Verify final runtime below three minutes, audio/captions and correspondence with the public app.
-- [x] Record dated technical results and retain the video/user-research limitations.
-- [ ] Verify public controller/direct URLs, actual topology, repository license and source visibility.
-- [ ] Review secrets, assets and final publication approval; add public YouTube and testing links.
-- [ ] Confirm team details, submit and verify the green **Submitted** label on Devpost My Projects.
-- [ ] Preserve the submitted commit, deployment, media and entry through judging.
-
-Nothing in this file establishes a new completed recording, public deployment or submitted entry.
-
-### Latest internal preparation status
-
-Application `db3b386`: 196 tests pass. New native production calls verify pointing,
-portability, changed reading needs and preserved selection. A 315-word English narration
-is ready. The matching video is **not ready**: the capture has zero frames following a browser
-security failure, and automatic approval review denied renewed recording access. The previous
-117-second cut is historical. See [verification](verification.md) and [recording](recording.md).
+- Match the final public app, repository, description and film to the recorded release commit.
+- Complete the final media checks in [recording.md](recording.md); add the public YouTube link.
+- Verify the public repository, MIT license, live URLs and no-login judge access.
+- Complete team details and testing links, then verify the green **Submitted** label in Devpost.
+- Preserve the submitted materials and working deployment for the required judging period.
