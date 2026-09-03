@@ -916,7 +916,7 @@ const semanticTools: ToolDef[] = [
   {
     name: "read_content",
     description:
-      "Return structured, speakable text for a scope (page|requests|appointments|comparison|products). Optional speak:true starts LOCAL text-to-speech (Web Speech API) with pause/resume via the page; a text alternative always remains.",
+      "Return structured, speakable text for a scope (page|requests|appointments|comparison|products). Optional speak:true requests a browser voice explicitly marked local. If no local voice is available, returns text only; never falls back to a remote voice.",
     inputSchema: {
       type: "object",
       properties: {
@@ -929,18 +929,12 @@ const semanticTools: ToolDef[] = [
     run: (_pageId, args) => {
       const scope = String(args.scope ?? "page");
       const text = collectReadableText(scope);
-      let speechState = "idle";
-      if (args.speak === true) {
-        if (speech.supported()) {
-          speech.speak(text, { rate: typeof args.rate === "number" ? args.rate : undefined });
-          speechState = speech.snapshot().status;
-        } else {
-          speechState = "unsupported";
-        }
-      }
-      activity.push("read_content", `Prepared readable content for "${scope}"${args.speak ? " and started local speech" : ""}.`);
+      const requestedSpeech = args.speak === true
+        ? speech.speak(text, { rate: typeof args.rate === "number" ? args.rate : undefined })
+        : { state: "idle", local_only: true };
+      activity.push("read_content", `Prepared readable content for "${scope}"${requestedSpeech.state === "requested" ? " and requested local speech" : " (text available)"}.`);
       return j({
-        ok: true, scope, text, speech: { state: speechState, controls: "pause/resume/stop available on the page", text_alternative: true },
+        ok: true, scope, text, speech: { ...requestedSpeech, text_alternative: true },
       });
     },
   },
@@ -1215,9 +1209,9 @@ const domainTools: ToolDef[] = [
         list.map((p) => productPriceLine(p)).join(". ") + ". " +
         `${cheapest.name} has the lowest total at ${money(cheapest.total)}. ` +
         `${bestRated.name} has the higher rating with ${bestRated.rating} of 5.`;
-      if (args.speak === true && speech.supported()) speech.speak(text);
-      activity.push("read_comparison", `Read a comparison of ${list.length} products${args.speak ? " aloud" : ""}.`);
-      return j({ ok: true, text, totals, verdict: { cheapest: cheapest.name, best_rated: bestRated.name } });
+      const requestedSpeech = args.speak === true ? speech.speak(text) : { state: "idle", local_only: true };
+      activity.push("read_comparison", `Prepared a comparison of ${list.length} products${requestedSpeech.state === "requested" ? " and requested local speech" : " (text available)"}.`);
+      return j({ ok: true, text, totals, speech: { ...requestedSpeech, text_alternative: true }, verdict: { cheapest: cheapest.name, best_rated: bestRated.name } });
     },
   },
   {
