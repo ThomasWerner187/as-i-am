@@ -1,26 +1,31 @@
-# Verification — 2026-09-02
+# Verification
 
-## Automated checks
+## Release checks
 
-Run from the assigned worktree with the three local sites available:
+Run from the assigned worktree with Node.js 22. Install Playwright's Chromium once after
+`npm ci`; the browser suite manages the three local development servers.
 
 ```bash
-npm run typecheck
-npm test
-npm run test:e2e
-npm run build
-node --test tools/clickthru/caption-groups.test.mjs
-node --test tools/clickthru/continuous-timing.test.mjs
+npx playwright install chromium
+npm run check
+npm audit
+gitleaks git --redact=100 --no-banner --log-opts=--all .
 ```
 
-Final local run: TypeScript and production build passed; 67 unit tests and 39 browser tests
-passed (106 total). The browser suite includes both new and legacy flows.
-Four additional recorder tests verify sentence boundaries, balanced caption splitting and
-preservation of the original speech-alignment indexes.
-Eight continuous-narration tests additionally cover full-script alignment, invalid timestamps,
-preserved click-motion speed, short-beat rejection, complete source order, safe frame paths and
-global subtitle timing and balanced caption lines. The application itself is unchanged by the
-continuous-voice edit.
+`check` runs type checking, unit tests, `test:recording`, browser tests and the production build.
+The recorder tests also run independently with `npm run test:recording` or
+`node --test tools/clickthru/*.test.mjs`.
+
+## Pre-polish baseline — September 3, 2026
+
+At source commit `70923d9`, TypeScript and the production build passed, along with **67 unit
+tests, 39 browser tests and 15 recorder tests**. These totals describe the baseline before
+the final review fixes; they are not the final release count. Record fresh results and the
+tested commit after integrating the polish, using the [release runbook](release-runbook.md).
+
+The recorder suite covers sentence boundaries, balanced captions, original speech-alignment
+indexes, full-script alignment, invalid timestamps, preserved click-motion speed, short-beat
+rejection, complete source order, safe frame paths, global subtitles and voice-request settings.
 
 The evening tests cover both complete synthetic booking flows, explicit UI confirmation,
 selection preservation through preview/refinement/undo, earlier restaurant-time preservation,
@@ -33,7 +38,7 @@ matching, serialized invocation and no silent fallback after native errors.
 The wider suite retains the original shop/services contract and registration regressions.
 Shim/harness tests are not represented as proof of native browser execution.
 
-## Observed native browser execution
+## Observed native browser execution — September 2, 2026
 
 Using the in-app browser's native WebMCP capability, not the development harness:
 
@@ -55,7 +60,7 @@ embedded frames did **not** expose native tools in this browser session. Their g
 therefore used the explicitly labelled fallback. Native cross-origin iframe execution is
 implemented and unit-tested, but has not been verified live in this environment.
 
-## Manual visual review
+## Manual visual review — September 2, 2026
 
 The actual controller, cinema and restaurant were inspected in the browser. The original map
 and transformed pairs are working components, not images. The restaurant retains its own design.
@@ -71,22 +76,35 @@ Public deployment, production headers, independent third-party interoperability,
 technology testing, YouTube publication, and submission have not been completed by this build.
 Re-verify native/fallback mode and all measurements in the actual presentation browser.
 
-## Recorded demonstration
+## Source and dependency audit — September 3, 2026 baseline
+
+`gitleaks git --redact=100 --no-banner --log-opts=--all .` scanned the baseline's 17 commits
+and found no leaks. A separate tracked-text scan found no secret patterns, email addresses,
+machine paths or workplace context. All relative Markdown links in the README and docs resolved.
+
+The baseline production dependency audit (`npm audit --omit=dev`) was clean. The full audit
+identified five advisories in the old Vitest development tree; the final polish updates that
+dependency and must rerun the full audit before release. This dated finding is not a statement
+about the final integrated lockfile.
+
+## Recorded demonstration — current candidate checked September 3, 2026
 
 The original 122-second click-through was captured from the working controller after the
 story changes: both original sites are used, the full restaurant is shown again before explicit
 transfer, and both synthetic bookings are confirmed by visible clicks. The readable proof panel
 shows the actual functional receipt. Its 227 frames and original timestamps remain preserved.
 
-The preferred [97-second edit](recording.md) uses one continuous 260-word ElevenLabs performance,
-including a 9.3-second pitch. There is one speech request, no speech splicing, and no
+The preferred [93-second Chris / Eleven v3 edit](recording.md) uses one continuous 260-word
+ElevenLabs performance, including a 9.1-second pitch. There is one speech request, no speech splicing, and no
 post-generation time stretching. The master hash is checked before rendering. Static screen
 holds follow speech timestamps while short click-motion intervals retain their real durations.
 
-It contains H.264 video, AAC audio and 29 English subtitle cues. The export decoded without
-errors. Browser review verified playback, chapter seeking, the opening, both restaurant views,
-visible balanced captions and the captions toggle. A silence scan of the master at −38 dB
-found only three pauses of at least 0.7 seconds;
-the longest was 1.30 seconds. This is a timing check, not a substitute for the owner's listening
-review. Earlier silent and narrated takes are preserved. The footage remains the labelled
-guided fallback, not autonomous native agent execution.
+`ffprobe` confirmed a 93.000-second file with H.264 video at 1416 × 1440, AAC audio and an
+embedded subtitle track. The SRT contains 29 English cues. A complete FFmpeg decode returned
+no errors. The selected file hash is recorded in [recording](recording.md).
+
+These file checks do not replace watching and listening to the final cut. The recording
+captures the September 2 guided workflow; later layout polish must preserve the behavior it
+depicts. Check the selected video against the final deployed experience before submission.
+Earlier silent and narrated takes are preserved. The footage remains the labelled guided
+fallback, not autonomous native agent execution.

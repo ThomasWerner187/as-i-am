@@ -4,6 +4,12 @@ The preferred cut is **1:33**, with a **9.1-second elevator pitch** followed by
 one continuous story. Both original websites work before adaptation; the full restaurant is
 shown again before the person explicitly brings their preferences over.
 
+The selected file was checked on September 3, 2026: **93.000 seconds**, H.264 video at
+**1416 × 1440**, AAC audio and an embedded subtitle track. The accompanying SRT has
+**29 English cues**. Its SHA-256 is
+`a96f7e71944e693561afbb89abaf70a597484ca5a6021eabc8b61ba43cbb623b`.
+This identifies the current local candidate, not a public upload.
+
 Generated locally in `tools/clickthru/out/chris-v3-oyj7sk/`:
 
 - `as-i-am-continuous.mp4` — English demo with ElevenLabs' premade Chris voice and Eleven v3.
@@ -11,6 +17,11 @@ Generated locally in `tools/clickthru/out/chris-v3-oyj7sk/`:
 - `as-i-am-continuous.srt` / `.vtt` — captions aligned to the continuous performance.
 - `continuous-master.mp3` — the untouched voice generation, also usable separately.
 - `speech-plan.json` / `edit-plan.json` — speech timings and the corresponding screen edit.
+
+These ignored outputs live in the worktree where the recording was made; a fresh clone or
+another worktree will not contain them. The committed scripts and instructions describe how
+to produce a new recording. Recording narration requires its own optional provider credentials;
+running the application and its tests does not.
 
 The entire 260-word script, including the pitch, was sent to ElevenLabs in **one request**.
 Chris was selected for his conversational, down-to-earth profile. The shortlist also included
