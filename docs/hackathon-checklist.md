@@ -9,12 +9,13 @@ These times follow the organizer's reminder; recheck the
 ## Local preparation
 
 - [x] Working synthetic cinema and restaurant flows with visible human confirmation.
+- [x] Two chosen help modes, dinner timing from confirmed tickets, and an explicit menu/allergen flow.
 - [x] Native WebMCP registration and a separately labelled guided demo bridge.
 - [x] English project description, agent request and [judge testing instructions](judge-testing.md).
 - [x] MIT source license, generated-artwork provenance and redistributed font notices.
-- [x] Current 93-second English recording with audio and captions prepared locally.
-- [x] Final integrated checks: 90 unit, 46 browser and 15 recorder tests pass; see [verification](verification.md).
-- [x] Application source `d6cc3a1` verified with native tools against the production build.
+- [x] New 117-second English inclusion recording with audio and captions prepared locally.
+- [x] Final integrated checks: 105 unit, 58 browser and 15 recorder tests pass; see [verification](verification.md).
+- [x] Application source `981b90f` built and checked; native execution verified on the same application logic.
 - [x] Zero dependency vulnerabilities, no detected secrets, desktop/mobile visual review complete.
 - [ ] Watch and listen to the selected video; verify it still matches the final live behavior.
 
@@ -42,9 +43,9 @@ complete the public checks.
 
 ## The pitch
 
-> I just want two seats together and dinner before the film—not another website to figure out.
-> As I Am lets my agent ask for bigger buttons and fewer steps. The next site gets those
-> preferences, not my personal reasons. It keeps its own design. I keep the final say.
+> Let my agent help. Let me stay in charge.
+> As I Am makes an ordinary night out easier to plan, with support I choose.
+> My agent prepares the details; the website helps me make my own decisions.
 
 Individual entrants must meet the official age, country and conflict-of-interest conditions.
 The [release runbook](release-runbook.md) gives the execution order and freeze record;

@@ -29,6 +29,7 @@ export async function recordEveningTake(cdp, baseDirectory) {
   const { startLiveCapture, clickRecordedControl } = await import(
     new URL(`./live-capture.mjs?take=${Date.now()}`, import.meta.url).href
   );
+  await showRecordedSection(cdp, ".experience-top");
   const capture = await startLiveCapture(cdp, baseDirectory);
   const hold = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const click = async (label, site = "shell", pause = 1700) => {
@@ -81,13 +82,7 @@ export async function recordEveningTake(cdp, baseDirectory) {
     capture.mark("The web adapts.");
     await click("How it works", "shell", 500);
     await click("01 Cinema", "shell", 500);
-    await cdp.send("Input.dispatchMouseEvent", {
-      type: "mouseWheel",
-      x: 400,
-      y: 300,
-      deltaX: 0,
-      deltaY: -20000,
-    });
+    await showRecordedSection(cdp, ".experience-top");
     await hold(8500);
   } catch (error) {
     capture.failure = error.message;

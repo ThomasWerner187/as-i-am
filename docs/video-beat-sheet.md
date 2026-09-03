@@ -1,24 +1,23 @@
 # Recording beat sheet — two forms of help
 
-The new inclusion narration has **304 words**. The time windows below are a capture plan for
-roughly two minutes, not measurements of a finished video. Generate one continuous performance
-and use its returned timestamps for the final edit. Keep the total below three minutes.
+The inclusion narration has **304 words**. These measured windows follow the single generated
+Chris / Eleven v3 performance. The final export is **117 seconds**, including a short end hold.
 The [script](demo-script.md) and [continuous story](../tools/clickthru/continuous-story.json)
 are the authoritative words and source chapter names.
 
-| Planned window | Source chapter / capture marker | Screen and purpose |
+| Measured window | Source chapter / capture marker | Screen and purpose |
 | --- | --- | --- |
-| 0:00–0:10 | Opening hold (`null`) | Original cinema, both help modes. “Let my agent help. Let me stay in charge.” |
-| 0:10–0:21 | `A night out, on my terms.` | Use the original seat map; select F6 and F7. An ordinary goal and working controls. |
-| 0:21–0:33 | `Help me choose.` | Make it easier; larger real pair choices, preserved seats, Original/My view comparison. |
-| 0:33–0:44 | `My ticket, my decision.` | Review full price; person visibly confirms demo tickets. |
-| 0:44–0:56 | `Prepare for me.` | Switch help mode, show editable Example request, click Plan dinner from my tickets. |
-| 0:56–1:10 | `A plan I can check.` | Read the real plan: 18:00 meal, 19:30 departure, 19:45 arrival, 20:15 film. |
-| 1:10–1:23 | `Food preferences I choose.` | Vegan and €20 per dish are explicit example inputs. Show source dishes, prices and ingredients. |
-| 1:23–1:35 | `My choices, my view.` | Full menu/My choices comparison; Review suggested table; person confirms demo table. |
-| 1:35–1:47 | `Only what each task needs.` | Real functional receipt and separate film-time planning input; food and bookings stay outside the receipt. |
-| 1:47–2:01 | `Why WebMCP matters.` | Discovery, adaptation, source-backed planning and menu tools; truthful transport disclosure. |
-| 2:01–2:12 | `The web adapts.` | Return to both help modes and the original brand. Free and open source; support on the person's terms. |
+| 0:00–0:08 | Opening hold (`null`) | Original cinema, both help modes. “Let my agent help. Let me stay in charge.” |
+| 0:08–0:17 | `A night out, on my terms.` | Use the original seat map; select F6 and F7. An ordinary goal and working controls. |
+| 0:17–0:27 | `Help me choose.` | Make it easier; larger real pair choices, preserved seats, Original/My view comparison. |
+| 0:27–0:36 | `My ticket, my decision.` | Review full price; person visibly confirms demo tickets. |
+| 0:36–0:46 | `Prepare for me.` | Switch help mode, show editable Example request, click Plan dinner from my tickets. |
+| 0:46–0:57 | `A plan I can check.` | Read the real plan: 18:00 meal, 19:30 departure, 19:45 arrival, 20:15 film. |
+| 0:57–1:11 | `Food preferences I choose.` | Vegan and €20 per dish are explicit example inputs. Show source dishes, prices and ingredients. |
+| 1:11–1:21 | `My choices, my view.` | Full menu/My choices comparison; Review suggested table; person confirms demo table. |
+| 1:21–1:33 | `Only what each task needs.` | Real functional receipt and separate film-time planning input; food and bookings stay outside the receipt. |
+| 1:33–1:46 | `Why WebMCP matters.` | Discovery, adaptation, source-backed planning and menu tools; truthful transport disclosure. |
+| 1:46–1:57 | `The web adapts.` | Return to both help modes and the original brand. Free and open source; support on the person's terms. |
 
 ## Before capture
 

@@ -3,10 +3,10 @@
 The authoritative narration is [continuous-story.json](../tools/clickthru/continuous-story.json):
 **304 English words**, intended for one continuous performance under three minutes. The opening
 is 24 words, intended to land within about ten seconds. Final runtime and chapter timings must
-come from the generated speech alignment; no new video has been measured yet.
+come from the generated speech alignment. The completed performance is 116.4 seconds; the export is 117 seconds including its end hold.
 
-The previous 93-second cut is an archive of the earlier flow. Record the integrated inclusion,
-dinner-planning and menu experience before generating the replacement. See
+The previous 93-second cut is an archive of the earlier flow. The new recording shows the
+integrated inclusion, dinner-planning and menu experience. See
 [recording status](recording.md) and the [beat sheet](video-beat-sheet.md).
 
 The story offers two forms of help: clearer information for independent decisions, and delegated

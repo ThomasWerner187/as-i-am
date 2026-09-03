@@ -1,47 +1,48 @@
-# As I Am — recording status
+# As I Am — selected inclusion recording
 
-**A new recording is required for the inclusion, dinner-planning and menu experience.** The
-previous 93-second cinema-to-dinner cut is superseded as a submission candidate. It does not
-show the two help modes, source-backed dinner proposal or six-dish menu.
+The selected local candidate is **117 seconds** and shows both help modes, the dinner plan
+from confirmed cinema tickets, the full/focused restaurant menu, and both human confirmations.
+It replaces the earlier 93-second submission candidate. All earlier recordings are preserved.
 
-## New narration and capture
+## Selected files and checks
 
-The authoritative [continuous-story.json](../tools/clickthru/continuous-story.json) contains
-**304 English words**. It opens with “Let my agent help. Let me stay in charge.” The 24-word
-opening is intended for about ten seconds. Target a natural continuous performance below
-three minutes; final duration must be measured after generation.
+All paths below are relative to the inclusion experience worktree. Generated media is ignored
+by Git and included separately in the local submission packet.
 
-The [demo script](demo-script.md) and [beat sheet](video-beat-sheet.md) map the story to exact
-capture markers. The two modes are **Help me choose** and **Prepare for me**. Show the full
-menu as well as focused choices, the editable fictional request, source-backed 18:00 table
-proposal and both visible human confirmations. Keep the distinction between the functional
-receipt and the separate film-time planning input readable.
+- Video: `tools/clickthru/out/inclusion-release-chris-v3/as-i-am-continuous.mp4`
+- Standalone player: `tools/clickthru/out/inclusion-release-chris-v3/as-i-am-continuous.html`
+- Captions: matching `.srt` and `.vtt` files, **37 English cues**.
+- Preserved source capture: `tools/clickthru/out/inclusion-captures/take-TUpmAS/`.
+- Preserved performance: `continuous-master.mp3` with its speech and edit plans.
 
-The guide uses preset requests, with a visible native/demo transport label. It is not an
-embedded autonomous LLM. Native external-agent calls must be demonstrated or verified separately;
-do not present guided clicks as autonomous native execution.
-
-Record the integrated app in a new ignored output directory. Generate the full narration in
-one request, preserve the performance, and let its timestamps control the edit. Retime static
-holds while preserving click-motion speed. Rendering alone must not make another paid speech
-request. Never overwrite the old footage or audio to make it look like the new version.
-
-## New candidate record — pending capture
-
-| Item | Status |
+| Check | Observed result |
 | --- | --- |
-| Integrated-flow capture | Not yet recorded in this document |
-| Continuous narration | Script prepared; new generated performance pending |
-| MP4 and standalone player | Pending |
-| Runtime, dimensions and codecs | Must be measured from the new export |
-| English captions | Must be aligned to the new performance |
-| SHA-256 | Must be computed for the selected new file |
-| Watch/listen review | Pending |
-| Public YouTube link | Not yet recorded |
+| Runtime | 117.000 seconds |
+| Video | H.264, 1440 × 1080, 30 fps |
+| Audio | AAC; one continuous Chris / Eleven v3 performance |
+| Narration | 304 English words; 116.4-second untouched master |
+| Opening | 24 words, 7.96 seconds; complete brand and help controls visible |
+| Source footage | 102.879 seconds, 1,170 unique rendered frames, all ten source chapters |
+| Edit | Static holds retimed; original motion speed; zero speech splices or time stretching |
+| Technical playback | Full FFmpeg decode completed without errors |
+| Visual review | Keyframes show the real ticket selection, 18:00/T4 plan, menu and confirmations |
+| SHA-256 | `9faa81a8620bee30ece48b0ccfcce8a241a5ba8a0f00bd0dd0003a7aff9dcb70` |
+| Owner watch/listen | Final personal review before upload remains open |
+| Public YouTube link | Not yet uploaded |
 
-When the new files exist, replace these statuses with observed evidence. Check that the video
-matches the released app and that the public upload has finished processing. Existing test or
-playback results for an older cut do not verify the replacement.
+The corrected recorder retains each unique rendered frame: dropping frames by rate could
+otherwise discard the last loading-to-result transition. Earlier replacement cuts in
+`inclusion-chris-v3` and `inclusion-final-chris-v3` are retained as working takes. The selected
+release also explicitly brings the header into view for its opening and closing.
+
+The app is captured through real DOM-targeted controls in the browser. The guide uses preset
+requests and visibly labels its fallback transport; it is not presented as embedded autonomous
+AI. Separate native execution is recorded in [verification](verification.md).
+
+The single paid narration request was reused for every edit. Its master hash is checked before
+rendering. Provider responses and voice identifiers remain outside Git and the release packet.
+The [script](demo-script.md), [beat sheet](video-beat-sheet.md) and
+[continuous story](../tools/clickthru/continuous-story.json) describe the same final sequence.
 
 ## Previous cut — archive only
 

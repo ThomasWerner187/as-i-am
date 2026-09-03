@@ -1,7 +1,7 @@
 # Submission draft — As I Am
 
 English project copy for Devpost. The final release gate is an internal checklist, not part
-of the story. Public links and the new recording still need verification. See
+of the story. The new local recording is prepared; public links and upload playback still need verification. See
 [judge testing](judge-testing.md) and [recording status](recording.md).
 
 ## Title and one-line description
@@ -113,7 +113,7 @@ The repository began on September 1, 2026 (`d49bf40`). Its September 1–2 histo
 functional contract, adaptation engine, WebMCP registration, original shop/services examples,
 cinema-to-dinner experience, tests and earlier recording. The September 3 iteration develops
 the inclusion story, two forms of help, dinner planning and source-backed menu exploration.
-A new recording must show this integrated version.
+The new 117-second recording shows this integrated version.
 
 React, TypeScript, Vite, Fontsource fonts, Playwright, Vitest and axe-core are existing
 third-party building blocks. The cinema and restaurant artwork was generated for this demo.
@@ -132,12 +132,12 @@ The guide uses preset requests; native external-agent calls are tested on the di
 
 ## Internal release gate — do not paste into the project story
 
-- [ ] Check this copy against the final integrated tools and visible UI.
-- [ ] Record the new inclusion, dinner-planning and menu flow; the earlier 93-second cut is superseded.
+- [x] Check this copy against the final integrated tools and visible UI.
+- [x] Record the new inclusion, dinner-planning and menu flow; the earlier 93-second cut is superseded.
 - [ ] Verify final audio, captions, runtime below three minutes and correspondence with the deployed app.
 - [ ] Verify public controller, direct LUNA/OLIVA URLs and actual deployment topology.
-- [ ] Successfully discover and call native tools in the presentation browser.
-- [ ] Review final source, licenses, assets and secrets before public publication.
+- [x] Successfully discover and call native tools against the local production build in the presentation browser; repeat on the public URLs.
+- [x] Review final source, licenses, assets and secrets before public publication.
 - [ ] Publish the reviewed source with owner approval and verify it while logged out.
 - [ ] Supply the public YouTube link, English copy and no-login testing instructions.
 - [ ] Confirm accepted teammate invitations, or record a solo entry.
@@ -145,5 +145,5 @@ The guide uses preset requests; native external-agent calls are tested on the di
 - [ ] Preserve the exact submitted commit, deployment, video and entry through judging.
 
 No public deployment, YouTube URL or submitted Devpost entry is established by this document.
-The prior technical verification applies to its recorded commit and flow; new functionality
+The [current verification](verification.md) records the integrated application and native checks; public deployment
 needs its own final checks before submission.

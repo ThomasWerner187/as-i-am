@@ -162,6 +162,6 @@ this repository during the challenge's submission period. See the
 [submission draft](docs/devpost-submission.md#built-during-the-submission-period) for the
 development history and third-party building blocks.
 
-The earlier 93-second recording documents the previous flow. A new capture and narration
-are required for the inclusion story, dinner planning and menu experience; see
-[recording status](docs/recording.md).
+The new 117-second English recording shows both help modes, confirmed-ticket dinner planning
+and the restaurant menu. The earlier 93-second cut is preserved as an archive. See the
+[recording status](docs/recording.md) for the selected file and remaining public-upload checks.

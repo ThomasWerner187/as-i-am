@@ -16,60 +16,78 @@ gitleaks git --redact=100 --no-banner --log-opts=--all .
 The recorder tests also run independently with `npm run test:recording` or
 `node --test tools/clickthru/*.test.mjs`.
 
-## Final integrated review — September 3, 2026
+## Inclusion release review — September 3, 2026
 
-Application source commit: **`d6cc3a1`**. Subsequent release documentation does not change
-the tested application. The complete `npm run check` passed: TypeScript, **90 unit tests,
-15 recorder tests, 46 browser tests**, and the production build. This is **151 passing tests**.
-`npm audit` reported **zero vulnerabilities**, including development dependencies. Gitleaks
-scanned all 25 commits with no leaks; tracked text and the production output contained no
-secrets, machine paths or email addresses. All 49 relative links in the 16 existing Markdown
-documents resolved before the final verification notes were added.
+Application candidate: **`981b90f`**. The full check at `7f9ddd5` passed TypeScript,
+**105 unit tests, 15 recorder tests and 58 browser tests**: **178 passing tests**.
+The subsequent changes preserve final screencast frames, remove a decorative notice border,
+and exercise the complete new journey at a 390 × 844 viewport. The seven journey regressions,
+15 recorder tests and production build passed again after those changes. The final build also passed after
+aligning the helper text with actual ticket confirmation. Later documentation
+commits do not change the application.
 
-The final regressions cover reversible boolean and enum preferences, exact undo including
-accepted inherent preferences and task focus, closed-schema prototype-key rejection,
-local-only speech fallback, integer cart quantities and complete price totals. Browser checks
-also cover mobile focus, the adaptation control above the site, 2.2× text reflow, a contained
-large-target seat map, delayed connection recovery and correct standalone production URLs.
+The browser regressions verify both chosen help modes, confirmed-ticket planning, actual T4
+selection, 18:00 → 19:30 → 19:45 → 20:15 timing, two visible confirmations, no planning from
+unconfirmed tickets, preservation of an earlier 18:30/T2 choice, explicit menu requirements,
+removal of a shell allergen while retaining an additional restaurant constraint, and honest
+labelling when a person later confirms a different table. Keyboard order follows the visible
+assistance controls before entering the embedded website.
+
+`npm audit` reports zero vulnerabilities including development dependencies. Gitleaks found
+no leaks in the complete branch history. Type checking, diff checks and relative documentation
+links were checked before the private handoff. No live booking service, payment or login is
+required; all menu, table and seat inventory is synthetic.
 
 ### Native execution against the production build
 
-Served the built `dist/` at `http://localhost:4173/` with no development shim and used the
-in-app browser's WebMCP capability:
+Served `dist/` at `http://127.0.0.1:4273/` and used the in-app browser's native WebMCP capability,
+without a development harness. The controller and direct routes, plus font notices, returned
+HTTP 200. This preview uses **one origin and separate documents**.
 
-1. Discovered the controller's two tools. `get_evening_context` returned working top-level
-   cinema/restaurant routes, separate embedded URLs and `cross_origin: false`.
-2. Independently discovered **19 registered tools on each top-level site**.
-3. LUNA accepted six preferences: 56px targets, 12px spacing, strong focus, guided steps,
-   hidden nonessential content and reduced motion. Its measured fit was `satisfied`, with
-   56px minimum targets and no horizontal page overflow.
-4. Exported LUNA's real functional receipt and imported it into OLIVA. All six preferences
-   were accepted with `satisfied` fit, 56px minimum targets and no horizontal page overflow.
-5. Native availability tools returned the selected synthetic F6–F7 seats (€26 total) and
-   18:30 table. Each preparation tool returned `requires_human_confirmation: true` and
-   booking state `review`. Only clicking the visible confirmation changed state to `confirmed`.
+1. Independently discovered **19 cinema tools and 23 restaurant tools**.
+2. LUNA accepted the six functional preferences: 56px targets, 12px spacing, strong focus,
+   guided steps, less nonessential content and reduced motion. It rendered the pair choices,
+   measured 56px minimum targets and no horizontal overflow.
+3. Native `prepare_seat_selection` opened F6/F7 at €26 total in `review`. Only the visible
+   confirmation changed it to `confirmed`. `get_booking_state` then returned the film time 20:15.
+4. Exported that page's real functional receipt and imported it into OLIVA. Six preferences
+   were accepted. The receipt contains no food requirements or booking details.
+5. Passed the confirmed film time as a separate task input to `get_dinner_plan`. The actual
+   listed recommendation was **18:00, quiet garden table T4**: dinner ends 19:30, arrival 19:45,
+   actual arrival buffer 30 minutes. An unavailable 18:15 slot was not invented.
+6. Read all six menu items, then explicitly requested vegan dishes up to €20 and a milk check.
+   `find_menu_options` returned lemon/chickpea salad and aubergine as declaration matches;
+   orzo and the daily vegetable plate remained uncertain. `present_menu_for_user` visibly
+   rendered that split with source, ingredients and cross-contact notes.
+7. Native table preparation opened the 18:00/T4 review and required human confirmation.
+   Clicking the visible button changed the stage to `confirmed`. A final measurement retained
+   56px targets and no horizontal overflow. Spacing was correctly reported as unmeasurable
+   on that single-action confirmation screen, so its fit was `partially_satisfied` rather
+   than claiming an unsupported measurement.
 
-This production preview uses **one origin and separate documents**, not separate businesses.
-The September 2 native test below separately verifies the three-origin development topology.
-The embedded guided journey still displays **Guided demo · fallback** in this browser; native
-iframe execution is not claimed. Repeat the top-level native check after public deployment.
+Structured evidence and screenshots are included in the local release packet. The embedded
+guided journey still displays **Guided demo · fallback** in this browser. Native iframe
+execution is not claimed. Repeat these top-level native checks on the actual public deployment.
 
-### Final visual and media checks
+### Visual review and matching media
 
-Reviewed the production controller and both native booking reviews at desktop width, then
-completed the guided cinema-to-restaurant journey with a 390px mobile viewport. Both sites
-retained their design; preference transfer required the visible consent action; the receipt
-explanation listed only the six functional preferences. Desktop and mobile screenshots were
-saved with the local release packet. The additional UX review found no introduced regressions.
+The actual controller, cinema transformation, dinner timeline, focused and full menus, and
+human confirmation screens were reviewed at desktop width. The complete new journey also
+passes at 390px width without horizontal page overflow. The restaurant menu has a separate
+220% text-size phone regression and WCAG 2/2.1 A/AA axe checks with zero detected violations.
+Automated checks do not constitute accessibility certification or replace testing with users
+of assistive technology.
 
-The two served artwork files total approximately **124 kB**, down from 4.3 MiB of PNGs.
-Original artwork is preserved under `docs/art-sources/`. The production JavaScript is 362.17 kB
-(109.55 kB gzip); CSS is 64.05 kB (13.47 kB gzip). Font notices ship with the build.
+The new **117-second** English recording shows the integrated inclusion flow. It uses one
+continuous Chris / Eleven v3 performance, 304 words, an opening pitch of 7.96 seconds, and
+aligned English captions. The recorded UI is explicitly a guided demonstration. A recorder
+fix preserves each unique rendered frame so the final state is not lost after a loading burst.
+The first replacement cut is retained as an archive; the selected corrected file and its
+checksums are documented in [recording](recording.md).
 
-The selected 93-second video decoded completely without error. Sampled frames match the
-guided workflow, although its older control placement differs from the final layout.
-Measured audio peak was −1.3 dB and mean −17.7 dB. This is a technical check and sampled
-visual review; final watching and listening by the owner remains open before upload.
+Public hosting, public repository visibility, YouTube upload and Devpost submission remain
+open. The [release runbook](release-runbook.md) and [checklist](hackathon-checklist.md) distinguish
+these from local readiness.
 
 ## Pre-polish baseline — September 3, 2026
 
@@ -142,7 +160,7 @@ identified five advisories in the old Vitest development tree; the final polish 
 dependency and must rerun the full audit before release. This dated finding is not a statement
 about the final integrated lockfile.
 
-## Recorded demonstration — current candidate checked September 3, 2026
+## Earlier recorded demonstration — superseded archive
 
 The original 122-second click-through was captured from the working controller after the
 story changes: both original sites are used, the full restaurant is shown again before explicit

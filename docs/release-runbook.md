@@ -66,7 +66,9 @@ Verify that the controller's links point to the intended public site URLs.
 
 Use a fresh browser session with no cached login. Follow [judge-testing.md](judge-testing.md):
 
-- Complete both guided booking flows and verify that navigation alone does not transfer a receipt.
+- Complete both chosen help modes and verify that navigation alone does not transfer a receipt.
+- Confirm cinema tickets, derive the 18:00/T4 suggestion from their 20:15 film time, and inspect the menu.
+- Test an explicit allergen constraint, its removal, and preservation of a different existing table choice.
 - Discover and successfully call native WebMCP tools on the direct top-level LUNA and OLIVA pages.
 - Apply and measure supported preferences, transfer the actual receipt with consent, and prepare
   both booking reviews. Confirm only through the visible human interface.
@@ -85,9 +87,9 @@ have the reviewed commit, preview deployment, final video and exact submission c
    Verify successful CI and the expected source, setup instructions and root MIT license.
 2. With approval, make the project repository public. Check its logged-out page: the actual
    application is visible and GitHub detects the MIT license in the About section.
-3. Watch and listen to the selected **93-second Chris / Eleven v3** recording. Confirm it
+3. Watch and listen to the selected **117-second Chris / Eleven v3** recording. Confirm it
    matches the released UI and preserves the guided-demo disclosure. The current candidate is
-   `tools/clickthru/out/chris-v3-oyj7sk/as-i-am-continuous.mp4` in the original recording worktree;
+   `tools/clickthru/out/inclusion-release-chris-v3/as-i-am-continuous.mp4` in the inclusion experience worktree;
    ignored media is not automatically copied to other worktrees.
 4. Upload the selected file to public YouTube early. Wait for video/audio processing, verify
    playback logged out, and add the supplied English captions. Copy its public URL.
