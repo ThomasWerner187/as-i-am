@@ -4,6 +4,7 @@ export const MENU_SOURCE = {
   id: "oliva-demo-menu-v1",
   label: "OLIVA synthetic menu · ingredient and allergen declarations",
 } as const;
+export const MENU_ALLERGY_NOTICE = "Matches refer only to the supplied menu declarations. They are not an allergy-safety guarantee. Ask the restaurant to confirm ingredients and cross-contact for your explicit requirements before ordering.";
 
 export const ALLERGENS = [
   { id: "gluten", label: "Gluten-containing cereals" },
@@ -189,7 +190,7 @@ export function findMenuOptions(input: MenuCriteria): MenuSearchResult {
     excluded: [],
     uncertain: [],
     unknown_allergens: unknown,
-    ask_restaurant: "Matches refer only to the supplied menu declarations. They are not an allergy-safety guarantee. Ask the restaurant to confirm ingredients and cross-contact for your explicit requirements before ordering.",
+    ask_restaurant: MENU_ALLERGY_NOTICE,
     source: MENU_SOURCE,
     simulated: true,
   };
