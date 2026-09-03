@@ -1,55 +1,80 @@
-# Privacy model
+# Privacy and task boundaries
 
-## The boundary
+As I Am separates how an interface should behave from the information needed to plan an
+evening. Both can be sensitive. The person chooses what help to request; the prototype does
+not infer a diagnosis, a food allergy or a personal preference from a presentation setting.
 
-A trusted agent may understand the person. A participating website receives a bounded
-functional request, such as larger targets or step-by-step presentation. The profile schema
-does not define diagnosis, identity, account or medication fields.
+## Functional interface receipt
 
-The guided controller is a preset demonstration, not a private AI service. It receives the
-functional receipt and actual tool results it requests. It is not a production consent broker.
+The closed functional schema contains bounded presentation values such as larger targets,
+clearer steps or reduced motion. It has no fields for identity, diagnosis, diet, allergens,
+budget, seat selections or table bookings. Receipt export reconstructs that functional object;
+import validates its envelope and applies only the destination-supported subset.
+
+The receiving restaurant can learn how to present its interface without receiving the reason
+for that preference. This is data minimisation, not a claim that interface preferences are
+nonpersonal or that a combination of them cannot identify someone.
+
+## Separate planning inputs
+
+Dinner timing uses a separate domain request. After the person confirms demo tickets,
+**Plan dinner from my tickets →** reads the cinema booking state and sends the film time to
+the restaurant's planning tool. It does not put the cinema booking in the functional receipt.
+The agent needs the time for this requested task, not the seat IDs, booking reference or price.
+
+The example film time is 20:15. The restaurant calculates against its own synthetic table
+availability, 90-minute meal, 15-minute walk and requested arrival buffer. The visible plan
+explains the result. The read-only planning tool cannot prove a person consented or has a
+confirmed booking; an external agent must check the booking state and the person's request
+before using that information.
+
+The **Example request** supplies separate, editable domain inputs: vegan food, €20 per dish
+and a quiet table by default. They are labelled fictional examples. Declared-allergen filters
+are optional explicit selections, never inferred from appearance, disability or prior interface
+preferences. Tools accept only supported, structured inputs; the functional receipt remains unchanged.
+
+## Menu evidence and uncertainty
+
+Menu searches use six fictional dishes with declared prices, ingredients and allergen metadata.
+A declared match supports a comparison, not an allergy-safety judgment. Known excluded allergens
+are reported; incomplete information, possible traces or unknown cross-contact are surfaced as
+questions for the restaurant. No tool certifies a dish as safe for a particular person.
+The Food Standards Agency likewise distinguishes a vegan label from allergen absence and
+warns about cross-contamination. See [Vegan food and allergens](https://www.food.gov.uk/safety-hygiene/vegan-food-and-allergens).
+
+Food requirements may reveal sensitive information even without a diagnosis field. Use example
+requirements for this demo. A production agent should obtain a clear request, share the minimum
+necessary information and avoid sending free-form medical history to a menu tool.
 
 ## What the prototype enforces
 
-1. **Closed schemas:** unknown keys, wrong types and malformed nested fields are rejected.
-2. **Defence-in-depth scan:** tool arguments are checked for protected-health terms before mutation.
-3. **Destination negotiation:** the receiving site accepts only supported or inherent preferences.
-4. **Memory-only app state:** no profile cookies, localStorage, IndexedDB or analytics.
-5. **Receipt validation:** exports rebuild a closed functional object; imports validate the envelope,
-   version, timestamp, profile, statistics and privacy markers before application.
-6. **Explicit guided transfer:** “Continue to dinner” opens the unchanged restaurant. Only clicking
-   “Use my preferences here” shares the functional receipt. Switching sites does not transfer it.
-7. **Origin/source checks:** fallback messages require the configured controller origin and parent
-   window; replies require the expected frame, origin and request ID.
-8. **No booking details in receipts:** seat IDs, time selections and identity are not exported.
-   The shared film schedule is static synthetic fixture data already present in both sites.
+- Closed argument schemas reject unknown keys, wrong types and malformed nested fields.
+- The functional profile has a defence-in-depth protected-health-term scan before mutation;
+  bounded schemas are its primary minimisation boundary.
+- Receipts validate contract/version, timestamps, profile, statistics and privacy markers.
+- App state stays in session memory; there are no profile cookies, localStorage, IndexedDB or analytics.
+- Navigation alone does not transfer a functional receipt. **Use my preferences here →** is
+  an explicit transfer action. **Plan dinner from my tickets →** also carries chosen interface
+  preferences when needed; its visible hint discloses that it uses the confirmed film time
+  and chosen preferences at OLIVA. The receipt and planning request remain separate.
+- The demo bridge validates controller origin, source window, destination and request correlation.
+- Native tools expose research and review preparation, with no booking-confirmation operation.
 
-Native tools rely on the external agent/browser to obtain transfer consent. The prototype has
-no browser-managed permission grant for each exported receipt. Tool registration alone does not
-establish consent or a trusted agent identity.
+The guided controller receives the results it requests. Its buttons run presets, not a private
+AI service. Native agents and their browsers are responsible for obtaining the person's request
+and any transfer consent. Tool availability alone is not a consent grant or authenticated identity.
 
-## What this does not prove
+## What remains outside the prototype
 
-- A finite term scanner cannot prove that arbitrary text contains no sensitive information.
-  The closed functional schema is the primary minimisation boundary.
-- Functional preferences may be sensitive or identifying in combination. “No diagnosis field”
-  does not mean “no personal data.”
-- Receipts are unsigned, with no issuer authentication, expiry, integrity proof or cross-device
-  consent model. Their origin field is claimed provenance, not a credential.
-- Local ports provide browser origin separation, but all three sites share a source repository
-  and developer-controlled implementation. They are not independent organizations.
-- A same-origin static deployment loses that origin boundary; the UI says so.
-- Same-origin code and browser extensions may inspect runtime state. External agents have their
-  own data handling and retention policies; this app does not control them.
+Receipts are unsigned session objects with claimed provenance, not authenticated credentials.
+They have no production expiry, integrity proof, cross-device consent policy or issuer identity.
+A finite term scanner cannot establish that arbitrary content contains no sensitive information.
 
-## Human control
+The local setup uses three browser origins, but the sites share an implementation and operator.
+A single-origin static deployment loses that origin boundary and is labelled accordingly.
+Same-origin code or extensions may inspect runtime state. External agents have their own data
+handling and retention; this app does not control them.
 
-Adaptations support undo, reset and temporary base preview. Booking selections survive those
-operations. Domain tools stage a review but expose no confirmation operation. The visible
-buttons confirm only synthetic transactions; no payment or real reservation occurs.
-
-## Production work still needed
-
-Agent-side consent and minimisation policy; receipt scope, expiry and integrity protection;
-independent deployment review; real user research; and a site privacy manifest explaining the
-purpose of each requested functional field. Keep only the minimum subset needed for the task.
+Production work includes agent-side consent, request scoping, expiry and integrity protection,
+independent deployment review and a clear privacy manifest for each requested field. Preserve
+only the information needed for the task the person chose.

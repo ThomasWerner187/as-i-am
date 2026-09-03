@@ -1,45 +1,64 @@
-# Recording beat sheet
+# Recording beat sheet — two forms of help
 
-The current [93-second Chris / Eleven v3 edit](recording.md) follows the timestamps of one continuous voice-over.
-Only the recorded screen holds are retimed. Click motion stays at its original speed, and
-both original sites are used before adaptation.
+The new inclusion narration has **304 words**. The time windows below are a capture plan for
+roughly two minutes, not measurements of a finished video. Generate one continuous performance
+and use its returned timestamps for the final edit. Keep the total below three minutes.
+The [script](demo-script.md) and [continuous story](../tools/clickthru/continuous-story.json)
+are the authoritative words and source chapter names.
 
-| Time      | Screen                                               | The audience should understand                                      |
-| --------- | ---------------------------------------------------- | ------------------------------------------------------------------- |
-| 0:00–0:09 | Original LUNA page; elevator pitch                   | The web adapts to me. Preferences travel, not personal details.     |
-| 0:09      | Select F6 and F7 on the original seat map            | A simple night out makes the idea concrete.                         |
-| 0:15      | Full OLIVA page; select 18:30 in its normal grid     | These are working websites.                                         |
-| 0:21      | Hold the busy restaurant, then return to cinema      | Different needs and preferences deserve different interfaces.       |
-| 0:30      | Read the request; adapt LUNA                         | Bigger buttons, fewer distractions, same seats.                     |
-| 0:38      | Original / My view; review and confirm               | I stay in control.                                                  |
-| 0:44      | Continue to dinner; hold the unchanged restaurant    | Navigation does not share preferences.                              |
-| 0:51      | Use my preferences here; compare, review and confirm | I choose to share preferences. My table choice stays.               |
-| 1:02      | Discover → Adapt → Carry; readable receipt           | WebMCP gives the agent and website a shared way to request changes. |
-| 1:15      | Make the cinema text larger                          | The same approach can help beyond booking.                          |
-| 1:26–1:33 | Broader applications, then hero                      | Your needs. Your preferences. Your choice.                          |
+| Planned window | Source chapter / capture marker | Screen and purpose |
+| --- | --- | --- |
+| 0:00–0:10 | Opening hold (`null`) | Original cinema, both help modes. “Let my agent help. Let me stay in charge.” |
+| 0:10–0:21 | `A night out, on my terms.` | Use the original seat map; select F6 and F7. An ordinary goal and working controls. |
+| 0:21–0:33 | `Help me choose.` | Make it easier; larger real pair choices, preserved seats, Original/My view comparison. |
+| 0:33–0:44 | `My ticket, my decision.` | Review full price; person visibly confirms demo tickets. |
+| 0:44–0:56 | `Prepare for me.` | Switch help mode, show editable Example request, click Plan dinner from my tickets. |
+| 0:56–1:10 | `A plan I can check.` | Read the real plan: 18:00 meal, 19:30 departure, 19:45 arrival, 20:15 film. |
+| 1:10–1:23 | `Food preferences I choose.` | Vegan and €20 per dish are explicit example inputs. Show source dishes, prices and ingredients. |
+| 1:23–1:35 | `My choices, my view.` | Full menu/My choices comparison; Review suggested table; person confirms demo table. |
+| 1:35–1:47 | `Only what each task needs.` | Real functional receipt and separate film-time planning input; food and bookings stay outside the receipt. |
+| 1:47–2:01 | `Why WebMCP matters.` | Discovery, adaptation, source-backed planning and menu tools; truthful transport disclosure. |
+| 2:01–2:12 | `The web adapts.` | Return to both help modes and the original brand. Free and open source; support on the person's terms. |
 
-## Before recording
+## Before capture
 
-- Start all three origins with `npm run dev` and reload the controller for fresh session state.
-- Preserve the browser's existing aspect ratio. Keep the pointer visible and deliberate.
-- Check the actual native/fallback badge. Use direct top-level pages for native calls if frame
-  exposure is unavailable. Keep the distinction explicit in narration.
-- Run both complete bookings once, then reload for the take.
-- Capture the seat-map comparison before confirming tickets; confirmation is preserved by preview.
-- Confirm that **Continue to dinner** leaves the original restaurant unchanged. Only
-  **Use my preferences here** shares the receipt, without booking selections.
-- Keep JSON collapsed throughout the main story. Use the readable proof panel for the reveal;
-  raw tools and data are available for judge inspection afterward.
-- Hide personal tabs, bookmarks, notifications and machine-specific information.
+Start the integrated app and complete both help paths manually. Confirm that the new timing and
+menu tools are present; the earlier 93-second recording does not show these features. Reload for
+a fresh session, leaving **Example request** visibly editable. Vegan, €20 per dish and a quiet
+table are fictional defaults; no allergen exclusions are selected unless explicitly chosen.
 
-## After recording
+Use the existing browser aspect ratio and keep the pointer deliberate. Preserve visible focus,
+price and booking confirmations. Use actual DOM-targeted controls and real tool results; never
+illustrate a calculation or dish that the app did not return. Hide unrelated personal tabs and
+notifications without hiding the native/demo transport label.
 
-- Generate the entire English voice-over once, including the opening pitch, before editing.
-- Fit the screen holds to the returned speech timestamps. Never insert silence between chapters.
-- Keep the natural performance intact; do not stretch audio to fill the old video length.
-- Keep the unadapted/adapted transitions visible long enough to compare.
-- Check narrated measurements against that take, rather than quoting a fixed benchmark.
-- Preserve the synthetic-booking disclosure.
-- Review the final video before publishing; verify submitted links in a logged-out browser.
-- The old `demo-clickthru.mp4` and shop/services screenshots are legacy materials. Use the new
-  cinema/restaurant [recording](recording.md); owner review and public upload remain.
+The theoretical latest dinner start is 18:15 with a 15-minute minimum buffer. Since that slot
+is unavailable, the source-backed recommendation is 18:00. Arrival at 19:45 gives 30 minutes of
+actual buffer before the 20:15 film. Show the explanation long enough to understand that difference.
+
+## Capture contract
+
+Use exactly the ten non-null `sourceChapter` labels above as capture markers, once each and in
+that order. The opening pitch holds the first source frame and does not add a recorded chapter.
+The retimer preserves every source chapter and rejects missing, extra or reordered source time.
+Coordinate the real explicit receipt-transfer action with the displayed task scope before showing
+a receipt; do not imply that navigation silently shares preferences.
+The delegated planning action carries the receipt if needed, under its visible hint about using
+the confirmed film time and chosen preferences at OLIVA. Keep that hint in the capture.
+
+Keep research and human confirmation distinguishable. **Prepare for me** authorizes a proposed
+plan, not a confirmed transaction. The guided controls remain presets. A native external agent
+can use the same exposed capabilities; native execution needs its own observed browser calls.
+
+## After capture
+
+Generate the entire narration as one performance. Fit static holds to its timing without
+splicing speech, adding chapter silences or speeding up the recorded clicks. Keep the original
+and focused menu views visible long enough to compare. Preserve ingredient uncertainty and the
+fictional-booking disclosure.
+
+Watch and listen to the final export. Check the opening, table timing, both confirmation clicks,
+menu legibility, captions and final runtime. Record the new media path, duration and hash in
+[recording](recording.md). The old 93-second cut and legacy shop/services media are historical
+materials, not the current submission video. Upload only the reviewed new cut and verify its
+public playback before putting the link into Devpost.
