@@ -3,6 +3,8 @@ import { createFrameClient } from "./bridge";
 import { SITE_NAMES, siteUrl } from "./config";
 import type { EveningSite } from "./state";
 import type { AdaptationReceipt } from "../adaptive-contract/schema";
+import AccessNeeds from "./AccessNeedsControl";
+import { DEFAULT_ACCESS_NEEDS, buildAccessProfile, accessNeedsRequest, type AccessNeed } from "./accessNeeds";
 import "../styles/journey.css";
 
 type AssistanceMode = "choose" | "prepare";
@@ -28,21 +30,15 @@ interface Trace {
   result: Record<string, any>;
 }
 const SITES: EveningSite[] = ["cinema", "restaurant"];
-const DEMO_PROFILE = {
-  version: "0.1",
-  interaction: {
-    minimum_target_size: 56,
-    target_spacing: 12,
-    focus_strength: "strong",
-  },
-  cognitive: { step_by_step: true, hide_nonessential: true },
-  motion_media: { reduce_motion: true },
-};
-function makeAgentPrompt(request: ExampleRequest, mode: AssistanceMode) {
-  return `Help me plan a cinema-and-dinner evening using this editable example request. I want larger targets, clear steps and less visual clutter. ${mode === "choose" ? "Help me choose: adapt the pages so I can make my own choices." : "Prepare for me: research the available options and prepare booking reviews, preserving any choices I have already made."} Open LUNA at ${siteUrl("cinema", false)} as a top-level page and discover its native WebMCP tools. Apply supported functional preferences and verify the rendered result. Read my booking state and available seat pairs. Never confirm a booking for me. Once I have confirmed my tickets, use their actual film time to plan dinner. I authorize transferring my functional adaptation receipt and only the film start time needed for planning to OLIVA at ${siteUrl("restaurant", false)}. Discover its tools and get a dinner plan allowing 90 minutes to eat, a 15-minute walk and at least 15 minutes before the film. ${request.quietTable ? "Prefer a table listed as quiet by the restaurant." : "I have no table-location preference."} For the menu, my explicit example preference is ${request.diet === "any" ? "no dietary restriction" : request.diet}, at most EUR ${request.maxPrice} per dish. ${request.avoidAllergens.length ? `I explicitly ask to avoid these declared allergens: ${request.avoidAllergens.join(", ")}.` : "No food allergies have been shared. Do not infer any."} Read the restaurant's ingredient and allergen information. Keep any additional allergen constraints I have explicitly selected on the restaurant page. Vegan does not mean allergen-free; surface possible cross-contact or incomplete information and ask the restaurant instead of claiming safety. Present the matching dishes clearly on the actual page. Explain the timing and what is still uncertain. Dietary details are separate task inputs and must never be added to my adaptation receipt. Do not send my identity, diagnosis, seat numbers or other cinema booking details to the restaurant. Leave the final confirmation to me.`;
+function makeAgentPrompt(request: ExampleRequest, mode: AssistanceMode, needs: AccessNeed[]) {
+  return `Help me plan a cinema-and-dinner evening using this editable example request. ${accessNeedsRequest(needs)} Use only the functional preferences I choose. Do not infer or ask me to disclose a diagnosis. The requested profile is ${JSON.stringify(buildAccessProfile(needs))}. ${mode === "choose" ? "Help me choose: adapt the pages so I can make my own choices." : "Prepare for me: research the available options and prepare booking reviews, preserving any choices I have already made."} Open LUNA at ${siteUrl("cinema", false)} as a top-level page and discover its native WebMCP tools. Apply supported functional preferences and verify the rendered result. Read my booking state and available seat pairs. Never confirm a booking for me. Once I have confirmed my tickets, use their actual film time to plan dinner. I authorize transferring my functional adaptation receipt and only the film start time needed for planning to OLIVA at ${siteUrl("restaurant", false)}. Discover its tools and get a dinner plan allowing 90 minutes to eat, a 15-minute walk and at least 15 minutes before the film. ${request.quietTable ? "Prefer a table listed as quiet by the restaurant." : "I have no table-location preference."} For the menu, my explicit example preference is ${request.diet === "any" ? "no dietary restriction" : request.diet}, at most EUR ${request.maxPrice} per dish. ${request.avoidAllergens.length ? `I explicitly ask to avoid these declared allergens: ${request.avoidAllergens.join(", ")}.` : "No food allergies have been shared. Do not infer any."} Read the restaurant's ingredient and allergen information. Keep any additional allergen constraints I have explicitly selected on the restaurant page. Vegan does not mean allergen-free; surface possible cross-contact or incomplete information and ask the restaurant instead of claiming safety. Present the matching dishes clearly on the actual page. Explain the timing and what is still uncertain. Dietary details are separate task inputs and must never be added to my adaptation receipt. Do not send my identity, diagnosis, seat numbers or other cinema booking details to the restaurant. Leave the final confirmation to me.`;
 }
 
 export default function EveningShell() {
+  const [accessNeeds, setAccessNeeds] = useState<AccessNeed[]>(DEFAULT_ACCESS_NEEDS);
+  const [appliedNeeds, setAppliedNeeds] = useState<{ cinema: string | null; restaurant: string | null }>({ cinema: null, restaurant: null });
+  const needsKey = [...accessNeeds].sort().join(",");
+  const requestedProfile = buildAccessProfile(accessNeeds);
   const [site, setSite] = useState<EveningSite>("cinema");
   const [mode, setMode] = useState<AssistanceMode>("choose");
   const [example, setExample] = useState<ExampleRequest>(EXAMPLE_REQUEST);
@@ -75,9 +71,9 @@ export default function EveningShell() {
   });
   const frames = useRef<Partial<Record<EveningSite, HTMLIFrameElement>>>({});
   const sharedExampleAllergens = useRef<string[]>([]);
-  const state = useRef({ site, ready, busy, preview, example, mode });
-  state.current = { site, ready, busy, preview, example, mode };
-  const agentPrompt = makeAgentPrompt(example, mode);
+  const state = useRef({ site, ready, busy, preview, example, mode, accessNeeds });
+  state.current = { site, ready, busy, preview, example, mode, accessNeeds };
+  const agentPrompt = makeAgentPrompt(example, mode, accessNeeds);
   const crossOrigin =
     new Set([
       location.origin,
@@ -172,7 +168,7 @@ export default function EveningShell() {
                   source:
                     "Editable, explicitly labelled demonstration request; not inferred personal information.",
                   assistance_mode: state.current.mode,
-                  access_preferences: DEMO_PROFILE,
+                  access_preferences: buildAccessProfile(state.current.accessNeeds),
                   dining_preferences: {
                     diet: state.current.example.diet,
                     max_price_per_dish: state.current.example.maxPrice,
@@ -371,15 +367,21 @@ export default function EveningShell() {
       caps.capabilities.map((capability: { key: string }) => capability.key),
     );
     const profile: Record<string, unknown> = { version: "0.1" };
-    for (const [domain, fields] of Object.entries(DEMO_PROFILE)) {
-      if (typeof fields !== "object") continue;
+    for (const [domain, fields] of Object.entries(requestedProfile)) {
+      if (!fields || typeof fields !== "object") continue;
       profile[domain] = Object.fromEntries(
         Object.entries(fields).filter(([key]) =>
           supported.has(`${domain}.${key}`),
         ),
       );
     }
-    await call(target, "apply_adaptation_profile", { profile });
+    // A changed choice replaces the earlier support set; removed needs must not linger.
+    // Resetting presentation leaves the independent booking state intact.
+    if (adapted[target] && appliedNeeds[target] !== needsKey)
+      await call(target, "reset_adaptations");
+    if (accessNeeds.length) await call(target, "apply_adaptation_profile", { profile });
+    setAppliedNeeds((current) => ({ ...current, [target]: needsKey }));
+    if (target === "restaurant") setReceipt(undefined);
     await call(
       target,
       target === "cinema"
@@ -388,11 +390,18 @@ export default function EveningShell() {
     );
     const fit = await call(target, "verify_profile_fit");
     setAfter(fit.measurements);
-    setAdapted((current) => ({ ...current, [target]: true }));
-    setStatus(describeFit(fit));
+    setAdapted((current) => ({ ...current, [target]: accessNeeds.length > 0 }));
+    setStatus(accessNeeds.length ? describeFit(fit) : "Original view restored. Your booking choices are unchanged.");
   }
   async function carry() {
     await stopPreview();
+    setSite("restaurant");
+    await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+    if (appliedNeeds.cinema !== needsKey) {
+      await apply("restaurant");
+      setStatus("Your current support choices are applied here. Earlier cinema preferences were not transferred.");
+      return;
+    }
     setStatus("Carrying only your functional preferences to OLIVA…");
     const exported = await call("cinema", "export_adaptation_receipt");
     setSite("restaurant");
@@ -403,10 +412,13 @@ export default function EveningShell() {
     const baseline = await call("restaurant", "measure_rendered_ui");
     setBefore(baseline.measurements);
     await call("restaurant", "get_adaptation_capabilities");
+    if (adapted.restaurant && appliedNeeds.restaurant !== appliedNeeds.cinema)
+      await call("restaurant", "reset_adaptations");
     const imported = await call("restaurant", "import_adaptation_receipt", {
       receipt: exported.receipt,
     });
     setReceipt(exported.receipt);
+    setAppliedNeeds((current) => ({ ...current, restaurant: current.cinema }));
     const fit = await call("restaurant", "verify_profile_fit");
     await call("restaurant", "get_available_table_times");
     setAfter(fit.measurements);
@@ -443,7 +455,7 @@ export default function EveningShell() {
       await planDinner(true);
       return;
     }
-    if (!adapted.cinema) await apply("cinema");
+    if (appliedNeeds.cinema !== needsKey) await apply("cinema");
     const availability = await call("cinema", "get_available_seat_pairs");
     const chosenIds = (booking.seats ?? []).map(
       (seat: { id: string }) => seat.id,
@@ -472,7 +484,7 @@ export default function EveningShell() {
         "Confirm your cinema tickets first. Then we can plan dinner from your actual film time.",
       );
     }
-    if (!adapted.restaurant) {
+    if (appliedNeeds.restaurant !== needsKey) {
       if (adapted.cinema) await carry();
       else {
         await switchSite("restaurant");
@@ -564,6 +576,8 @@ export default function EveningShell() {
     );
   }
   const hasFit = adapted[site];
+  const supportApplied = appliedNeeds[site] === needsKey;
+  const supportChanged = appliedNeeds[site] !== null && !supportApplied;
   const canCarry = site === "restaurant" && !hasFit && adapted.cinema;
   const transport = ready[site]
     ? native[site] && document.modelContext?.executeTool
@@ -578,11 +592,12 @@ export default function EveningShell() {
     setCopied(false);
   }
   const primaryAction =
+    supportChanged ? () => apply() :
     mode === "prepare"
       ? site === "cinema"
         ? prepareSeats
         : () => planDinner(true)
-      : hasFit
+      : supportApplied
         ? site === "cinema"
           ? () => switchSite("restaurant")
           : dinnerReady
@@ -592,6 +607,7 @@ export default function EveningShell() {
           ? carry
           : apply;
   const primaryLabel =
+    supportChanged ? (accessNeeds.length ? "Update my support" : "Use original view") :
     mode === "prepare"
       ? site === "cinema" && bookingStages.cinema !== "confirmed"
         ? "Prepare my seats →"
@@ -600,7 +616,7 @@ export default function EveningShell() {
           : dinnerReady
             ? "Refresh my dinner plan"
             : "Prepare my dinner →"
-      : hasFit
+      : supportApplied
         ? site === "cinema"
           ? "Continue to dinner →"
           : dinnerReady
@@ -641,9 +657,10 @@ export default function EveningShell() {
           <em>You don’t have to.</em>
         </h1>
         <p className="inclusion-intro">
-          <strong>Inclusion means having a choice.</strong>
-          Bigger controls. Clearer information. Help when you want it. An
-          ordinary evening, on your terms.
+          <strong>Disability should never decide who gets to take part.</strong>
+          Small targets, hard-to-read text and crowded choices can make a night
+          out hard to plan. Choose support for your hands, eyes and attention.
+          Keep the decisions that matter.
         </p>
       </section>
       {agentOpen && (
@@ -653,7 +670,7 @@ export default function EveningShell() {
             Give your agent this request in a WebMCP-enabled browser. The guided
             demo uses preset requests, not an embedded AI.
           </p>
-          <pre>{agentPrompt}</pre>
+          <p className="agent-example-request">{accessNeedsRequest(accessNeeds)} Two seats together, and dinner before the film. Let me make the final choice.</p>
           <button
             className="shell-primary"
             onClick={() => {
@@ -665,6 +682,10 @@ export default function EveningShell() {
           >
             {copied ? "Copied" : "Copy agent request"}
           </button>
+          <details>
+            <summary>Read the complete request before sharing</summary>
+            <pre>{agentPrompt}</pre>
+          </details>
           <p>
             If your browser does not expose tools inside frames, open each site
             directly and use its native tools:{" "}
@@ -687,8 +708,7 @@ export default function EveningShell() {
           <div>
             <h2>You decide how much help.</h2>
             <p>
-              For people who need easier pointing, fewer distractions, or
-              clearer steps.
+              Make the page work for you, or ask your agent to prepare the next step.
             </p>
           </div>
           <div
@@ -718,6 +738,15 @@ export default function EveningShell() {
             </button>
           </div>
         </section>
+        <AccessNeeds
+          value={accessNeeds}
+          disabled={busy}
+          onChange={(next) => {
+            setAccessNeeds(next);
+            setCopied(false);
+            setStatus("Support choices updated. Apply them when you are ready.");
+          }}
+        />
         <section
           className="example-request"
           aria-label="Editable example request"
@@ -868,18 +897,20 @@ export default function EveningShell() {
                     ? "“Use my tickets to plan the rest.”"
                     : "“Find two seats together. I’ll check the details.”"
                   : "“Find a table and menu that fit my evening.”"
+                : supportChanged
+                  ? accessNeedsRequest(accessNeeds)
                 : hasFit
                   ? site === "cinema"
                     ? "“Dinner next. Keep it this simple.”"
                     : "No need to explain it all again."
                   : canCarry
                     ? "“Same preferences here, please.”"
-                    : site === "cinema"
-                      ? "“Bigger buttons. Two seats together, please.”"
-                      : "“Bigger choices. One step at a time.”"}
+                    : accessNeedsRequest(accessNeeds)}
             </p>
             <small>
-              {mode === "prepare"
+              {supportChanged
+                ? "Apply your new support choices here. Your booking selection stays yours."
+                : mode === "prepare"
                 ? bookingStages.cinema === "confirmed" || site === "restaurant"
                   ? "Uses your confirmed film time and chosen preferences at OLIVA. You confirm the table."
                   : "The demo researches and prepares a review. You make the final decision."
@@ -895,6 +926,7 @@ export default function EveningShell() {
               !ready[site] ||
               (hasFit && site === "cinema" && !ready.restaurant) ||
               (mode === "choose" &&
+                !supportChanged &&
                 dinnerReady &&
                 hasFit &&
                 site === "restaurant" &&
@@ -1029,6 +1061,11 @@ export default function EveningShell() {
                 <span>
                   {after.horizontal_overflow ? "Layout needs attention" : ""}
                 </span>
+                {after.smallest_body_text_px > 0 && (
+                  <span>
+                    Body text <b>{before.smallest_body_text_px ? `${before.smallest_body_text_px} → ` : ""}{after.smallest_body_text_px}px</b>
+                  </span>
+                )}
               </>
             ) : null}
           </div>
@@ -1097,7 +1134,7 @@ export default function EveningShell() {
             )}
           </div>
         </div>
-        <p className="sr-only" role="status" aria-atomic="true">
+        <p className="support-status" role="status" aria-atomic="true">
           {status}
         </p>
         {connectionTimedOut && (!ready.cinema || !ready.restaurant) && (
@@ -1247,7 +1284,7 @@ export default function EveningShell() {
             </p>
             <details>
               <summary>Demo preferences</summary>
-              <pre>{JSON.stringify(DEMO_PROFILE, null, 2)}</pre>
+              <pre>{JSON.stringify(requestedProfile, null, 2)}</pre>
             </details>
             {receipt && (
               <details>
@@ -1284,6 +1321,35 @@ export default function EveningShell() {
           </details>
         </section>
       )}
+      <section className="inclusion-purpose" aria-labelledby="inclusion-purpose-title">
+        <div>
+          <h2 id="inclusion-purpose-title">Belonging starts with being able to take part.</h2>
+          <p>
+            Motor, visual and cognitive impairments can make the same website
+            difficult in very different ways. Support should follow the person
+            and change when their needs change.
+          </p>
+        </div>
+        <div>
+          <p>
+            You choose what helps. Participating websites receive functional
+            preferences such as larger controls or clearer text. No diagnosis
+            is needed. Your agent can carry those preferences with your permission.
+          </p>
+          <details>
+            <summary>What this prototype demonstrates</summary>
+            <p>
+              Two fictional websites, real interface changes and native WebMCP
+              tools. We measure rendered properties and preserve your selections.
+              This is not a disability simulation or a claim of complete accessibility.
+              Testing with disabled people and assistive technologies is the next step.
+            </p>
+            <a href="https://www.w3.org/WAI/people-use-web/abilities-barriers/" target="_blank" rel="noreferrer">
+              The access needs behind this work · W3C WAI
+            </a>
+          </details>
+        </div>
+      </section>
       <p className="shell-note">
         Free, open-source prototype · Built for participation and choice. No
         real bookings.

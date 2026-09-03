@@ -35,9 +35,8 @@ test("first action is visible on a short desktop and the fallback completes both
   await expect(cinema.getByTestId("seat-map")).toBeVisible();
   await action.click();
   await expect(cinema.getByTestId("seat-pair-list")).toBeVisible();
-  const statusBox = await page.locator("p.sr-only[role=status]").boundingBox();
-  expect(statusBox?.width).toBe(1);
-  expect(statusBox?.height).toBe(1);
+  await expect(page.getByRole("status")).toContainText("Requested fit verified");
+  await expect(page.getByRole("status")).toBeVisible();
   await expect(
     page.getByText("Guided demo · fallback", { exact: true }),
   ).toBeVisible();

@@ -254,3 +254,88 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* The support controls must themselves be comfortable to read and operate. */
+.experience-intro .inclusion-intro {
+  max-width: 440px;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.inclusion-intro strong { font-size: 18px; line-height: 1.4; }
+.help-choice p, .example-summary, .example-controls p,
+.example-fields label, .example-allergens legend, .example-allergens label {
+  font-size: 14px;
+}
+.help-modes button { min-height: 48px; font-size: 14px; }
+.evening-shell .shell-link, .evening-shell .journey-tab {
+  min-height: 44px;
+}
+.evening-shell .support-status {
+  margin: 8px 0 0;
+  min-height: 24px;
+  max-width: 74ch;
+  color: #304b37;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.agent-example-request {
+  font: 500 22px/1.5 var(--serif);
+  max-width: 60ch;
+}
+.agent-details details { margin: 16px 0; }
+.agent-details summary, .inclusion-purpose summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #304b37;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.inclusion-purpose {
+  max-width: 1190px;
+  margin: 48px auto 20px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+.inclusion-purpose h2 {
+  max-width: 24ch;
+  margin: 0 0 16px;
+  font: 550 30px/1.15 var(--serif);
+  letter-spacing: -0.025em;
+}
+.inclusion-purpose p {
+  margin: 0 0 14px;
+  max-width: 68ch;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.inclusion-purpose a {
+  display: inline-block;
+  padding: 10px 0;
+  color: #304b37;
+  font-size: 14px;
+  text-underline-offset: 4px;
+}
+@media (max-width: 680px) {
+  .inclusion-purpose { grid-template-columns: 1fr; gap: 12px; margin-top: 32px; }
+  .inclusion-purpose h2 { font-size: 26px; }
+  .experience-intro .inclusion-intro { max-width: none; }
+  .help-choice { gap: 14px; }
+}
+
+@media (max-width: 680px) {
+  .evening-shell { padding-bottom: 100px; }
+  .agent-dock .shell-primary {
+    position: fixed;
+    inset: auto 16px 16px;
+    width: auto;
+    min-height: 56px;
+    z-index: 30;
+    box-shadow: 0 6px 24px #17201926;
+  }
+}

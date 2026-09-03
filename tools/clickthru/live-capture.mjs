@@ -15,11 +15,11 @@ function installCursor() {
   document.documentElement.append(cursor);
 }
 
-export async function startLiveCapture(cdp, baseDirectory) {
+export async function startLiveCapture(cdp, baseDirectory, options = {}) {
   await fs.mkdir(baseDirectory, { recursive: true });
   const directory = await fs.mkdtemp(path.join(baseDirectory, "take-"));
   await fs.mkdir(path.join(directory, "frames"));
-  await cdp.send("Runtime.evaluate", {
+  if (options.cursor !== false) await cdp.send("Runtime.evaluate", {
     expression: `(${installCursor.toString()})()`,
   });
   const beginning = await cdp.readEvents({ methods: ["Page.screencastFrame"] });
@@ -42,7 +42,7 @@ export async function startLiveCapture(cdp, baseDirectory) {
   });
   capture.pump = (async () => {
     try {
-      while (capture.running && Date.now() - capture.started < 180000) {
+      while (capture.running && Date.now() - capture.started < (options.maxDurationMs ?? 180000)) {
         const batch = await cdp.readEvents({
           afterSequence: cursor,
           methods: ["Page.screencastFrame"],
@@ -92,12 +92,12 @@ export async function startLiveCapture(cdp, baseDirectory) {
     capture.running = false;
     await cdp.send("Page.stopScreencast");
     await capture.pump;
-    await cdp.send("Runtime.evaluate", {
+    if (options.cursor !== false) await cdp.send("Runtime.evaluate", {
       expression: `document.getElementById(${JSON.stringify(CURSOR_ID)})?.remove()`,
     });
     const manifest = {
       name: "As I Am",
-      url: "http://localhost:5273/",
+      url: options.url ?? "http://localhost:5273/",
       recorded_at: new Date().toISOString(),
       total_ms: Date.now() - capture.started,
       viewport: capture.viewport,
@@ -105,7 +105,7 @@ export async function startLiveCapture(cdp, baseDirectory) {
       frames: capture.frames,
       events: capture.events,
       failure: capture.failure,
-      transport:
+      transport: options.transport ??
         "Guided demo using the validated fallback; not native agent execution.",
     };
     await fs.writeFile(
