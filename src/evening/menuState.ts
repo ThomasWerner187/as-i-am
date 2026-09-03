@@ -31,7 +31,11 @@ export class MenuStore {
   }
   present(criteria: MenuCriteria, view: MenuView): MenuSearchResult {
     if (view !== "full" && view !== "focused") throw new Error("Choose a full or focused menu view.");
-    const result = findMenuOptions(criteria);
+    // Omission refines the current request. Only an explicit [] clears an allergy check.
+    const result = findMenuOptions({
+      ...criteria,
+      avoid_allergens: criteria.avoid_allergens ?? this.state.criteria.avoid_allergens,
+    });
     this.update({ criteria: result.criteria, result, view, surface: "menu" });
     return result;
   }

@@ -45,7 +45,7 @@ describe("restaurant tool contract", () => {
     const discovered = await run("get_restaurant_menu");
     expect(discovered.current_criteria).toEqual(criteria);
     expect(discovered.current_presentation.surface).toBe("menu");
-    expect(discovered.items).toHaveLength(6);
+    expect(discovered.items).toHaveLength(8);
     expect(discovered.allergens.some((allergen: { id: string }) => allergen.id === "tree_nuts")).toBe(true);
   });
 

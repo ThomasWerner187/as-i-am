@@ -1,8 +1,9 @@
 /** Synthetic restaurant declarations. No medical inference or safety guarantee. */
 
 export const MENU_SOURCE = {
-  id: "oliva-demo-menu-v1",
+  id: "oliva-demo-menu-v2",
   label: "OLIVA synthetic menu · ingredient and allergen declarations",
+  kind: "synthetic_recipe_catalog",
 } as const;
 export const MENU_ALLERGY_NOTICE = "Matches refer only to the supplied menu declarations. They are not an allergy-safety guarantee. Ask the restaurant to confirm ingredients and cross-contact for your explicit requirements before ordering.";
 
@@ -14,6 +15,7 @@ export const ALLERGENS = [
   { id: "crustaceans", label: "Crustaceans" },
   { id: "molluscs", label: "Molluscs" },
   { id: "peanuts", label: "Peanuts" },
+  { id: "avocado", label: "Avocado" },
   { id: "tree_nuts", label: "Tree nuts" },
   { id: "soy", label: "Soy" },
   { id: "sesame", label: "Sesame" },
@@ -29,6 +31,8 @@ export interface MenuCriteria {
   diet: MenuDiet;
   max_price?: number;
   avoid_allergens?: string[];
+  favorite_dish_id?: string;
+  limit?: number;
 }
 
 export interface MenuItem {
@@ -38,6 +42,9 @@ export interface MenuItem {
   price: number;
   currency: "EUR";
   ingredients: readonly string[];
+  ingredients_information: "complete" | "incomplete";
+  image?: string;
+  featured_order?: number;
   dietary: "vegan" | "vegetarian" | "omnivore";
   allergens: {
     contains: readonly AllergenId[];
@@ -55,7 +62,10 @@ export const MENU: readonly MenuItem[] = [
     description: "Chickpeas, crisp cucumber and herbs with a lemon dressing.",
     price: 14,
     currency: "EUR",
-    ingredients: ["Chickpeas", "Cucumber", "Tomato", "Parsley", "Lemon", "Olive oil"],
+    ingredients: ["Chickpeas", "Cucumber", "Tomato", "Parsley", "Lemon", "Olive oil", "Salt", "Black pepper"],
+    ingredients_information: "complete",
+    image: "/art/menu-chickpea.webp",
+    featured_order: 2,
     dietary: "vegan",
     allergens: {
       contains: [],
@@ -71,7 +81,8 @@ export const MENU: readonly MenuItem[] = [
     description: "Warm aubergine with chickpeas, pomegranate and sesame tahini.",
     price: 17,
     currency: "EUR",
-    ingredients: ["Aubergine", "Chickpeas", "Sesame tahini", "Pomegranate", "Lemon", "Olive oil"],
+    ingredients: ["Aubergine", "Chickpeas", "Tahini (sesame seeds)", "Pomegranate", "Lemon", "Olive oil", "Salt"],
+    ingredients_information: "complete",
     dietary: "vegan",
     allergens: {
       contains: ["sesame"],
@@ -87,7 +98,10 @@ export const MENU: readonly MenuItem[] = [
     description: "Durum-wheat pasta with slow-roasted tomatoes and basil oil.",
     price: 18,
     currency: "EUR",
-    ingredients: ["Durum-wheat orzo", "Tomato", "Basil", "Garlic", "Olive oil"],
+    ingredients: ["Orzo (durum-wheat semolina, water)", "Tomato", "Basil", "Garlic", "Olive oil", "Salt", "Black pepper"],
+    ingredients_information: "complete",
+    image: "/art/menu-orzo.webp",
+    featured_order: 3,
     dietary: "vegan",
     allergens: {
       contains: ["gluten"],
@@ -103,7 +117,8 @@ export const MENU: readonly MenuItem[] = [
     description: "Crisp filo pastry filled with spinach and feta, served with greens.",
     price: 19,
     currency: "EUR",
-    ingredients: ["Wheat filo pastry", "Spinach", "Feta cheese", "Egg", "Mixed greens", "Olive oil"],
+    ingredients: ["Filo (wheat flour, water, olive oil, salt)", "Spinach", "Feta (milk, salt, cultures, microbial rennet)", "Egg", "Rocket", "Lettuce", "Olive oil"],
+    ingredients_information: "complete",
     dietary: "vegetarian",
     allergens: {
       contains: ["gluten", "milk", "egg"],
@@ -120,6 +135,7 @@ export const MENU: readonly MenuItem[] = [
     price: 16,
     currency: "EUR",
     ingredients: ["Seasonal vegetables", "Rice", "Daily herb sauce (full ingredient list pending)"],
+    ingredients_information: "incomplete",
     dietary: "vegan",
     allergens: {
       contains: [],
@@ -135,7 +151,8 @@ export const MENU: readonly MenuItem[] = [
     description: "Grilled sea bass, lemon potatoes and seasonal greens.",
     price: 24,
     currency: "EUR",
-    ingredients: ["Sea bass", "Potatoes", "Lemon", "Seasonal greens", "Olive oil"],
+    ingredients: ["Sea bass", "Potatoes", "Lemon", "Kale", "Olive oil", "Salt", "Black pepper"],
+    ingredients_information: "complete",
     dietary: "omnivore",
     allergens: {
       contains: ["fish"],
@@ -145,17 +162,63 @@ export const MENU: readonly MenuItem[] = [
     },
     source: MENU_SOURCE,
   },
+  {
+    id: "mushroom-risotto",
+    name: "Mushroom risotto",
+    description: "Creamy arborio rice, golden mushrooms and fresh thyme.",
+    price: 22,
+    currency: "EUR",
+    ingredients: ["Arborio rice", "Chestnut mushrooms", "Onion", "Garlic", "Vegetable stock (water, carrot, celery, onion, salt)", "Butter (milk)", "Vegetarian hard cheese (milk, salt, microbial rennet)", "Thyme", "Olive oil", "Black pepper"],
+    ingredients_information: "complete",
+    image: "/art/menu-risotto.webp",
+    featured_order: 1,
+    dietary: "vegetarian",
+    allergens: {
+      contains: ["milk", "celery"],
+      may_contain: [],
+      information: "complete",
+      note: "This synthetic recipe lists milk and celery. No peanut or avocado ingredient is listed. Kitchen confirmation of ingredients and cross-contact is still required for an allergy.",
+    },
+    source: MENU_SOURCE,
+  },
+  {
+    id: "avocado-peanut-bowl",
+    name: "Avocado & peanut bowl",
+    description: "Brown rice, avocado and vegetables with a peanut-lime dressing.",
+    price: 21,
+    currency: "EUR",
+    ingredients: ["Brown rice", "Avocado", "Carrot", "Cucumber", "Peanuts", "Lime", "Water", "Olive oil", "Salt"],
+    ingredients_information: "complete",
+    dietary: "vegan",
+    allergens: {
+      contains: ["peanuts", "avocado"],
+      may_contain: ["sesame"],
+      information: "complete",
+      note: "The synthetic recipe explicitly contains peanuts and avocado; possible sesame cross-contact is declared.",
+    },
+    source: MENU_SOURCE,
+  },
 ];
 
 export interface MenuAssessment {
   item: MenuItem;
   status: "match" | "excluded" | "uncertain";
   reasons: string[];
+  rationale: string;
+  ingredient_check: {
+    requested: string[];
+    contains: string[];
+    possible_cross_contact: string[];
+    information: "complete" | "incomplete" | "unknown_requirement";
+    kitchen_confirmation: "required" | "not_requested";
+  };
 }
 
 export interface MenuSearchResult {
   criteria: MenuCriteria;
   matches: MenuAssessment[];
+  recommendations: MenuAssessment[];
+  total_matches: number;
   excluded: MenuAssessment[];
   uncertain: MenuAssessment[];
   unknown_allergens: string[];
@@ -171,10 +234,18 @@ export function normalizeMenuCriteria(criteria: MenuCriteria): MenuCriteria {
   if (criteria.max_price !== undefined && (!Number.isFinite(criteria.max_price) || criteria.max_price < 0)) {
     throw new Error("Menu budget must be a non-negative amount in EUR.");
   }
+  if (criteria.limit !== undefined && (!Number.isInteger(criteria.limit) || criteria.limit < 1 || criteria.limit > 12)) {
+    throw new Error("Choose between 1 and 12 menu recommendations.");
+  }
+  if (criteria.favorite_dish_id !== undefined && !MENU.some((item) => item.id === criteria.favorite_dish_id)) {
+    throw new Error("Choose a favorite dish id from the declared menu.");
+  }
   return {
     diet: criteria.diet,
     ...(criteria.max_price !== undefined ? { max_price: criteria.max_price } : {}),
     avoid_allergens: [...new Set((criteria.avoid_allergens ?? []).map((allergen) => allergen.trim().toLowerCase()))],
+    ...(criteria.favorite_dish_id !== undefined ? { favorite_dish_id: criteria.favorite_dish_id } : {}),
+    ...(criteria.limit !== undefined ? { limit: criteria.limit } : {}),
   };
 }
 
@@ -187,6 +258,8 @@ export function findMenuOptions(input: MenuCriteria): MenuSearchResult {
   const result: MenuSearchResult = {
     criteria,
     matches: [],
+    recommendations: [],
+    total_matches: 0,
     excluded: [],
     uncertain: [],
     unknown_allergens: unknown,
@@ -213,7 +286,7 @@ export function findMenuOptions(input: MenuCriteria): MenuSearchResult {
         uncertainties.push(`The menu declares that this dish may contain ${allergen}; ask the restaurant.`);
       }
     }
-    if (avoid.length > 0 && item.allergens.information === "incomplete") {
+    if (avoid.length > 0 && (item.allergens.information === "incomplete" || item.ingredients_information === "incomplete")) {
       uncertainties.push("Ingredient or cross-contact declarations are incomplete; ask the restaurant.");
     }
     if (unknown.length > 0) {
@@ -224,6 +297,17 @@ export function findMenuOptions(input: MenuCriteria): MenuSearchResult {
       item,
       status,
       reasons: [...exclusions, ...uncertainties],
+      rationale: item.id === criteria.favorite_dish_id && status === "match"
+        ? "Your favorite"
+        : item.dietary === "vegan" ? "Plant-based" : item.dietary === "vegetarian" ? "Vegetarian comfort" : "From the grill",
+      ingredient_check: {
+        requested: avoid,
+        contains: avoid.filter((allergen) => item.allergens.contains.some((declared) => declared === allergen)),
+        possible_cross_contact: avoid.filter((allergen) => item.allergens.may_contain.some((declared) => declared === allergen)),
+        information: unknown.length ? "unknown_requirement"
+          : item.allergens.information === "incomplete" || item.ingredients_information === "incomplete" ? "incomplete" : "complete",
+        kitchen_confirmation: avoid.length ? "required" : "not_requested",
+      },
     };
     if (status === "match") {
       assessment.reasons.push("The listed price and dietary declaration match the requested filters.");
@@ -232,5 +316,10 @@ export function findMenuOptions(input: MenuCriteria): MenuSearchResult {
     } else if (status === "uncertain") result.uncertain.push(assessment);
     else result.excluded.push(assessment);
   }
+  result.total_matches = result.matches.length;
+  result.recommendations = [...result.matches].sort((a, b) => {
+    const favoriteDifference = Number(b.item.id === criteria.favorite_dish_id) - Number(a.item.id === criteria.favorite_dish_id);
+    return favoriteDifference || (a.item.featured_order ?? 100) - (b.item.featured_order ?? 100);
+  }).slice(0, criteria.limit ?? 3);
   return result;
 }

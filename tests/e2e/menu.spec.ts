@@ -43,7 +43,7 @@ test("explicit allergen checks keep uncertain dishes separate and never hide the
   await expect(uncertain).toContainText("Allergen information is incomplete");
   const matches = page.getByRole("list", { name: "Dishes matching your preferences" });
   await expect(matches).not.toContainText("Tomato & basil orzo");
-  await expect(matches.locator(":scope > li")).toHaveCount(2);
+  await expect(matches.locator(":scope > li")).toHaveCount(3);
   await expect(page.getByText(/not an allergy-safety guarantee/)).toBeVisible();
   await page.getByLabel("Maximum per dish (€)", { exact: true }).fill("0");
   await page.getByRole("button", { name: "Find dishes for me", exact: true }).click();
