@@ -23,7 +23,7 @@ test("first action is visible on a short desktop and the fallback completes both
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
-  await page.goto("/");
+  await page.goto("/guided");
   const action = page.getByRole("button", {
     name: "Make it easier →",
     exact: true,
@@ -110,7 +110,7 @@ test("first action is visible on a short desktop and the fallback completes both
 });
 
 test("preview and undo preserve the person's selection", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/guided");
   await page.getByRole("button", { name: "Make it easier →" }).click();
   const cinema = page.frameLocator('iframe[title="LUNA Cinema"]');
   await cinema.getByRole("button", { name: /Row H · Seats 5 \+ 6/ }).click();
@@ -194,7 +194,7 @@ for (const site of ["cinema", "restaurant"] as const) {
 }
 
 test("new shell has no serious accessibility violations", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/guided");
   await expect(
     page.getByRole("button", { name: "Make it easier →" }),
   ).toBeEnabled();
@@ -243,7 +243,7 @@ test("cross-origin receipt is validated and unsupported preferences are reported
 test("the fallback bridge ignores messages from a different source", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/guided");
   await expect(
     page.getByRole("button", { name: "Make it easier →" }),
   ).toBeEnabled();
@@ -288,7 +288,7 @@ test("adaptation keeps an earlier table choice visible, not just stored", async 
 
 test("the complete controller remains usable on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
+  await page.goto("/guided");
   await page.getByRole("button", { name: "Make it easier →" }).click();
   await page.getByRole("button", { name: "Continue to dinner →" }).click();
   await page.getByRole("button", { name: "Use my preferences here →" }).click();

@@ -2,6 +2,12 @@
 
 **The web adapts. You don’t have to.**
 
+**New: A night for two.** The home page follows Alex and Lea through a quiet, visual evening
+plan. A familiar agent uses explicitly shared example preferences: today's calm view, an aisle
+seat beside a spouse, dinner before next week's film, and three ingredient-checked dishes.
+The person can change the proposal and confirms each demo booking. Read the
+[current story and native agent request](docs/personal-evening.md).
+
 **An ordinary evening should be yours to arrange.** As I Am is a prototype for disabled
 people who want participating websites to respond to the access needs they choose to express.
 Small controls can be a barrier with reduced dexterity or tremor. Low vision can make default
@@ -57,11 +63,13 @@ will not stop existing servers. Run one server manually with `npm run dev:site -
 
 | Experience                      | Address                          |
 | ------------------------------- | -------------------------------- |
-| Guided demo / agent entry point | http://localhost:5273            |
+| A night for two / agent entry point | http://localhost:5273        |
+| Advanced access choices         | http://localhost:5273/guided     |
 | LUNA Cinema                     | http://localhost:5274/cinema     |
 | OLIVA Restaurant                | http://localhost:5275/restaurant |
 
-Start with **Help me choose**:
+The home page starts with **Plan our evening**. The following advanced paths are available
+at `/guided`. Start there with **Help me choose**:
 
 1. Try the original seat map. Choose **Make pointing easier for me** and **Give me less to process**, then apply
    the selected needs with **Make it easier →**. Compare the real controls, **Original** and **My view**; the selected

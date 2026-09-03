@@ -4,7 +4,7 @@ const cinemaPage = (page: Page) => page.frameLocator('iframe[title="LUNA Cinema"
 const restaurantPage = (page: Page) => page.frameLocator('iframe[title="OLIVA Restaurant"]');
 
 async function prepareCinemaReview(page: Page) {
-  await page.goto("/");
+  await page.goto("/guided");
   await page.getByRole("button", { name: "Prepare for me", exact: true }).click();
   await page.getByRole("button", { name: "Prepare my seats →", exact: true }).click();
   await expect(cinemaPage(page).getByRole("button", { name: /Confirm demo tickets/ })).toBeVisible();
@@ -57,7 +57,7 @@ test("an unconfirmed cinema review cannot supply a dinner plan or select a resta
 });
 
 test("switching from choosing to preparation uses the tickets the person already confirmed", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/guided");
   await expect(page.getByRole("button", { name: "Help me choose", exact: true })).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "Make it easier →", exact: true }).click();
   const cinema = cinemaPage(page);

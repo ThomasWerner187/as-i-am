@@ -5,7 +5,7 @@ const cinema = (page: import('@playwright/test').Page) => page.frameLocator('ifr
 const restaurant = (page: import('@playwright/test').Page) => page.frameLocator('iframe[title="OLIVA Restaurant"]');
 
 test('changing support removes deselected preferences and preserves a chosen seat pair', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/guided');
   await page.getByRole('button', { name: 'Make it easier →', exact: true }).click();
   await cinema(page).getByRole('button', { name: /Row F · Seats 6 \+ 7/ }).click();
   await page.getByRole('checkbox', { name: 'Make pointing easier for me' }).uncheck();
@@ -26,7 +26,7 @@ test('changing support removes deselected preferences and preserves a chosen sea
 });
 
 test('changed support at the destination does not silently import the old cinema choices', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/guided');
   await page.getByRole('button', { name: 'Make it easier →', exact: true }).click();
   await page.getByRole('button', { name: 'Continue to dinner →', exact: true }).click();
   await page.getByRole('checkbox', { name: 'Make pointing easier for me' }).uncheck();
@@ -40,7 +40,7 @@ test('changed support at the destination does not silently import the old cinema
 
 test('support selection is accessible at phone width and applies only after the user asks', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/');
+  await page.goto('/guided');
   await page.getByRole('checkbox', { name: 'Make reading easier for me' }).check();
   await expect(cinema(page).locator('html')).not.toHaveAttribute('data-aia-font-style', 'readable');
   const result = await new AxeBuilder({ page }).include('.access-needs').withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
@@ -53,7 +53,7 @@ test('support selection is accessible at phone width and applies only after the 
 
 
 test('a revised cinema receipt removes old reading support at the restaurant', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/guided');
   await page.getByRole('checkbox', { name: 'Make reading easier for me' }).check();
   await page.getByRole('button', { name: 'Prepare for me', exact: true }).click();
   await page.getByRole('button', { name: 'Prepare my seats →', exact: true }).click();
@@ -69,7 +69,7 @@ test('a revised cinema receipt removes old reading support at the restaurant', a
 });
 
 test('maximum text size does not disable applying changed support choices', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/guided');
   await page.getByRole('checkbox', { name: 'Make reading easier for me' }).check();
   await page.getByRole('button', { name: 'Prepare for me', exact: true }).click();
   await page.getByRole('button', { name: 'Prepare my seats →', exact: true }).click();

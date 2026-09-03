@@ -23,7 +23,7 @@ test("the mobile primary action is visible and precedes the website in keyboard 
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
+  await page.goto("/guided");
   const action = page.getByRole("button", {
     name: "Make it easier →",
     exact: true,
