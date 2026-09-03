@@ -4,6 +4,8 @@ import {
   seatPairs,
   tableOptions,
   SEATS,
+  TABLES,
+  dinnerPlan,
 } from "../../src/evening/state";
 import {
   dispatchTool,
@@ -55,6 +57,31 @@ describe("evening booking invariants", () => {
       "18:30",
     ]);
   });
+  it("chooses the latest sourced table with an explicit arrival buffer", () => {
+    const plan = dinnerPlan({ film_time: "20:15", table_preference: "quiet" });
+    expect(plan.recommended).toMatchObject({ time: "18:00", table_id: "T4" });
+    expect(plan.recommended?.table).toBe(TABLES.find((table) => table.id === "T4"));
+    expect(plan.recommended?.table.available_times).toContain(plan.recommended?.time);
+    expect(plan.calculation).toEqual({
+      film_time: "20:15", meal_minutes: 90, walk_minutes: 15,
+      arrival_buffer_minutes: 15, latest_dinner_start: "18:15",
+      meal_ends: "19:30", cinema_arrival: "19:45", actual_arrival_buffer_minutes: 30,
+    });
+    expect(plan.explanation).toContain("listed inventory");
+    expect(dinnerPlan({ film_time: "20:15", arrival_buffer_minutes: 0 }).recommended?.time).toBe("18:30");
+    expect(dinnerPlan({ film_time: "20:15", arrival_buffer_minutes: 60 }).recommended?.time).toBe("17:30");
+  });
+  it("applies custom meal and walking time without inventing unavailable slots", () => {
+    const options = tableOptions("20:15", { meal_minutes: 60, walk_minutes: 15, arrival_buffer_minutes: 15 });
+    expect(options.at(-1)?.time).toBe("18:45");
+    expect(options.every((option) => option.tables.length > 0 && option.tables.every((table) => table.available_times.includes(option.time)))).toBe(true);
+    expect(tableOptions("20:15", { meal_minutes: 180, walk_minutes: 60, arrival_buffer_minutes: 60 })).toEqual([]);
+    const store = new EveningStore();
+    expect(store.selectTable("18:45", "T4")).toBe(false);
+    expect(store.get().tableTime).toBeNull();
+    expect(store.selectTable("18:45", "T2")).toBe(true);
+    expect(store.get().tableId).toBe("T2");
+  });
   it("exposes page-specific tools but no booking confirmation tool", () => {
     const cinema = toolsForEvening("cinema").map((tool) => tool.name);
     const restaurant = toolsForEvening("restaurant").map((tool) => tool.name);
@@ -65,7 +92,7 @@ describe("evening booking invariants", () => {
     expect(
       [...cinema, ...restaurant].some((name) => name.includes("confirm")),
     ).toBe(false);
-    for (const tool of toolsForEvening("cinema")) {
+    for (const tool of [...toolsForEvening("cinema"), ...toolsForEvening("restaurant")]) {
       expect(tool.name.length).toBeLessThanOrEqual(30);
       expect(tool.description.length).toBeLessThanOrEqual(500);
     }
