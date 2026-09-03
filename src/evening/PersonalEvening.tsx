@@ -29,6 +29,7 @@ export default function PersonalEvening() {
   const [details, setDetails] = useState<"preferences" | "tools" | null>(null);
   const [preview, setPreview] = useState(false);
   const [menuReady, setMenuReady] = useState(false);
+  const [connectionSlow, setConnectionSlow] = useState(false);
   const frames = useRef<Partial<Record<EveningSite, HTMLIFrameElement>>>({});
   const locked = useRef(false);
   const retry = useRef<(() => Promise<void>) | null>(null);
@@ -47,6 +48,11 @@ export default function PersonalEvening() {
     else detailsOpener.current?.focus();
   }, [details]);
   useEffect(() => { if (step !== "welcome") stepHeading.current?.focus(); }, [step]);
+  useEffect(() => {
+    if (ready.cinema && ready.restaurant) { setConnectionSlow(false); return; }
+    const timer = window.setTimeout(() => setConnectionSlow(true), 10000);
+    return () => clearTimeout(timer);
+  }, [ready.cinema, ready.restaurant]);
 
   useEffect(() => {
     document.documentElement.dataset.evening = "personal";
@@ -147,7 +153,7 @@ export default function PersonalEvening() {
     const menu = await call("restaurant", "present_menu_for_user", { diet: "any", view: "focused", max_price: 24, avoid_allergens: ["peanuts", "avocado"], favorite_dish_id: "mushroom-risotto", limit: 3 });
     setMenuReady(true);
     const choices = menu.recommendations ?? menu.menu?.recommendations ?? [];
-    const favorite = choices.some((choice: Result) => (choice.dish?.id ?? choice.id) === "mushroom-risotto");
+    const favorite = choices.some((choice: Result) => (choice.item?.id ?? choice.id) === "mushroom-risotto");
     setLine(choices.length === 3 && favorite ? "Three options. Your risotto is here, too." : "Your menu is ready to explore.");
   }
   async function toggleView() {
@@ -174,6 +180,7 @@ export default function PersonalEvening() {
           <p className="personal-earlier"><span>Earlier today</span>“Migraine again. My calm view, please.”</p>
           <div className="personal-request"><span>You</span><p>Plan a movie night for us next week.<br/>Dinner first would be lovely.</p></div>
           <button className="personal-primary" onClick={() => void perform(start)} disabled={busy || !ready.cinema || !ready.restaurant}>{busy ? "Opening your evening…" : "Plan our evening"}<span aria-hidden="true">↗</span></button>
+          {connectionSlow && <div className="personal-error"><p role="alert">The pages are taking longer to open.</p><button className="personal-secondary" onClick={() => location.reload()}>Reload experience</button></div>}
         </> : <>
           <p className="personal-eyebrow">Your companion</p>
           <h1 ref={stepHeading} tabIndex={-1} className="personal-response" aria-live="polite">{bothConfirmed ? "An evening for you two." : line}</h1>

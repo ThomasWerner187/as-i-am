@@ -158,7 +158,7 @@ test("a delayed connection offers usable recovery and clears its warning when re
     await gate;
     await route.continue();
   });
-  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.goto("/guided", { waitUntil: "domcontentloaded" });
   await page
     .frameLocator('iframe[title="OLIVA Restaurant"]')
     .locator("main")
