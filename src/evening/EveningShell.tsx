@@ -864,7 +864,7 @@ export default function EveningShell() {
             <p className="agent-request">
               {mode === "prepare"
                 ? site === "cinema"
-                  ? hasFit
+                  ? bookingStages.cinema === "confirmed"
                     ? "“Use my tickets to plan the rest.”"
                     : "“Find two seats together. I’ll check the details.”"
                   : "“Find a table and menu that fit my evening.”"
@@ -880,7 +880,7 @@ export default function EveningShell() {
             </p>
             <small>
               {mode === "prepare"
-                ? hasFit || site === "restaurant"
+                ? bookingStages.cinema === "confirmed" || site === "restaurant"
                   ? "Uses your confirmed film time and chosen preferences at OLIVA. You confirm the table."
                   : "The demo researches and prepares a review. You make the final decision."
                 : canCarry
