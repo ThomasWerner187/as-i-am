@@ -14,7 +14,7 @@ Lea’s peanut and avocado exclusions remain visible, along with questions for t
 
 ![The deployed restaurant view: three pictured dishes, ingredient information and a dinner-before-cinema itinerary.](docs/screenshots/dinner-options.png)
 
-[Watch the 80-second demo](https://youtu.be/r40L1yJhNyc) · [Try it](https://asiam.wernerverse.de/) · [Judge walkthrough](docs/judge-testing.md)
+[Watch the 98-second demo](https://youtu.be/VCrRYQfJxus) · [Try it](https://asiam.wernerverse.de/) · [Judge walkthrough](docs/judge-testing.md)
 
 The hosted demo uses the jury login supplied privately with the submission. Anyone
 can run the same app locally without an account, payment or API key.
@@ -109,7 +109,8 @@ and [verification](docs/verification.md) explain the implementation and existing
 
 ## Demo and license
 
-The [79.6-second demo film](https://youtu.be/r40L1yJhNyc) has English narration and subtitles.
+The [98-second demo film](https://youtu.be/VCrRYQfJxus) has English narration and subtitles.
+It follows the evening, then briefly explains how the WebMCP tools make it work.
 The screenshots above and [cinema view](docs/screenshots/cinema-calm.png) were captured
 from the deployed application. Earlier shop and services examples remain under
 `/legacy`, `/shop` and `/services`; historical screenshots remain in `docs/screenshots/`.

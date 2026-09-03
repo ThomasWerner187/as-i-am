@@ -1,14 +1,37 @@
-# As I Am — selected film
+# As I Am — submission film
 
-The selected local film is **A night for two**, completed September 3, 2026. It runs for
-**79.600 seconds** and follows Alex and Lea through a calm planning view, aisle-seat correction,
-dinner timing and three pictured dishes. The earlier 112-second film is superseded and belongs
-to the historical record below.
+Watch [As I Am — A night for two | WebMCP Challenge](https://youtu.be/VCrRYQfJxus).
+YouTube reports the final upload as public, with no copyright/community-check
+issues and published English captions. Its unauthenticated oEmbed endpoint returned
+the expected title. Devpost submission is a separate step.
 
-Video: [As I Am — A night for two | WebMCP Challenge](https://youtu.be/r40L1yJhNyc).
-The captioned export and poster were uploaded, and the English SRT track was added.
-YouTube's copyright and community checks reported no issues. Final public playback
-verification is recorded separately from Devpost submission.
+The selected file is `as-i-am-submission-final.mp4`: **98.221333 seconds**, H.264,
+1920 × 1080 at 30 fps, with AAC stereo audio and burned English captions. The
+supplied SRT/VTT files contain 39 cues. Its SHA-256 is:
+
+`b87af5e7daf216ca480eca7874d68dda9d301257e17f067f064c135d2740c692`
+
+The complete 79.6-second story is followed by an 18.6-second spoken WebMCP
+explanation. Jessica explains how website-registered tools adapt the interface,
+find seats and plan dinner while the person stays in control. The ending uses a
+clearly labelled explanatory diagram, not simulated footage of live tool calls.
+
+The final preservation check confirmed **all 2,388 original decoded video frames**
+and **all 3,729 original AAC packet payloads** unchanged. The original dialogue
+was not cut, sped up or re-encoded. The final color-range join was reviewed visually.
+
+Reproduction scripts and the exact spoken ending are in
+[submission-coda](../tools/clickthru/submission-coda/README.md). Generated media,
+alignment data and provider responses stay outside Git. The delivery includes
+the final MP4, `as-i-am-submission.srt`, `as-i-am-submission.vtt` and `poster.jpg`.
+
+## Original story chapter: 79.6 seconds
+
+The original **A night for two** story follows Alex and Lea through a calm planning
+view, aisle-seat correction, dinner timing and three pictured dishes. Its earlier
+[story-only upload](https://youtu.be/r40L1yJhNyc) is unlisted and links to the final film.
+Use the 98.22-second video above for submission. The original chapter's production
+record follows; the earlier 112-second film is in the historical record below.
 
 ## Delivery
 
@@ -66,9 +89,9 @@ the [demo script](demo-script.md), sourced from
 | `as-i-am-warm.srt` | `1ade4c835644e657b4974f7f422493990cee5d091a2b0315efe284d0bdeb51c8` |
 | `as-i-am-warm.vtt` | `e64bf6aa7fdea6a435d1f573956cc98f398216190dbadc68b67653c6ee00c1d1` |
 
-The exact dialogue, timing plan, edit metadata, renderer and source materials remain in
-`tools/clickthru/out/warm-flow/`. The captioned file has been uploaded to the link above.
-Verify its public playback and captions before submitting that URL.
+The original dialogue, timing plan, edit metadata, renderer and source materials remain
+in `tools/clickthru/out/warm-flow/`. The measurements in this section describe that
+unchanged story chapter, before the appended WebMCP explanation.
 
 ---
 

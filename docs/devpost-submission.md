@@ -5,7 +5,7 @@
 Your agent knows what matters. You plan the evening together.
 
 - Live demo: https://asiam.wernerverse.de/ (jury login supplied privately)
-- Demo video: https://youtu.be/r40L1yJhNyc
+- Demo video: https://youtu.be/VCrRYQfJxus
 - Source: https://github.com/ThomasWerner187/as-i-am
 
 ## Inspiration

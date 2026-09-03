@@ -8,7 +8,7 @@ in public recordings. A local installation needs no login or API key.
 Alex and Lea, their shared history, bookings and menu are fictional. Reload the
 experience to begin a fresh session. See [hosting.md](hosting.md) for the live
 checks, [verification.md](verification.md) for engineering evidence, and
-[the demo film](https://youtu.be/r40L1yJhNyc) for the short story.
+[the demo film](https://youtu.be/VCrRYQfJxus) for the short story.
 
 ## Entry points
 

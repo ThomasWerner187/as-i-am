@@ -88,17 +88,15 @@ have the reviewed commit, verified deployment, final video and exact submission 
    Verify successful CI and the expected source, setup instructions and root MIT license.
 2. With approval, make the project repository public. Check its logged-out page: the actual
    application is visible and GitHub detects the MIT license in the About section.
-3. Review the selected Alex/Lea film in `tools/clickthru/out/warm-flow/delivery/`.
-   It runs 79.6 seconds at 1920 × 1080 and 30 fps, with one continuous, uncut George/Jessica
-   performance and 32 caption cues. Speech begins at 4.165 seconds. Watch/listen once before
-   upload and compare it with the final released UI. Use `as-i-am-warm.mp4` for always-visible
-   subtitles, or `as-i-am-warm-clean.mp4` with `as-i-am-warm.srt` for switchable YouTube
-   captions; `as-i-am-warm.vtt`, `poster.jpg` and `index.html` are also supplied. Serve the
-   player locally with `node tools/clickthru/out/warm-flow/serve-player.mjs` and open
-   `http://127.0.0.1:4382/`. The earlier 112-second film is historical. Verify the selected
-   file against the hash and checks in [recording](recording.md).
+3. Review `as-i-am-submission-final.mp4`, the 98.22-second film identified in
+   [recording](recording.md). It preserves the complete 79.6-second George/Jessica
+   story and adds a spoken explanation of WebMCP. The final delivery has burned
+   English captions, a 39-cue SRT/VTT and the original poster. Reproduction scripts
+   are in [submission-coda](../tools/clickthru/submission-coda/README.md). Use the
+   recorded SHA-256 to distinguish it from earlier cuts.
 4. Upload the selected file to public YouTube early. Wait for video/audio processing, verify
    playback logged out, and add the supplied English captions. Copy its public URL.
+   The selected final upload is https://youtu.be/VCrRYQfJxus.
 5. Fill Devpost with the [English submission copy](devpost-submission.md), verified live/repo/video
    links and the compact testing field from [judge-testing.md](judge-testing.md). Add teammates
    and confirm accepted invitations if entering as a team.

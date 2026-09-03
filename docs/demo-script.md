@@ -1,13 +1,17 @@
 # Demo script — a night for two
 
-The selected film is **79.6 seconds**, 1920 × 1080 at 30 fps, with **32 English
-caption cues**. The first voice begins at **4.165 seconds**. George voices Alex and Jessica
+This script covers the **79.6-second story chapter** of the final 98.22-second film,
+1920 × 1080 at 30 fps, with **32 English caption cues**. The first voice begins at
+**4.165 seconds**. George voices Alex and Jessica
 voices the agent in one continuous two-voice performance. The dialogue master is uncut, runs
 at its original speed and ends at 75.569 seconds; there is no dialogue splice or time-stretch.
 
 Alex and Lea are fictional. Their explicitly shared example history explains why the agent
 knows Alex's preferred view, seating preference, favorite dish and Lea's ingredient exclusions.
 The film shows the websites changing in response while Alex remains part of each decision.
+
+The final film continues with the [spoken WebMCP ending](../tools/clickthru/submission-coda/README.md)
+and seven additional caption cues. The story dialogue below is preserved unchanged.
 
 ## Exact spoken dialogue
 
@@ -50,7 +54,7 @@ appears only after its subject has entered the spoken conversation.
 | 70.349 | The complete evening. |
 | 72.889 | Closing frame. |
 | 75.569 | Spoken dialogue ends. |
-| 79.600 | Film ends. |
+| 79.600 | Story chapter ends; the final submission film continues with its WebMCP explanation. |
 
 ## Picture language and claim boundaries
 

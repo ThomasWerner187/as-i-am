@@ -13,7 +13,7 @@ available throughout judging. Record the actual submission time and final URLs.
 - [x] English project description, agent request and [judge testing instructions](judge-testing.md).
 - [x] MIT source license, generated-artwork provenance and redistributed font notices.
 - [x] Final English dialogue: one continuous, uncut George/Alex and Jessica/agent performance; no dialogue cuts or time-stretch.
-- [x] Matching 79.6-second film exported at 1920 × 1080 and 30 fps, with speech from 4.165 seconds and 32 English caption cues; see [recording](recording.md).
+- [x] Matching 98.22-second submission film exported at 1920 × 1080 and 30 fps: the complete 79.6-second story plus a short spoken WebMCP explanation; see [recording](recording.md).
 - [x] Warm cream film layout, fixed browser position and visual changes following their spoken triggers; both venues shown in the chosen calm view.
 - [x] Integrated checks: 128 unit, 72 browser and 15 recorder tests pass; see [verification](verification.md).
 - [x] Application source `75a7054` built; eight focused browser checks repeated after the final CSS change and native execution recorded.
@@ -30,7 +30,7 @@ available throughout judging. Record the actual submission time and final URLs.
 - [x] Reload the controller and both direct routes in a fresh WebMCP-capable browser.
 - [x] Successfully discover and call native tools on the hosted top-level LUNA and OLIVA pages.
 - [x] Complete the personal booking flow and verify the same-origin topology; see [hosting](hosting.md).
-- [ ] Upload the selected 79.6-second video to public YouTube, wait for processing and verify audio/32 captions.
+- [x] Publish the 98.22-second submission film with English captions; public status and unauthenticated video metadata verified.
 - [ ] Fill Devpost with English copy, live/repo/video links and private jury credentials.
 - [ ] Include development-period provenance and accepted teammate invitations, or confirm solo entry.
 - [ ] Save and submit; verify green **Submitted** on My Projects rather than a saved draft.
@@ -38,7 +38,7 @@ available throughout judging. Record the actual submission time and final URLs.
 - [ ] Freeze submitted repo, website, video and entry at the deadline; keep the site available through judging.
 
 The protected [Netcup deployment](hosting.md) is verified. The selected film is at
-https://youtu.be/r40L1yJhNyc; publication and playback verification are tracked in
+https://youtu.be/VCrRYQfJxus; publication and playback verification are tracked in
 [recording](recording.md). Recheck remote source visibility and the selected commit
 before submission. A green **Submitted** status must be verified on Devpost separately.
 

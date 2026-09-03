@@ -1,6 +1,6 @@
 # Recording beat sheet — a night for two
 
-**Selected cut: 79.6 seconds.** Speech begins at 4.165 seconds. George/Alex and
+**Story chapter: 79.6 seconds of the final 98.22-second film.** Speech begins at 4.165 seconds. George/Alex and
 Jessica/agent speak in one continuous, uncut performance, with 32 English caption cues.
 The film holds one fixed browser position inside a warm cream layout. Every page change follows
 its spoken trigger. See the [exact dialogue](demo-script.md) and [delivery record](recording.md).
@@ -21,6 +21,7 @@ its spoken trigger. See the [exact dialogue](demo-script.md) and [delivery recor
 | 68.668–70.349 | Table confirmed | Hold the visible synthetic restaurant confirmation. |
 | 70.349–72.889 | The evening fits | Bring film, seats and dinner together in one compact outcome. |
 | 72.889–79.600 | Closing | Finish the continuous dialogue at 75.569, then leave a calm visual hold. |
+| 79.600–98.221 | WebMCP explanation | A short spoken ending explains the website tools and the person's final confirmation. The original story's picture and audio are preserved. |
 
 ## Editing rules embodied in the selected cut
 

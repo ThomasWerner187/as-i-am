@@ -61,7 +61,7 @@ including earlier layout-check takes. The selected observed results are:
   Final booking state was read back. No native confirmation tool or real transaction is claimed.
 
 Raw recordings, structured results and matching screenshots are retained locally. The selected
-film lasts **79.600 seconds** with a single uncut **71.520-second** two-voice performance and
+original story film lasts **79.600 seconds** with a single uncut **71.520-second** two-voice performance and
 32 English caption cues; speech begins at 4.165 seconds. Both 1920 × 1080, 30 fps media exports
 decode completely without errors. The captioned file has subtitles burned into the picture.
 The clean file uses independently rendered caption-free frames and carries one optional English
@@ -81,7 +81,9 @@ opening frame. These playback checks do not replace the owner's final listening 
 
 The subsequent [Netcup hosting verification](hosting.md) records valid HTTPS,
 protected jury access, the complete browser flow and native WebMCP calls on the live pages.
-The selected film has been uploaded to [YouTube](https://youtu.be/r40L1yJhNyc).
+The final **98.221333-second** submission film adds a short spoken WebMCP ending.
+The original 2,388 video frames and 3,729 AAC audio payloads are preserved unchanged.
+The selected upload is [on YouTube](https://youtu.be/VCrRYQfJxus).
 Repository publication, final public video checks and Devpost Submitted status are
 separate publication steps; the historical results below describe earlier builds.
 
