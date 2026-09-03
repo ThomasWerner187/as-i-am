@@ -23,8 +23,7 @@ const DEMO_PROFILE = {
   cognitive: { step_by_step: true, hide_nonessential: true },
   motion_media: { reduce_motion: true },
 };
-const AGENT_PROMPT =
-  "Help me plan a cinema-and-dinner evening on this page. First discover the current site's WebMCP capabilities. I want larger click targets, one step at a time, and less visual clutter. Apply only supported functional preferences, measure the rendered result, and correct any unmet requests. Show me available adjacent seat pairs and let me choose. Never confirm a booking for me. With my permission, carry only my functional adaptation receipt to the restaurant, discover its capabilities, and apply what it supports. Do not send personal reasons, identity, or cinema selections to the restaurant.";
+const AGENT_PROMPT = `Help me plan a cinema-and-dinner evening. Open LUNA at ${siteUrl("cinema", false)} as a top-level page and discover its WebMCP tools. I want larger click targets, one step at a time, and less visual clutter. Apply only supported functional preferences, measure the rendered result, and correct any unmet requests. Show me available adjacent seat pairs and let me choose. Never confirm a booking for me. With my permission, carry only my functional adaptation receipt to OLIVA at ${siteUrl("restaurant", false)}, discover its capabilities, and apply what it supports. Do not send personal reasons, identity, or cinema selections to the restaurant.`;
 
 export default function EveningShell() {
   const [site, setSite] = useState<EveningSite>("cinema");
@@ -32,6 +31,7 @@ export default function EveningShell() {
   const [native, setNative] = useState({ cinema: false, restaurant: false });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [connectionTimedOut, setConnectionTimedOut] = useState(false);
   const [adapted, setAdapted] = useState({ cinema: false, restaurant: false });
   const [preview, setPreview] = useState(false);
   const [trace, setTrace] = useState<Trace[]>([]);
@@ -102,12 +102,7 @@ export default function EveningShell() {
       }));
     };
     window.addEventListener("message", listener);
-    const timer = window.setTimeout(() => {
-      if (!state.current.ready.cinema || !state.current.ready.restaurant)
-        setError(
-          "The example sites are not connected yet. Start all three servers with npm run dev:experience, then reload this page.",
-        );
-    }, 14000);
+    const timer = window.setTimeout(() => setConnectionTimedOut(true), 14000);
     const controller = new AbortController();
     const mc = document.modelContext;
     if (mc) {
@@ -130,7 +125,8 @@ export default function EveningShell() {
                 sites: SITES.map((value) => ({
                   id: value,
                   name: SITE_NAMES[value],
-                  url: siteUrl(value),
+                  url: siteUrl(value, false),
+                  embedded_url: siteUrl(value),
                   ready: state.current.ready[value],
                 })),
                 cross_origin: crossOrigin,
@@ -154,6 +150,9 @@ export default function EveningShell() {
             },
             execute: async (input) => {
               if (
+                !input ||
+                typeof input !== "object" ||
+                Array.isArray(input) ||
                 !SITES.includes(input.site as EveningSite) ||
                 Object.keys(input).some((key) => key !== "site")
               )
@@ -167,29 +166,41 @@ export default function EveningShell() {
                   error:
                     "A demo operation is running. Try again when it completes.",
                 });
-              const current = state.current.site;
-              if (state.current.preview && frames.current[current]) {
-                await createFrameClient(
-                  frames.current[current]!,
-                  new URL(siteUrl(current)).origin,
-                ).invoke("preview_original", { enabled: false });
+              state.current.busy = true;
+              setBusy(true);
+              try {
+                const current = state.current.site;
+                if (state.current.preview && frames.current[current]) {
+                  await createFrameClient(
+                    frames.current[current]!,
+                    new URL(siteUrl(current)).origin,
+                  ).invoke("preview_original", { enabled: false });
+                }
+                setPreview(false);
+                setBefore({});
+                setAfter({});
+                setStatus("");
+                setSite(input.site as EveningSite);
+                return JSON.stringify({
+                  ok: true,
+                  site: input.site,
+                  preferences_transferred: false,
+                });
+              } finally {
+                state.current.busy = false;
+                setBusy(false);
               }
-              setPreview(false);
-              setBefore({});
-              setAfter({});
-              setStatus("");
-              setSite(input.site as EveningSite);
-              return JSON.stringify({
-                ok: true,
-                site: input.site,
-                preferences_transferred: false,
-              });
             },
           },
           { signal: controller.signal },
         );
       };
-      void register().catch(() => {});
+      void register().catch(() => {
+        if (!controller.signal.aborted)
+          setError(
+            "The agent entry points could not connect. You can still use the guided demo or open the sites directly under Use WebMCP.",
+          );
+      });
     }
     return () => {
       controller.abort();
@@ -231,7 +242,8 @@ export default function EveningShell() {
     return result;
   }
   async function perform(action: () => Promise<void>) {
-    if (busy) return;
+    if (state.current.busy) return;
+    state.current.busy = true;
     setBusy(true);
     setError("");
     try {
@@ -243,6 +255,7 @@ export default function EveningShell() {
           : "The request could not be completed.",
       );
     } finally {
+      state.current.busy = false;
       setBusy(false);
     }
   }
@@ -348,13 +361,20 @@ export default function EveningShell() {
 
   return (
     <div className="evening-shell">
+      <a className="skip-link" href="#adaptation">
+        Skip to adaptation
+      </a>
       <header className="experience-top">
         <span className="aia-wordmark">
           As I Am<span aria-hidden="true">.</span>
         </span>
         <div className="experience-links">
           <span className="connection-status">{transport}</span>
-          <button onClick={() => setAgentOpen(!agentOpen)}>
+          <button
+            aria-expanded={agentOpen}
+            aria-controls="agent-details"
+            onClick={() => setAgentOpen(!agentOpen)}
+          >
             Use WebMCP ↗
           </button>
         </div>
@@ -368,7 +388,7 @@ export default function EveningShell() {
         <p>Your needs. Your preferences. A web that works your way.</p>
       </section>
       {agentOpen && (
-        <section className="agent-details">
+        <section className="agent-details" id="agent-details">
           <h2>Try it with your agent.</h2>
           <p>
             Give your agent this request in a WebMCP-enabled browser. The guided
@@ -389,16 +409,12 @@ export default function EveningShell() {
           <p>
             If your browser does not expose tools inside frames, open each site
             directly and use its native tools:{" "}
-            <a
-              href={siteUrl("cinema").replace("?embedded=1", "")}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={siteUrl("cinema", false)} target="_blank" rel="noreferrer">
               LUNA Cinema
             </a>{" "}
             ·{" "}
             <a
-              href={siteUrl("restaurant").replace("?embedded=1", "")}
+              href={siteUrl("restaurant", false)}
               target="_blank"
               rel="noreferrer"
             >
@@ -429,36 +445,12 @@ export default function EveningShell() {
             <b>02</b> Dinner
           </button>
         </nav>
-        <div className="site-frame">
-          <div className="site-address">
-            <span className="window-dots" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </span>
-            <strong>
-              {new URL(siteUrl(site)).host}/{site}
-            </strong>
-            <span>
-              {hasFit && !preview ? "Adapted for you" : "Original view"}
-            </span>
-          </div>
-          {SITES.map((value) => (
-            <iframe
-              key={value}
-              ref={(element) => {
-                if (element) frames.current[value] = element;
-              }}
-              hidden={site !== value}
-              className="site-document"
-              style={{ height: frameHeight[value] }}
-              title={SITE_NAMES[value]}
-              src={siteUrl(value)}
-              allow="tools"
-            />
-          ))}
-        </div>
-        <section className="agent-dock" aria-label="Try a personal adaptation">
+        <section
+          className="agent-dock"
+          id="adaptation"
+          tabIndex={-1}
+          aria-label="Try a personal adaptation"
+        >
           <span className="agent-mark" aria-hidden="true">
             ✳
           </span>
@@ -515,6 +507,35 @@ export default function EveningShell() {
                   : "Make it easier →"}
           </button>
         </section>
+        <div className="site-frame">
+          <div className="site-address">
+            <span className="window-dots" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
+            <strong>
+              {new URL(siteUrl(site)).host}/{site}
+            </strong>
+            <span>
+              {hasFit && !preview ? "Adapted for you" : "Original view"}
+            </span>
+          </div>
+          {SITES.map((value) => (
+            <iframe
+              key={value}
+              ref={(element) => {
+                if (element) frames.current[value] = element;
+              }}
+              hidden={site !== value}
+              className="site-document"
+              style={{ height: frameHeight[value] }}
+              title={SITE_NAMES[value]}
+              src={siteUrl(value)}
+              allow="tools"
+            />
+          ))}
+        </div>
         <div className="proof-footer">
           <div className="measurement-chips" aria-live="polite">
             {after.smallest_target_px ? (
@@ -586,16 +607,46 @@ export default function EveningShell() {
             )}
             <button
               className="shell-link"
+              aria-expanded={proofOpen}
+              aria-controls="proof-details"
               onClick={() => setProofOpen(!proofOpen)}
             >
               How it works
             </button>
+            {trace.length > 0 && (
+              <button className="shell-link" onClick={() => location.reload()}>
+                Start again
+              </button>
+            )}
           </div>
         </div>
-        {status && (
-          <p className="sr-only" role="status">
-            {status}
-          </p>
+        <p className="sr-only" role="status" aria-atomic="true">
+          {status}
+        </p>
+        {connectionTimedOut && (!ready.cinema || !ready.restaurant) && (
+          <div className="experience-error" role="alert">
+            <p>
+              {!ready.cinema && !ready.restaurant
+                ? "The example sites are taking longer to connect."
+                : `${SITE_NAMES[!ready.cinema ? "cinema" : "restaurant"]} is taking longer to connect.`}{" "}
+              Reload the experience, or open a site directly.
+            </p>
+            <div className="connection-actions">
+              <button className="shell-link" onClick={() => location.reload()}>
+                Reload experience
+              </button>
+              {SITES.filter((value) => !ready[value]).map((value) => (
+                <a
+                  key={value}
+                  href={siteUrl(value, false)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open {SITE_NAMES[value]} ↗
+                </a>
+              ))}
+            </div>
+          </div>
         )}
         {error && (
           <div className="experience-error" role="alert">
@@ -607,7 +658,11 @@ export default function EveningShell() {
         )}
       </main>
       {proofOpen && (
-        <section className="proof-details" aria-labelledby="how-it-works-title">
+        <section
+          className="proof-details"
+          id="proof-details"
+          aria-labelledby="how-it-works-title"
+        >
           <h2 id="how-it-works-title">How the web adapts to you.</h2>
           <p className="proof-intro">
             WebMCP lets your agent ask a website for changes it supports.
@@ -641,6 +696,15 @@ export default function EveningShell() {
                 <h3>Preferences. Not personal details.</h3>
               </div>
               <ul aria-label="Shared preferences">
+                {Number(receipt.profile.visual?.text_scale ?? 1) > 1 && (
+                  <li>
+                    Larger text ·{" "}
+                    {Math.round(
+                      Number(receipt.profile.visual?.text_scale) * 100,
+                    )}
+                    %
+                  </li>
+                )}
                 {receipt.profile.interaction?.minimum_target_size && (
                   <li>
                     {receipt.profile.interaction.minimum_target_size}px buttons

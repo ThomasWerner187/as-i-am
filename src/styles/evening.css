@@ -175,7 +175,7 @@ html[data-evening="shell"] {
   background: #171b1a;
 }
 .agent-dock {
-  margin-top: 12px;
+  margin: 0 0 12px;
   padding: 16px 18px;
   border: 1px solid #cfd7c8;
   border-radius: 12px;
@@ -277,6 +277,23 @@ html[data-evening="shell"] {
 }
 .experience-error button {
   margin-left: 12px;
+}
+.connection-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.connection-actions button {
+  margin-left: 0;
+}
+.experience-error p {
+  margin: 0;
+}
+.evening-shell :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  box-shadow: none;
 }
 .agent-details,
 .proof-details {
@@ -477,8 +494,10 @@ html[data-evening="restaurant"] {
   font-family: var(--sans);
 }
 .booking-masthead {
-  height: 62px;
+  min-height: 62px;
+  padding-block: 12px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--line);
@@ -489,6 +508,8 @@ html[data-evening="restaurant"] {
   letter-spacing: 0.05em;
   color: var(--accent);
   display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
   align-items: center;
   gap: 15px;
 }
@@ -605,6 +626,19 @@ html[data-evening="restaurant"] {
   display: grid;
   gap: 0;
   justify-content: center;
+  width: max-content;
+  min-width: 100%;
+}
+.seat-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding: 6px;
+  scrollbar-color: var(--accent) var(--paper);
+}
+html[data-aia-min-target="on"] .seat-rows,
+html[data-aia-min-target="on"] .seat-row {
+  gap: var(--aia-target-gap);
 }
 .seat-row {
   display: flex;
@@ -669,6 +703,7 @@ html[data-evening="restaurant"] {
 }
 .selection-footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
@@ -691,6 +726,7 @@ html[data-evening="restaurant"] {
   font-weight: 650;
   cursor: pointer;
   min-height: var(--aia-target-min);
+  max-width: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
@@ -780,6 +816,7 @@ html[data-evening="restaurant"] {
   display: block;
   color: var(--ink-soft);
   margin-top: 3px;
+  overflow-wrap: anywhere;
 }
 .choice-price {
   text-align: right;
@@ -1069,7 +1106,7 @@ html[data-aia-focus="maximum"] .booking :focus-visible {
     padding-inline: 16px;
   }
   .booking-masthead {
-    height: 62px;
+    gap: 8px;
   }
   .booking-body {
     display: flex;
@@ -1089,6 +1126,7 @@ html[data-aia-focus="maximum"] .booking :focus-visible {
   }
   .venue-meta {
     padding: 0;
+    min-width: 0;
   }
   .poster-title {
     font-size: 1.1rem;
@@ -1105,7 +1143,7 @@ html[data-aia-focus="maximum"] .booking :focus-visible {
     font-size: 1.1rem;
   }
   .venue-logo small {
-    display: block;
+    display: none;
   }
   .booking h1 {
     font-size: 1.5rem;
@@ -1159,6 +1197,8 @@ html[data-aia-focus="maximum"] .booking :focus-visible {
   }
   .booking-footer {
     font-size: 0.55rem;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   .booking-page--restaurant .venue-logo small {
     display: none;
@@ -1170,27 +1210,5 @@ html[data-aia-focus="maximum"] .booking :focus-visible {
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto;
-  }
-}
-/* On shorter displays, put the request before the canvas so the first action is never buried. */
-@media (max-height: 820px) {
-  .experience-stage {
-    display: flex;
-    flex-direction: column;
-  }
-  .journey-tabs {
-    order: 1;
-  }
-  .agent-dock {
-    order: 2;
-    margin: 0 0 12px;
-  }
-  .site-frame {
-    order: 3;
-  }
-  .proof-footer,
-  .experience-stage > .shell-note,
-  .experience-error {
-    order: 4;
   }
 }

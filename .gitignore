@@ -19,8 +19,8 @@ DerivedData/
 .impeccable/
 output/playwright/
 playwright-report/
-test-results/*
-!test-results/.last-run.json
+test-results/
+output/
 
 # clickthru recordings (regenerable, too big for git)
 tools/clickthru/out/

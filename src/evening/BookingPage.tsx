@@ -28,6 +28,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
   const bookingRoot = useRef<HTMLElement>(null);
   const cinema = site === "cinema";
   const stage = cinema ? booking.cinemaStage : booking.restaurantStage;
+  const previousView = useRef({ stage, originalLayout });
   const largeTargets =
     Number(adaptation.active.interaction?.minimum_target_size ?? 44) > 44;
   const guided =
@@ -148,8 +149,13 @@ export function BookingPage({ site }: { site: EveningSite }) {
     setShowAll(false);
   }, [guided]);
   useEffect(() => {
-    if (stage !== "choose") heading.current?.focus({ preventScroll: true });
-  }, [stage]);
+    if (
+      previousView.current.stage !== stage ||
+      previousView.current.originalLayout !== originalLayout
+    )
+      heading.current?.focus({ preventScroll: true });
+    previousView.current = { stage, originalLayout };
+  }, [stage, originalLayout]);
 
   return (
     <div
@@ -185,7 +191,9 @@ export function BookingPage({ site }: { site: EveningSite }) {
           >
             <div className="venue-image">
               <img
-                src={cinema ? "/art/luna-poster.png" : "/art/oliva-table.png"}
+                src={cinema ? "/art/luna-poster.webp" : "/art/oliva-table.webp"}
+                width={640}
+                height={cinema ? 960 : 854}
                 alt={
                   cinema
                     ? "An amber moon above a desert, the artwork for LUNA"
@@ -374,7 +382,10 @@ export function BookingPage({ site }: { site: EveningSite }) {
                         <p role="status">
                           Your current selection:{" "}
                           {booking.selectedSeats.join(" + ")}. Choose a pair to
-                          sit together, or keep your selection.
+                          sit together
+                          {selectedSeats.length === 2
+                            ? ", or keep your selection."
+                            : ", or return to the seat map to add a second seat."}
                         </p>
                       )}
                       <div className="choice-alternatives" data-aia="actions">
@@ -399,41 +410,50 @@ export function BookingPage({ site }: { site: EveningSite }) {
                       <div className="cinema-screen">
                         <span>SCREEN</span>
                       </div>
-                      <div className="seat-rows" aria-label="Cinema seats">
-                        {"ABCDEFGH".split("").map((row) => (
-                          <div className="seat-row" key={row}>
-                            <span className="row-label" aria-hidden="true">
-                              {row}
-                            </span>
-                            {SEATS.filter((seat) => seat.row === row).map(
-                              (seat) => (
-                                <button
-                                  key={seat.id}
-                                  className={`seat${!seat.available ? " is-taken" : ""}${booking.selectedSeats.includes(seat.id) ? " is-selected" : ""}`}
-                                  disabled={!seat.available}
-                                  aria-label={`Row ${seat.row}, seat ${seat.number}, ${seat.available ? money(seat.price) : "unavailable"}`}
-                                  aria-pressed={booking.selectedSeats.includes(
-                                    seat.id,
-                                  )}
-                                  onClick={() =>
-                                    eveningStore.selectSeat(seat.id)
-                                  }
-                                >
-                                  <span
-                                    className="seat-shape"
-                                    aria-hidden="true"
+                      <div
+                        className="seat-scroll"
+                        role="region"
+                        aria-label="Cinema seats — scroll to explore the map"
+                        tabIndex={0}
+                      >
+                        <div className="seat-rows">
+                          {"ABCDEFGH".split("").map((row) => (
+                            <div className="seat-row" key={row}>
+                              <span className="row-label" aria-hidden="true">
+                                {row}
+                              </span>
+                              {SEATS.filter((seat) => seat.row === row).map(
+                                (seat) => (
+                                  <button
+                                    key={seat.id}
+                                    className={`seat${!seat.available ? " is-taken" : ""}${booking.selectedSeats.includes(seat.id) ? " is-selected" : ""}`}
+                                    disabled={!seat.available}
+                                    aria-label={`Row ${seat.row}, seat ${seat.number}, ${seat.available ? money(seat.price) : "unavailable"}`}
+                                    aria-pressed={booking.selectedSeats.includes(
+                                      seat.id,
+                                    )}
+                                    onClick={() =>
+                                      eveningStore.selectSeat(seat.id)
+                                    }
                                   >
-                                    {!seat.available
-                                      ? "×"
-                                      : booking.selectedSeats.includes(seat.id)
-                                        ? "✓"
-                                        : ""}
-                                  </span>
-                                </button>
-                              ),
-                            )}
-                          </div>
-                        ))}
+                                    <span
+                                      className="seat-shape"
+                                      aria-hidden="true"
+                                    >
+                                      {!seat.available
+                                        ? "×"
+                                        : booking.selectedSeats.includes(
+                                              seat.id,
+                                            )
+                                          ? "✓"
+                                          : ""}
+                                    </span>
+                                  </button>
+                                ),
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                       <div className="seat-legend">
                         <span>□ Standard {money(12)}</span>

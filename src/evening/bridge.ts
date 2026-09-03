@@ -94,7 +94,7 @@ export function createFrameClient(
         cleanup();
         reject(
           new Error(
-            "The site did not respond. Check that its local server is running, then retry.",
+            "The site did not respond. Try again, or reload the experience if the connection has been lost.",
           ),
         );
       }, 8000);
