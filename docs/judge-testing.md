@@ -3,8 +3,8 @@
 No account, credentials, API key or payment is required. Seats, bookings, menu dishes and
 example preferences are fictional. Reloading starts a fresh session.
 
-This revision puts person-chosen access needs first. Its matching native-agent recording and
-fresh verification are pending; the 117-second video covers the previous revision. The
+This revision puts person-chosen access needs first. Its controls and native calls are verified;
+a matching recording is blocked by the browser recording security failure; the 117-second video covers the previous revision. The
 [verification report](verification.md) identifies the build and scope of completed checks.
 The [inclusion evidence guide](inclusion-evidence.md) distinguishes technical evidence from
 research with disabled people, which has not yet been conducted.

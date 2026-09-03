@@ -16,6 +16,53 @@ gitleaks git --redact=100 --no-banner --log-opts=--all .
 The recorder tests also run independently with `npm run test:recording` or
 `node --test tools/clickthru/*.test.mjs`.
 
+## Disability access release — September 3, 2026
+
+Application source: **`db3b386`**. The complete `npm run check` passed with **112 unit,
+15 recorder and 69 browser tests: 196 passing tests**, followed by TypeScript and the production
+build. New checks cover all eight need combinations, removing support, the all-deselected
+original-view journey, changed receipts, maximum-text recovery, preserved selections, font
+and line-height rendering, keyboard focus, live feedback and phone layouts. The changed
+controller and access controls also passed the design detector.
+
+Native WebMCP ran on the production build at `http://127.0.0.1:4373/` in the in-app browser,
+1440 × 1080. This is one origin with separate cinema/restaurant documents. The successful
+native-call results are preserved as `output/disability-evidence/native-tools.json` and included
+in the review packet. They are real calls, not the registration shim used in automated tests.
+
+- LUNA measured **30px** minimum targets before adaptation and **56px** afterward, with
+  no horizontal overflow. Requested pointing and focus preferences returned satisfied fit.
+- Seats F6/F7 were selected through the original controls, survived the native change and
+  original-map comparison, and reached review through the native preparation tool. A visible
+  confirmation produced confirmed tickets for **20:15**.
+- The actual receipt carried **six functional preferences** to OLIVA, which accepted them.
+  It contains no diagnosis, food requirements or booking details.
+- A separate film-time argument produced **18:00 / quiet garden table T4**, arrival **19:45**
+  and a **30-minute buffer**. Native preparation opened the real table review.
+- Adding `text_scale: 1.3`, `font_style: readable` and `line_height: 1.7` through native
+  visual tuning increased the smallest sampled text from **9.9px to 12.9px**. Fit was satisfied
+  in the tested menu state. The full menu remained reachable and the table stayed **18:00/T4**.
+- The visible table-confirmation control produced a confirmed demo table. Confirmation was
+  exercised as the demonstrator's UI action; no booking-confirmation tool exists.
+
+These measurements describe the tested properties and state, not complete accessibility or
+benefit proven with disabled users. No participant research or independent operator integration
+has been completed. See [inclusion evidence](inclusion-evidence.md).
+
+### Recording limitation
+
+A new 315-word continuous English Chris / Eleven v3 narration was generated once: **122.32s**,
+with captions and a **122.92s** edit plan including the final hold. The browser capture returned
+**zero frames** because its security policy could not be verified. Automatic approval review
+then rejected an attempt to restore recording access as a prohibited bypass. Recording retries
+were stopped. There is **no completed new video**; the failed manifest is retained as failure
+evidence, and the earlier 117-second guided cut is historical only.
+
+A new supported recording requires restored browser authorization and explicit approval before
+retrying. No alternative capture mechanism was used to bypass the rejection. App checks,
+native tool results, source and narration are unaffected. Public deployment, repository
+visibility, YouTube publication and Devpost submission remain outstanding.
+
 ## Inclusion release review — September 3, 2026
 
 Application candidate: **`981b90f`**. The full check at `7f9ddd5` passed TypeScript,

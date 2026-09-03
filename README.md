@@ -191,4 +191,5 @@ development history and third-party building blocks.
 
 The existing [117-second recording](docs/recording.md) shows the previous revision's guided
 flow. A matching replacement must show the new access choices, changing needs and real native
-execution. Fresh capture and verification are pending; no new completed video is claimed here.
+execution. The new controls and native calls are verified with 196 passing tests. New narration is ready,
+but browser recording is blocked; no new completed video is claimed here.

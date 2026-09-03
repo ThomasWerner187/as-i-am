@@ -13,9 +13,10 @@ These times follow the organizer's reminder; recheck the
 - [x] Native WebMCP registration and a separately labelled guided demo bridge.
 - [x] English project description, agent request and [judge testing instructions](judge-testing.md).
 - [x] MIT source license, generated-artwork provenance and redistributed font notices.
-- [x] New 117-second English inclusion recording with audio and captions prepared locally.
-- [x] Final integrated checks: 105 unit, 58 browser and 15 recorder tests pass; see [verification](verification.md).
-- [x] Application source `981b90f` built and checked; native execution verified on the same application logic.
+- [x] New disability-focused English narration and captions prepared locally.
+- [ ] New matching video: capture blocked by browser policy and automatic approval review; previous 117-second cut is historical.
+- [x] Final integrated checks: 112 unit, 69 browser and 15 recorder tests pass; see [verification](verification.md).
+- [x] Application source `db3b386` built and checked; native execution verified on the same application logic.
 - [x] Zero dependency vulnerabilities, no detected secrets, desktop/mobile visual review complete.
 - [ ] Watch and listen to the selected video; verify it still matches the final live behavior.
 

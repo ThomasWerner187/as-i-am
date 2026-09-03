@@ -1,10 +1,30 @@
-# As I Am — selected inclusion recording
+# As I Am — recording status
 
-The selected local candidate is **117 seconds** and shows both help modes, the dinner plan
+The previous local candidate is **117 seconds** and shows both help modes, the dinner plan
 from confirmed cinema tickets, the full/focused restaurant menu, and both human confirmations.
 It replaces the earlier 93-second submission candidate. All earlier recordings are preserved.
 
-## Selected files and checks
+
+## Current disability access revision
+
+The new narration is ready at `tools/clickthru/out/disability-native-chris-v3/`:
+`continuous-master.mp3`, `spoken-script.txt`, `as-i-am-continuous.srt`,
+`as-i-am-continuous.vtt` and `speech-plan.json`. It is one 315-word Chris / Eleven v3
+performance, **122.32 seconds**, with an edit plan of **122.92 seconds**. The original
+140–160-second target was a production estimate, not a requirement; the voice was not stretched.
+
+**No new matching video is complete.** The capture at
+`tools/clickthru/out/disability-native-captures/take-XFjUBq/manifest.json` has zero frames.
+The browser security policy could not be verified. Automatic approval review rejected renewed
+recording access as a prohibited bypass, so retries stopped. Keep this as failed capture
+metadata; do not export it or remove the failure flag. The native calls succeeded separately
+and are preserved in the local review packet. See [verification](verification.md).
+
+The previous 117-second video belongs to the earlier worktree and does not show the new needs
+chooser or native execution. Do not submit it as a demonstration of this revision. Recording,
+owner watch/listen, public upload and link verification remain open.
+
+## Previous 117-second files and checks
 
 All paths below are relative to the inclusion experience worktree. Generated media is ignored
 by Git and included separately in the local submission packet.

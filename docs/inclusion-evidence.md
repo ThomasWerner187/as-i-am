@@ -44,22 +44,22 @@ of ability. The person can return to the original view and retains booking confi
 
 ## What is actually evidenced
 
-The evidence below describes the existing recorded revision. It must not be silently reused
-as proof of new need-selection controls or a new video.
+The latest verification covers application `db3b386`. Full details, environment and limits are
+in [verification](verification.md).
 
 | Evidence | Recorded observation | What it does not establish |
 | --- | --- | --- |
-| Automated checks | The earlier inclusion build passed 105 unit, 15 recorder and 58 browser tests; later checks are itemized in verification.md | Real-user usability, population impact or complete accessibility |
-| Rendered measurement | Native calls on the earlier production preview reported 56px minimum targets and no horizontal overflow at the inspected viewport | Successful pointing for a person with tremor, or a universally usable layout |
-| Honest partial result | Spacing on a single-action confirmation screen was unmeasurable and returned partial fit | Full WCAG conformance or satisfaction of every preference |
-| Native WebMCP | Earlier top-level cinema/restaurant tools were discovered and called in the in-app browser | Native iframe support, public deployment readiness or a recording of an autonomous agent |
-| Selection and confirmation | Tests and direct checks covered preserved selections and reviews requiring a visible confirmation | A browser-wide guarantee that any external agent will obey the person |
-| Receipt boundary | The functional receipt excluded food requirements and booking details | Anonymity, consent enforcement across agents or signed credentials |
-| Earlier video | The 117-second cut documented the prior guided preset flow | The new combinable access choices or native execution in the main video |
+| Automated checks | 112 unit + 15 recorder + 69 browser tests pass, including independent needs and removing support | Real-user usability or population impact |
+| Native pointing | LUNA targets 30px → 56px; selected F6/F7 retained, no horizontal overflow | Successful pointing for every person with tremor |
+| Native portability | Actual six-preference receipt accepted by OLIVA | Independent operators, arbitrary websites or native iframe support |
+| Native reading | Menu text sample minimum 9.9px → 12.9px with readable font and line height 1.7; fit satisfied in that state | Complete low-vision accessibility or a preferred value for every person |
+| Choice and context | Full menu reachable; 18:00/T4 retained after tuning; UI confirmations exercised | A guarantee that every external agent obeys the person |
+| Receipt boundary | No diagnosis, food requirements or booking history in the receipt | Anonymity, signed credentials or browser-wide consent enforcement |
+| New media | 315-word narration, captions and actual native-call JSON ready | A completed video: capture failed with zero frames; recording reaccess was rejected by automatic approval review |
 
-The dated source of these observations is [verification](verification.md), including commit,
-browser and deployment topology. The new controls, changed-need path and matching native clip
-are **pending fresh verification and capture**. Public links and submission remain separate gates.
+The new controls and changed-need paths are verified. **The matching native video remains
+blocked**, and public links and submission remain separate gates. The earlier 117-second cut
+shows a prior guided revision and is historical only.
 
 ## What has not been evidenced
 

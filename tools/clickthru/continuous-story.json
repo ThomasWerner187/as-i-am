@@ -1,57 +1,42 @@
 [
   {
-    "chapter": "The ten-second pitch",
+    "chapter": "Opening",
     "sourceChapter": null,
-    "text": "Let my agent help. Let me stay in charge. As I Am makes an ordinary night out easier to plan, with support I choose."
+    "text": "Two seats together. A night out with friends. For disabled people, the booking page can be the first barrier. As I Am starts with the access you choose."
   },
   {
-    "chapter": "A night out, on my terms",
-    "sourceChapter": "A night out, on my terms.",
-    "text": "I want two seats together and dinner before the film. Precise clicking and crowded information can make that harder. I should still get to shape my evening."
+    "chapter": "Choose support",
+    "sourceChapter": "Choose support",
+    "text": "Someone with hand tremor may want larger targets. Someone with low vision may want larger text. With cognitive overload or fatigue, less to process can matter. Different people need different combinations."
   },
   {
-    "chapter": "Help me choose",
-    "sourceChapter": "Help me choose.",
-    "text": "Help me choose gives me larger seat choices and clearer information. The cinema keeps its own design and the seats I picked. I can return to the original."
+    "chapter": "Native adaptation",
+    "sourceChapter": "Native adaptation",
+    "text": "Here, the person asks for easier pointing and less to process. A real external agent discovers what LUNA supports, sends those functional preferences, and the page changes. Then the agent calls the measurement tool. We can inspect the actual target size and any unmet request. The website keeps its own controls and design."
   },
   {
-    "chapter": "My ticket, my decision",
-    "sourceChapter": "My ticket, my decision.",
-    "text": "I review the full price and confirm my demo tickets myself. The same tools let an external agent prepare a review, while confirmation stays with me."
+    "chapter": "Keep the choice",
+    "sourceChapter": "Keep the choice",
+    "text": "With Help me choose, the person explores the clearer page. Prepare for me can research options and stage a review. Either way, their seats stay selected, the original remains reachable, and they confirm the demo tickets."
   },
   {
-    "chapter": "Prepare for me",
-    "sourceChapter": "Prepare for me.",
-    "text": "Now I ask for more help: Prepare for me. Using my confirmed film time, the guided workflow demonstrates an agent researching dinner options and preparing a table review."
+    "chapter": "Carry support",
+    "sourceChapter": "Carry support",
+    "text": "With permission, the agent exports the functional receipt and imports it at OLIVA. The restaurant accepts what it supports, in its own design. The receipt contains interface preferences, not a diagnosis or booking history. The person does not have to explain that request again."
   },
   {
-    "chapter": "A plan I can check",
-    "sourceChapter": "A plan I can check.",
-    "text": "The film starts at eight fifteen. Allow ninety minutes to eat, fifteen to walk, and a buffer. Six o'clock is the latest available fit, getting me there thirty minutes early."
+    "chapter": "Plan dinner",
+    "sourceChapter": "Plan dinner",
+    "text": "Planning dinner is secondary help. The confirmed film starts at eight fifteen. The available six o’clock table leaves time to eat and walk, arriving thirty minutes early. The proposed table still needs confirmation."
   },
   {
-    "chapter": "Food preferences I choose",
-    "sourceChapter": "Food preferences I choose.",
-    "text": "My editable example asks for vegan dishes within twenty euros each. The menu returns matching dishes with prices and ingredient information. Uncertain allergen or cross-contact questions belong with the restaurant."
+    "chapter": "Change needs",
+    "sourceChapter": "Change needs",
+    "text": "Now the person adds Easier reading. Larger readable text joins the pointing changes; the existing choices remain. The agent applies the supported values and checks the result again. The full menu stays available. What helps today can change, and choosing a clearer view should not hand over the decision."
   },
   {
-    "chapter": "My choices, my view",
-    "sourceChapter": "My choices, my view.",
-    "text": "I can explore the full menu or switch to My choices. The agent reduces the research; I keep the information, the choice, and the final table confirmation."
-  },
-  {
-    "chapter": "Only what each task needs",
-    "sourceChapter": "Only what each task needs.",
-    "text": "Interface preferences travel in a functional receipt. Food preferences and booking details stay out of it. Dinner planning receives the film time separately, because I asked it to."
-  },
-  {
-    "chapter": "Why WebMCP matters",
-    "sourceChapter": "Why WebMCP matters.",
-    "text": "Web M C P makes those actions discoverable: understand the page, request changes, check the result, prepare a review. These buttons use preset requests; an external agent can call the native tools."
-  },
-  {
-    "chapter": "The web adapts",
-    "sourceChapter": "The web adapts.",
-    "text": "Free and open source. More ways to take part, with help on my terms. As I Am. The web adapts. You don't have to."
+    "chapter": "Participation",
+    "sourceChapter": "Participation",
+    "text": "This free, MIT-licensed prototype uses fictional bookings and two sites we built. Technical checks are not user validation. Testing with disabled people comes next. The goal is participation on your terms. As I Am. The web adapts. You don’t have to."
   }
 ]

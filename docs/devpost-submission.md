@@ -1,7 +1,7 @@
 # Submission draft — As I Am
 
-English copy for the revised entry. The new access-choice interface and native proof need
-fresh verification and a matching recording. The existing 117-second guided video shows the
+English copy for the revised entry. The access-choice interface and native calls are verified;
+the matching recording is blocked by the browser recording security failure. The existing 117-second guided video shows the
 previous revision. The release gate below is internal and should not be pasted into the story.
 
 ## Title and one-line description
@@ -73,10 +73,10 @@ The source is MIT licensed and the demo is free to use.
 
 ## What we can show—and what we still need to learn
 
-The previous integrated revision has documented native tool execution, rendered measurements,
-selection-preservation checks and 178 automated tests. These are engineering results, not
+The revised build has documented native tool execution, rendered measurements,
+selection-preservation checks and 196 automated tests. These are engineering results, not
 proof that a particular disabled person finds the interface easier to use. The revised choices
-need their own final checks and matched evidence.
+and native results are verified; a matching video remains blocked.
 
 No genuine user-research sessions or testimonials are documented yet. WAI's
 [Stories of Web Users](https://www.w3.org/WAI/people-use-web/user-stories/) inform our awareness
@@ -117,15 +117,23 @@ No login or credentials are required.
 
 ## Internal release gate — do not paste into the project story
 
-- [ ] Check the final access-choice controls and combination mapping against this copy.
-- [ ] Verify and record genuine native discovery, adaptation and measurement on the revised build.
+- [x] Check the final access-choice controls and combination mapping against this copy.
+- [x] Verify genuine native discovery, adaptation and measurement on the revised build; retain actual results.
 - [ ] Capture changed needs, retained selection and human confirmation; keep guided presets labelled.
-- [ ] Replace the previous 117-second candidate with the matching 140–160-second target edit.
+- [ ] Replace the previous 117-second candidate with the matching video below three minutes (narration ready; capture blocked).
 - [ ] Verify final runtime below three minutes, audio/captions and correspondence with the public app.
-- [ ] Replace pending-evidence wording with actual dated results only after they exist.
+- [x] Record dated technical results and retain the video/user-research limitations.
 - [ ] Verify public controller/direct URLs, actual topology, repository license and source visibility.
 - [ ] Review secrets, assets and final publication approval; add public YouTube and testing links.
 - [ ] Confirm team details, submit and verify the green **Submitted** label on Devpost My Projects.
 - [ ] Preserve the submitted commit, deployment, media and entry through judging.
 
 Nothing in this file establishes a new completed recording, public deployment or submitted entry.
+
+### Latest internal preparation status
+
+Application `db3b386`: 196 tests pass. New native production calls verify pointing,
+portability, changed reading needs and preserved selection. A 315-word English narration
+is ready. The matching video is **not ready**: the capture has zero frames following a browser
+security failure, and automatic approval review denied renewed recording access. The previous
+117-second cut is historical. See [verification](verification.md) and [recording](recording.md).

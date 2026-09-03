@@ -2,7 +2,7 @@
 
 **Production plan: 150 seconds, acceptable final range 140–160 seconds.** This is a new script
 for the revised access-choice interface and a visible native-agent proof. The previous
-117-second guided recording is historical. No matching replacement is completed by this file.
+117-second guided recording is historical. The resulting narration is 122.32 seconds (122.92 with end hold). Video capture is blocked; see recording.md.
 
 The spoken draft below has **315 words**. The time windows include readable native results,
 short visual holds and two-way UI comparison. Measure the real final edit; do not infer runtime
@@ -61,7 +61,7 @@ Select Make reading easier for me while retaining Make pointing easier for me. E
 
 End with the person-visible choice controls and original brand. If desired, show a concise link to the real evidence. Do not show simulated testimonials, user-study badges, WCAG certification or a predicted judging score. The source must be publicly available before the final submitted cut describes it as open source.
 
-> This free, open-source prototype uses fictional bookings and two sites we built. Technical checks are not user validation. Testing with disabled people comes next. The goal is participation on your terms. As I Am. The web adapts. You don’t have to.
+> This free, MIT-licensed prototype uses fictional bookings and two sites we built. Technical checks are not user validation. Testing with disabled people comes next. The goal is participation on your terms. As I Am. The web adapts. You don’t have to.
 
 ## Native proof must be visible in the submitted material
 
@@ -95,7 +95,7 @@ reservations or proven benefit for every disabled person.
 Before replacing the 117-second candidate, record the new source revision, browser, actual
 native calls, before/after measurements, edit duration, caption/audio review and media hash.
 Update [verification](verification.md) and [recording](recording.md) from that evidence.
-The new combinable controls and matching video are pending until these checks are completed.
+The combinable controls and native calls are now verified; the matching video is blocked by the browser recording security failure.
 
 For a reproducible request use [judge-testing.md](judge-testing.md). For actual participant
 feedback use the unfilled [user-validation worksheet](user-validation-guide.md); a model-generated
