@@ -1,5 +1,6 @@
 import type { ToolDef } from "../adaptive-contract/tools";
 import { activity } from "../data/activityStore";
+import { engine } from "../engine/adaptationEngine";
 import { waitForRenderedCommit } from "../adaptive-contract/measurements";
 import {
   eveningStore,
@@ -77,6 +78,7 @@ export const eveningTools: ToolDef[] = [
           "That pair is unavailable or the demo booking is already confirmed.",
         );
       await waitForRenderedCommit();
+      engine.announceNow("Your seat review is ready. Check the seats and full price, then confirm on the page when you are happy.");
       activity.push(
         "prepare_seat_selection",
         "Seat pair ready for your confirmation.",
@@ -186,6 +188,7 @@ export const eveningTools: ToolDef[] = [
         );
       menuStore.showTable();
       await waitForRenderedCommit();
+      engine.announceNow("Your table review is ready. Check the time and table, then confirm on the page when you are happy.");
       activity.push(
         "prepare_table_selection",
         "Table ready for your confirmation.",
@@ -264,6 +267,7 @@ export const eveningTools: ToolDef[] = [
       if (page !== "restaurant-booking") return fail("This tool is only available on the restaurant page.");
       const result = menuStore.present(menuCriteria(args), args.view as MenuView);
       await waitForRenderedCommit();
+      engine.announceNow(`Menu updated. ${result.matches.length} dishes match your stated preferences. ${result.uncertain.length} need an answer from the restaurant. Ingredients and allergen information remain available.`);
       activity.push("present_menu_for_user", "Updated the visible menu using explicit restaurant preferences.");
       const state = menuStore.get();
       return JSON.stringify({
