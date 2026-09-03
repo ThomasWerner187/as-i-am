@@ -1,127 +1,102 @@
-# Demo script — inclusion, with help on my terms
+# Demo script — access chosen by the person
 
-The authoritative narration is [continuous-story.json](../tools/clickthru/continuous-story.json):
-**304 English words**, intended for one continuous performance under three minutes. The opening
-is 24 words, intended to land within about ten seconds. Final runtime and chapter timings must
-come from the generated speech alignment. The completed performance is 116.4 seconds; the export is 117 seconds including its end hold.
+**Production plan: 150 seconds, acceptable final range 140–160 seconds.** This is a new script
+for the revised access-choice interface and a visible native-agent proof. The previous
+117-second guided recording is historical. No matching replacement is completed by this file.
 
-The previous 93-second cut is an archive of the earlier flow. The new recording shows the
-integrated inclusion, dinner-planning and menu experience. See
-[recording status](recording.md) and the [beat sheet](video-beat-sheet.md).
+The spoken draft below has **315 words**. The time windows include readable native results,
+short visual holds and two-way UI comparison. Measure the real final edit; do not infer runtime
+from the word count or stretch narration to a target. No audio generation, paid request or
+capture code change is part of this document.
 
-The story offers two forms of help: clearer information for independent decisions, and delegated
-research with a proposal for review. Neither path removes the person's final say. The spoken
-“I” belongs to a fictional demo scenario; it is not a user interview or evidence of a diagnosis.
+The narration uses short names for the functional needs; production notes use the actual checkbox labels.
+The central story is a disabled person's access and agency. Dinner arithmetic is supporting
+context. A narrator may demonstrate the prototype, but must not pretend to be a research
+participant or present an invented diagnosis as lived experience. Background sources and
+current proof limits are in [inclusion-evidence.md](inclusion-evidence.md).
 
-## Opening, about ten seconds
+## 0:00–0:14 — An ordinary evening
 
-Hold the original cinema and the two visible help choices. Start with the pitch immediately. Do not add an extra captured chapter for this opening hold.
+Show the actual booking page and the project name. No staged failed clicks, simulated tremor, disability impersonation or borrowed persona. The narrator introduces the problem; this is not a participant testimonial.
 
-Source chapter: opening hold (`null`).
+> Two seats together. A night out with friends. For disabled people, the booking page can be the first barrier. As I Am starts with the access you choose.
 
-> Let my agent help. Let me stay in charge. As I Am makes an ordinary night out easier to plan, with support I choose.
+## 0:14–0:29 — Different needs, explicit choices
 
-## An ordinary evening
+Show Make pointing easier for me, Make reading easier for me and Give me less to process together. Select Make pointing easier for me plus Give me less to process for this demonstration. Keep the request readable and do not attach a medical label to its values.
 
-Show the original working seat map. Choose F6 and F7 with the normal controls. The person has a goal, and the interface gives them several ways to pursue it.
+> Someone with hand tremor may want larger targets. Someone with low vision may want larger text. With cognitive overload or fatigue, less to process can matter. Different people need different combinations.
 
-Source chapter: `A night out, on my terms.`.
+## 0:29–0:55 — Real native WebMCP proof
 
-> I want two seats together and dinner before the film. Precise clicking and crowded information can make that harder. I should still get to shape my evening.
+Show the real external-agent request and successful native discovery/application/measurement on the tested page, with its changed UI. Capture actual get_adaptation_capabilities, apply_adaptation_profile and measure_rendered_ui or verify_profile_fit results. Keep at least one measured value readable. This segment must be genuine native execution; if it cannot be captured, do not substitute the guided preset buttons or a fabricated chat transcript.
 
-## Clearer information for my own choice
+> Here, the person asks for easier pointing and less to process. A real external agent discovers what LUNA supports, sends those functional preferences, and the page changes. Then the agent calls the measurement tool. We can inspect the actual target size and any unmet request. The website keeps its own controls and design.
 
-Keep Help me choose selected. Click Make it easier. Show the real larger pair controls and preserved selection; briefly compare Original / My view.
+## 0:55–1:11 — The same person keeps the choice
 
-Source chapter: `Help me choose.`.
+Show preserved seats, the Original/My view comparison and the complete price. Briefly identify the two help modes. The actual person uses the visible Confirm demo tickets control. Preserve that confirmation in the edit.
 
-> Help me choose gives me larger seat choices and clearer information. The cinema keeps its own design and the seats I picked. I can return to the original.
+> With Help me choose, the person explores the clearer page. Prepare for me can research options and stage a review. Either way, their seats stay selected, the original remains reachable, and they confirm the demo tickets.
 
-## The person confirms
+## 1:11–1:32 — Carry the request, retain the site
 
-Open Review selection, pause on the complete price, then visibly click Confirm demo tickets. The recording must show the confirmation rather than imply that an agent completed it.
+Capture authorized export of the actual receipt and import at OLIVA. Show the supported subset applied in the restaurant design. Keep the receipt separate from the confirmed film-time planning argument. State the actual topology: one origin with separate documents, or three origins if that is what was deployed. Do not imply two independent operators.
 
-Source chapter: `My ticket, my decision.`.
+> With permission, the agent exports the functional receipt and imports it at OLIVA. The restaurant accepts what it supports, in its own design. The receipt contains interface preferences, not a diagnosis or booking history. The person does not have to explain that request again.
 
-> I review the full price and confirm my demo tickets myself. The same tools let an external agent prepare a review, while confirmation stays with me.
+## 1:32–1:47 — Dinner planning supports the evening
 
-## Research and preparation by request
+Briefly show the source-backed 18:00/T4 recommendation, 19:45 arrival and 20:15 film. Read the actual result. Fresh session: no earlier restaurant selection that would make the timeline an alternative. Keep menu filters and allergy discussion secondary to the access story.
 
-Select Prepare for me. Keep the editable Example request visible, then click Plan dinner from my tickets. The tickets must already be confirmed. This action is a guided preset demonstrating the agent workflow.
+> Planning dinner is secondary help. The confirmed film starts at eight fifteen. The available six o’clock table leaves time to eat and walk, arriving thirty minutes early. The proposed table still needs confirmation.
 
-Source chapter: `Prepare for me.`.
+## 1:47–2:10 — Needs can change
 
-> Now I ask for more help: Prepare for me. Using my confirmed film time, the guided workflow demonstrates an agent researching dinner options and preparing a table review.
+Select Make reading easier for me while retaining Make pointing easier for me. Explicitly apply the change and capture the supported text_scale 1.3, line_height 1.7 and readable-font request, the actual text change and a fresh measurement. Keep table/seat choices intact and show that the full menu remains reachable. Do not describe an unmeasurable or unsupported field as satisfied.
 
-## Explain the actual plan
+> Now the person adds Easier reading. Larger readable text joins the pointing changes; the existing choices remain. The agent applies the supported values and checks the result again. The full menu stays available. What helps today can change, and choosing a clearer view should not hand over the decision.
 
-Hold the actual itinerary: film 20:15; meal 90 min; walk 15 min; requested minimum buffer 15 min. Latest theoretical start 18:15 is unavailable, so 18:00 is proposed. The result arrives at 19:45, giving 30 min actual buffer. Do not animate an invented result over the page.
+## 2:10–2:30 — Evidence, limits and the point
 
-Source chapter: `A plan I can check.`.
+End with the person-visible choice controls and original brand. If desired, show a concise link to the real evidence. Do not show simulated testimonials, user-study badges, WCAG certification or a predicted judging score. The source must be publicly available before the final submitted cut describes it as open source.
 
-> The film starts at eight fifteen. Allow ninety minutes to eat, fifteen to walk, and a buffer. Six o'clock is the latest available fit, getting me there thirty minutes early.
+> This free, open-source prototype uses fictional bookings and two sites we built. Technical checks are not user validation. Testing with disabled people comes next. The goal is participation on your terms. As I Am. The web adapts. You don’t have to.
 
-## Explicit example, source-backed menu
+## Native proof must be visible in the submitted material
 
-Show the visible vegan / €20 per dish example and matching menu dishes, including prices and source ingredient information. Show uncertainty if the example produces it; otherwise keep the restaurant-question wording visible without inventing an alert. No allergen is selected by default.
+The jury may assess the entry from video and text without running it. Show the real native
+execution inside the main video rather than depending only on a separate log or optional link.
+Use the actual browser/tool interface and the real returned result. A short label can distinguish
+“Native WebMCP” from “Guided preset demo,” but the label alone does not prove transport.
 
-Source chapter: `Food preferences I choose.`.
+Keep the footage and evidence connected: request, call, changed UI, result and human choice.
+If waiting is edited out, disclose that the segment is edited and preserve the call order.
+Do not fabricate an assistant answer, speed label or measurement. Do not turn a fallback trace
+into an apparent native-agent conversation. Retain the original source capture and tool evidence.
 
-> My editable example asks for vegan dishes within twenty euros each. The menu returns matching dishes with prices and ingredient information. Uncertain allergen or cross-contact questions belong with the restaurant.
+## What the new capture must establish
 
-## The complete menu and a reviewable proposal
+- The person explicitly chooses a combination of functional needs; no diagnosis is inferred.
+- Native discovery and successful adaptation are observed on the build being presented.
+- Measurements come from that rendered state and viewport; partial results stay visible.
+- The selected seats survive the change and a person confirms the demo tickets.
+- The restaurant imports a real functional receipt with its own supported subset.
+- Film time is a separate, authorized planning input; food and booking data stay out of the receipt.
+- Adding reading support preserves the other requested needs and existing choices.
+- The original presentation, full menu and human confirmation remain reachable.
 
-Show Full menu, then My choices. Keep ingredient details reachable. Return to the table proposal, use Review suggested table, pause on it, then visibly Confirm demo table.
+Prefer one coherent run with clearly identified page transitions. The two sites share an
+implementation and have synthetic inventory. Do not imply independent interoperability, real
+reservations or proven benefit for every disabled person.
 
-Source chapter: `My choices, my view.`.
+## Completion record
 
-> I can explore the full menu or switch to My choices. The agent reduces the research; I keep the information, the choice, and the final table confirmation.
+Before replacing the 117-second candidate, record the new source revision, browser, actual
+native calls, before/after measurements, edit duration, caption/audio review and media hash.
+Update [verification](verification.md) and [recording](recording.md) from that evidence.
+The new combinable controls and matching video are pending until these checks are completed.
 
-## Separate interface and task information
-
-Open How it works and its real receipt/data view. Show that the interface receipt excludes food and booking fields. Identify film time as a separate requested planning input; do not claim that no information ever passes between tasks.
-
-Source chapter: `Only what each task needs.`.
-
-> Interface preferences travel in a functional receipt. Food preferences and booking details stay out of it. Dinner planning receives the film time separately, because I asked it to.
-
-## The WebMCP mechanism
-
-Show Discover / Adapt / Carry and the actual planning/menu tool trace. Keep the native-versus-demo transport label visible. The narration explicitly describes preset guided requests and a separate native external-agent path.
-
-Source chapter: `Why WebMCP matters.`.
-
-> Web M C P makes those actions discoverable: understand the page, request changes, check the result, prepare a review. These buttons use preset requests; an external agent can call the native tools.
-
-## Close on choice and the brand
-
-Return to the hero and both help modes. Keep the free/open-source statement and original brand intact. Do not add commercial pricing, broad compliance badges or claims of user validation.
-
-Source chapter: `The web adapts.`.
-
-> Free and open source. More ways to take part, with help on my terms. As I Am. The web adapts. You don't have to.
-
-## Recording requirements
-
-Use the real interface and source tool results. Both mode labels must be visible at least once:
-**Help me choose** and **Prepare for me**. Keep the editable **Example request** readable and
-synthetic-data disclosure visible. Do not imply that the app guessed a person's food requirements,
-that a menu filter guarantees allergy safety, or that an embedded LLM is running the guided buttons.
-
-The capture must follow the source chapter names exactly and in order. The first spoken block
-uses an opening hold; each subsequent block maps to one real capture marker. Preserve the user's
-confirmation clicks and the full-menu comparison. Hold the itinerary long enough to read why
-18:00 was selected and distinguish the requested 15-minute minimum from the actual 30-minute buffer.
-
-Generate the entire script in one speech request. Preserve the performance and actual click-motion
-speed; retime static holds rather than joining separate narration clips or stretching audio.
-Review the completed video by watching and listening, then verify captions and runtime before
-publication. A native WebMCP demonstration requires native tool calls in the browser; guided
-preset footage must remain labelled as a guided demonstration.
-
-## Native agent request
-
-Use the [paste-ready request](judge-testing.md#paste-ready-agent-request). It asks which level
-of help the person wants, discovers supported capabilities, checks the confirmed ticket state,
-uses only required timing information for the dinner task and keeps food inputs outside the
-functional receipt. The person confirms both bookings.
+For a reproducible request use [judge-testing.md](judge-testing.md). For actual participant
+feedback use the unfilled [user-validation worksheet](user-validation-guide.md); a model-generated
+persona or the narrator's demonstration does not count as a user study.

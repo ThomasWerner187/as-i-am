@@ -1,8 +1,13 @@
 # Testing As I Am
 
 No account, credentials, API key or payment is required. Seats, bookings, menu dishes and
-example preferences are fictional. Reloading starts a fresh session. The current inclusion
-flow needs a new recording; the old 93-second video shows the earlier version.
+example preferences are fictional. Reloading starts a fresh session.
+
+This revision puts person-chosen access needs first. Its matching native-agent recording and
+fresh verification are pending; the 117-second video covers the previous revision. The
+[verification report](verification.md) identifies the build and scope of completed checks.
+The [inclusion evidence guide](inclusion-evidence.md) distinguishes technical evidence from
+research with disabled people, which has not yet been conducted.
 
 ## Entry points
 
@@ -20,10 +25,98 @@ Ports 5273–5275 must be available. The guided controller exposes context/navig
 booking, adaptation and menu tools belong to the participating site documents. For native
 agent testing, open each direct site as a top-level page in a WebMCP-capable browser.
 
-## Path one: Help me choose
+## Start with the person's access request
 
-1. Select **Help me choose**. Try the original seat map, then **Make it easier →**. Larger
-   adjacent-seat choices preserve the selected pair. Compare **Original** and **My view**.
+Select any combination of **Make pointing easier for me**, **Make reading easier for me** and **Give me less to process**,
+then explicitly apply the choice with **Make it easier →**. Changed support uses
+**Update my support**. With all choices deselected, **Use original view** retains access to the
+journey. These are functional requests, not disability categories.
+The same person can change their request; different people may prefer different combinations.
+No diagnosis should be requested or inferred.
+
+| Choice | Requested adaptation | What to inspect |
+| --- | --- | --- |
+| Make pointing easier for me | 56 CSS-pixel minimum targets, 12 CSS-pixel spacing, strong focus | Actual target dimensions, keyboard focus and any unmet spacing request |
+| Make reading easier for me | 1.3 text scale, 1.7 line height and the readable font | Readable text, reflow and retained content at the tested viewport |
+| Give me less to process | Step-by-step view, nonessential content hidden and reduced motion | A focused flow with the same essential information and reachable original view |
+
+Inspect **Original** and **My view**. Add or remove a choice and apply again. Check that the
+result reflects the new request while retaining the person's seat or table selection. Removing
+a choice clears its earlier support; carrying the receipt must not reintroduce it. An
+applied profile is not proof that every requested measurement fits: inspect the measurement
+and fit responses, including partial results.
+
+## Native tool walkthrough: the primary WebMCP check
+
+Use a real external agent in the direct LUNA page. Ask for **Make pointing easier for me** and
+**Give me less to process**, leaving **Make reading easier for me** for a later change. Discover tools, call
+`get_adaptation_capabilities` with `{}`, and inspect support. Send the supported fields through
+`apply_adaptation_profile`:
+
+```json
+{
+  "profile": {
+    "version": "0.1",
+    "interaction": {
+      "minimum_target_size": 56,
+      "target_spacing": 12,
+      "focus_strength": "strong"
+    },
+    "cognitive": {
+      "step_by_step": true,
+      "hide_nonessential": true
+    },
+    "motion_media": {
+      "reduce_motion": true
+    }
+  }
+}
+```
+
+Call `measure_rendered_ui` and `verify_profile_fit` with `{}`. Compare the visible page with
+the returned target size, overflow and partial or unsupported fields. Retain a readable
+native-tool request/result and the corresponding UI in the evidence. Measurements describe
+the tested build and viewport, not a universal accessibility score or a user-benefit result.
+
+Call `get_available_seat_pairs` with `{}`. In a choose-for-myself request, present those options
+before preparation. If the person explicitly delegates choosing a compatible pair, follow their
+criteria and explain the proposed selection. Call `prepare_seat_selection` with the returned
+`pair_id`; its result requires human confirmation. `get_booking_state` must still show a review
+until the person uses the visible confirmation button. No confirmation tool exists; this is a
+boundary of the supplied tool contract, not a browser-wide restriction on an external agent.
+
+With permission, call `export_adaptation_receipt` on LUNA and retain its returned `receipt`.
+Open direct OLIVA, discover its capabilities, then pass that exact object to
+`import_adaptation_receipt` in the `receipt` field. Inspect accepted and unsupported preferences
+and the restaurant's actual view. Check both pages' visible transport status: a fallback bridge
+call does not establish native execution.
+
+Now ask for **Make reading easier for me** as well. Discover support before applying these additional
+fields through `apply_adaptation_profile`:
+
+```json
+{
+  "profile": {
+    "version": "0.1",
+    "visual": {
+      "text_scale": 1.3,
+      "font_style": "readable",
+      "line_height": 1.7
+    }
+  }
+}
+```
+
+The profile application merges supplied fields. Confirm that the earlier supported pointing
+and cognitive settings remain, inspect the visible text change, then measure and verify again.
+Existing selections must remain intact. Compare the original view and the full menu. Do not
+equate larger text with complete low-vision or screen-reader support.
+
+## Guided path one: Help me choose
+
+1. Select **Help me choose**. Try the original seat map, choose the access requests above,
+   and explicitly apply them. Adaptation preserves the selected pair. Compare **Original**
+   and **My view** and try adding **Make reading easier for me**.
 2. Pick a pair, inspect the complete price with **Review selection**, and click
    **Confirm demo tickets** yourself.
 3. Use **Continue to dinner →**. The restaurant remains unchanged until an explicit adaptation
@@ -37,7 +130,7 @@ agent testing, open each direct site as a top-level page in a WebMCP-capable bro
 
 The point of this path is better information and a usable interface for the person's own decisions.
 
-## Path two: Prepare for me
+## Guided path two: Prepare for me
 
 Reload for a clean run, then select **Prepare for me**:
 
@@ -61,40 +154,7 @@ These guided controls demonstrate preset research and preparation. They are not 
 output of an embedded autonomous language model. An external agent can perform the corresponding
 native tool calls. The visible transport label distinguishes native execution from the demo bridge.
 
-## Native tool walkthrough
-
-Discover tools on the direct LUNA page. Call `get_adaptation_capabilities` with `{}` and
-inspect support. To request larger targets and clearer steps, use `apply_adaptation_profile`:
-
-```json
-{
-  "profile": {
-    "version": "0.1",
-    "interaction": {
-      "minimum_target_size": 56,
-      "target_spacing": 12,
-      "focus_strength": "strong"
-    },
-    "cognitive": {
-      "step_by_step": true,
-      "hide_nonessential": true
-    },
-    "motion_media": {
-      "reduce_motion": true
-    }
-  }
-}
-```
-
-Call `measure_rendered_ui` and `verify_profile_fit` with `{}`. Inspect actual target size,
-overflow and any partial or unsupported fields. Measurements describe the tested viewport,
-not a universal accessibility score.
-
-Call `get_available_seat_pairs` with `{}`. In a choose-for-myself request, present those options
-before preparation. If the person explicitly delegates choosing a compatible pair, follow their
-criteria and explain the proposed selection. Call `prepare_seat_selection` with the returned
-`pair_id`; its result requires human confirmation. `get_booking_state` must still show a review
-until the person uses the visible confirmation button. No confirmation tool exists.
+## Optional native dinner and menu check
 
 After the person confirms, call `get_booking_state` again and check `booking_confirmed` and
 `film_time`. Obtain the person's request to plan dinner from that time. Open the direct OLIVA
@@ -124,10 +184,6 @@ explicitly in the visible interface. Reopening a review of the same choice is su
 
 ## Functional receipt transfer is separate
 
-With permission, call `export_adaptation_receipt` on LUNA and retain its returned `receipt`.
-Discover OLIVA's supported adaptations, then pass that exact object to
-`import_adaptation_receipt` in the `receipt` field. Inspect accepted and unsupported preferences.
-
 The receipt must contain no diet, budget, allergen requirements, seat IDs or table selection.
 The film time for dinner planning is a separate domain input. `present_menu_for_user` changes
 the visible menu using separate task inputs; it does not add those inputs to the functional receipt.
@@ -135,10 +191,13 @@ The [tool reference](tool-reference.md) documents tool inputs and results.
 
 ## Paste-ready agent request
 
-> Help me arrange two adjacent cinema seats and dinner before the film. First ask whether I
-> want clearer information to choose myself or want you to research and prepare a proposal.
-> Discover the direct LUNA site's WebMCP tools and apply only supported interface preferences
-> I request. Measure the result and explain any unmet request. Prepare a seat review according
+> Help me arrange two adjacent cinema seats. I want easier pointing and less to process:
+> request 56-pixel minimum targets, 12-pixel spacing, strong focus, step-by-step content,
+> hidden nonessential content and reduced motion where supported. These are my interface
+> preferences; do not infer a diagnosis. Ask whether I want to choose myself or want you to
+> research and prepare a proposal. Discover the direct LUNA site's WebMCP tools, inspect
+> its supported adaptations, apply my request and measure the result. Explain any unmet
+> field using the returned evidence. Prepare a seat review according
 > to my chosen level of help; never confirm for me. Once I have confirmed the tickets, read
 > that confirmed state. With my permission, use only its film time to plan dinner at OLIVA,
 > allowing 90 minutes to eat, 15 to walk and at least 15 minutes of arrival buffer. Explain the
@@ -146,7 +205,9 @@ The [tool reference](tool-reference.md) documents tool inputs and results.
 > do not assume diet, budget, table preferences or allergies about me. Show source-backed menu
 > options and any questions for the restaurant. Carry interface preferences only with my
 > permission, in a separate functional receipt. Keep food requirements and booking details out
-> of that receipt. Let me inspect the full menu and confirm the table myself.
+> of that receipt. Let me inspect the full menu and confirm the table myself. When I ask for
+> easier reading, add supported 1.3 text scale, 1.7 line height and the readable font, retaining the other
+> preferences and my selections. Measure again and let me compare the original view.
 
 ## Browser support and limits
 
@@ -161,13 +222,14 @@ Automated scans do not replace assistive-technology testing or research with int
 
 ## Compact Devpost testing field
 
-> No login or credentials required; all bookings, dishes and example preferences are fictional.
-> Try “Help me choose” for larger seat choices and a readable full/focused menu. Try “Prepare
-> for me” to prepare seats, confirm the demo tickets yourself, then “Plan dinner from my
-> tickets.” Inspect the 18:00 table proposal, 20:15 film and 30-minute actual arrival buffer.
-> The editable example defaults to vegan, €20 per dish and a quiet table; no allergy is inferred.
-> Inspect prices, ingredients and questions for the restaurant, then review and confirm the
-> demo table yourself. Use “Use WebMCP” for direct LUNA/OLIVA links and native tool discovery.
-> Agents can research, adapt, measure and prepare reviews; no booking-confirmation tool exists.
-> Guided buttons use labelled presets. Functional receipts contain no food or booking data;
-> the requested dinner task receives film time separately. Reload for a fresh session.
+> No login, credentials or payment required; all bookings and example task preferences are
+> fictional. Select and apply any combination of “Make pointing easier for me”, “Make reading easier for me” and
+> “Give me less to process”. Compare Original/My view and change your request while retaining your
+> selections. For native proof, use “Use WebMCP” to open direct LUNA and OLIVA pages in a
+> WebMCP-capable browser. Have a real external agent discover capabilities, apply requested
+> preferences, measure the visible result, then transfer a functional receipt with permission.
+> Inspect partial results. Choose “Help me choose” or “Prepare for me”; the person confirms
+> demo bookings. Guided buttons use labelled presets, not an embedded language model. Optional
+> dinner planning uses confirmed film time separately; food and booking data stay out of the
+> receipt. Full menu/manual choices remain available. Reload for a fresh session. See the
+> linked judge guide and verification report for exact steps, recorded build and known limits.
