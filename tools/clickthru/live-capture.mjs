@@ -60,7 +60,10 @@ export async function startLiveCapture(cdp, baseDirectory) {
             sessionId: frame.sessionId,
           });
           const timestamp = frame.metadata.timestamp;
-          if (timestamp - lastTimestamp < 1 / 12) continue;
+          // Keep the last rendered state of every burst. A 12fps throttle can
+          // discard the final React commit, freezing a loading frame for a whole
+          // spoken chapter. Only exact/older duplicate timestamps are redundant.
+          if (timestamp <= lastTimestamp) continue;
           lastTimestamp = timestamp;
           const file = `${String(capture.frames.length).padStart(6, "0")}.jpg`;
           await fs.writeFile(

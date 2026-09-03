@@ -17,6 +17,7 @@ async function confirmPreparedCinema(page: Page) {
 }
 
 test("preparation researches a complete evening while both bookings still require human confirmation", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await prepareCinemaReview(page);
   const cinema = cinemaPage(page);
   await expect(cinema.getByRole("heading", { name: "See you under the moon." })).toHaveCount(0);
@@ -27,6 +28,7 @@ test("preparation researches a complete evening while both bookings still requir
   await expect(timeline.locator("li > strong")).toHaveText(["18:00", "19:30", "19:45", "20:15"]);
   await expect(timeline).toContainText("Quiet garden table");
   await expect(timeline).toContainText("30 minutes before the film");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(391);
   const restaurant = restaurantPage(page);
   await expect(restaurant.getByRole("tab", { name: "Menu", exact: true })).toHaveAttribute("aria-selected", "true");
   await expect(restaurant.getByRole("list", { name: "Dishes matching your preferences" }).locator(":scope > li")).toHaveCount(4);
