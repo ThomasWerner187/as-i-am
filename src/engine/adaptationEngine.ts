@@ -22,6 +22,10 @@ export interface EngineSnapshot {
   adaptationVersion: number;
   /** The currently active merged profile ({} when none). */
   active: Record<string, Record<string, unknown>>;
+  /** Accepted preferences retained for portability, including inherent support. */
+  accepted: Record<string, Record<string, unknown>>;
+  /** Task focus belongs to the same undo operation as its adaptation. */
+  focusedTask: string | null;
   /** Cumulative applied changes (latest op last). */
   applied: AppliedChange[];
   /** Undo stack depth. */
@@ -39,6 +43,11 @@ export interface EngineSnapshot {
 }
 
 type Listener = () => void;
+type ProfileState = Record<string, Record<string, unknown>>;
+interface ApplyOptions {
+  acceptedProfile?: FunctionalProfile;
+  focusedTask?: string | null;
+}
 
 function flatten(profile: Record<string, Record<string, unknown>>): Map<string, unknown> {
   const flat = new Map<string, unknown>();
@@ -57,11 +66,19 @@ function newOpId(): string {
 
 export class AdaptationEngine {
   private listeners = new Set<Listener>();
-  private undoStack: { profile: Record<string, Record<string, unknown>>; label: string; opId: string }[] = [];
+  private undoStack: {
+    profile: ProfileState;
+    accepted: ProfileState;
+    focusedTask: string | null;
+    label: string;
+    opId: string;
+  }[] = [];
   private appliedAll: AppliedChange[] = [];
   private stats = { adaptations_applied: 0, refinements: 0 };
   private announcement = "";
   private current: Record<string, Record<string, unknown>> = {};
+  private accepted: ProfileState = {};
+  private focusedTask: string | null = null;
   private version = 0;
   private lastOp?: { id: string; label: string };
   private snapshotCache: EngineSnapshot | null = null;
@@ -80,11 +97,13 @@ export class AdaptationEngine {
       this.snapshotCache = {
         adaptationVersion: this.version,
         active: this.previewingBase ? {} : this.current,
+        accepted: this.accepted,
+        focusedTask: this.previewingBase ? null : this.focusedTask,
         applied: this.appliedAll,
         undoDepth: this.undoStack.length,
         lastOp: this.lastOp,
         announcement: this.announcement,
-        isBase: Object.keys(this.current).length === 0,
+        isBase: Object.keys(this.current).length === 0 && this.focusedTask === null,
         isPreviewingBase: this.previewingBase,
         stats: { ...this.stats },
       };
@@ -113,7 +132,7 @@ export class AdaptationEngine {
    * base snapshot so structural adaptations are previewed truthfully too.
    */
   startPreviewBase(): boolean {
-    if (this.previewingBase || Object.keys(this.current).length === 0) return false;
+    if (this.previewingBase || (Object.keys(this.current).length === 0 && this.focusedTask === null)) return false;
     this.previewingBase = true;
     this.emit();
     this.syncDom();
@@ -137,12 +156,14 @@ export class AdaptationEngine {
    * Apply (merge) a functional profile as one atomic, undoable operation.
    * Returns what actually changed — after the change is in effect.
    */
-  applyProfile(incoming: FunctionalProfile, label: string): AdaptationResult {
+  applyProfile(incoming: FunctionalProfile, label: string, options: ApplyOptions = {}): AdaptationResult {
     const validity = validateProfile(incoming);
-    const warnings: string[] = validity.issues
+    const acceptedValidity = validateProfile(options.acceptedProfile ?? incoming);
+    const issues = [...validity.issues, ...acceptedValidity.issues];
+    const warnings: string[] = [...new Set(issues
       .filter((i) => i.code === "out_of_range")
-      .map((i) => i.message);
-    const hardFail = validity.issues.find(
+      .map((i) => i.message))];
+    const hardFail = issues.find(
       (i) => i.code === "unknown_key" || i.code === "bad_type" || i.code === "bad_version",
     );
     if (hardFail) {
@@ -168,13 +189,25 @@ export class AdaptationEngine {
       { version: CONTRACT_VERSION, ...this.current } as unknown as FunctionalProfile,
       normalized,
     ) as unknown as Record<string, Record<string, unknown>>;
+    const accepted = mergeProfiles(
+      { version: CONTRACT_VERSION, ...this.accepted } as unknown as FunctionalProfile,
+      normalizeProfile(options.acceptedProfile ?? incoming).profile,
+    ) as unknown as ProfileState;
+    const nextFocus = options.focusedTask === undefined ? this.focusedTask : options.focusedTask;
 
     const before = flatten(this.current);
     const after = flatten(merged);
-    const unchanged = before.size === after.size && [...after].every(
+    const renderingUnchanged = before.size === after.size && [...after].every(
       ([key, value]) => before.has(key) && before.get(key) === value,
     );
+    const beforeAccepted = flatten(this.accepted);
+    const afterAccepted = flatten(accepted);
+    const unchanged = renderingUnchanged && nextFocus === this.focusedTask
+      && beforeAccepted.size === afterAccepted.size && [...afterAccepted].every(
+        ([key, value]) => beforeAccepted.has(key) && beforeAccepted.get(key) === value,
+      );
     if (unchanged) {
+      this.endPreviewBase();
       return {
         ok: true,
         operation_id: newOpId(),
@@ -185,7 +218,7 @@ export class AdaptationEngine {
       };
     }
 
-    const changes = this.diffInto(merged, label);
+    const changes = this.diffInto(after.size === 0 ? {} : merged, label, accepted, nextFocus);
     this.stats.adaptations_applied += 1;
     this.announce(`Adaptation applied: ${changes.length} changes. ${label}`);
     this.emit();
@@ -206,7 +239,7 @@ export class AdaptationEngine {
     return this.applyProfile(asProfile, label);
   }
 
-  private diffInto(next: Record<string, Record<string, unknown>>, label: string): AppliedChange[] {
+  private diffInto(next: ProfileState, label: string, accepted = this.accepted, focusedTask = this.focusedTask): AppliedChange[] {
     const before = flatten(this.current);
     const after = flatten(next);
     const changes: AppliedChange[] = [];
@@ -225,14 +258,27 @@ export class AdaptationEngine {
     // Keys that existed before but are absent now (never happens for merge, but safe).
     this.undoStack.push({
       profile: structuredClone(this.current),
+      accepted: structuredClone(this.accepted),
+      focusedTask: this.focusedTask,
       label,
       opId: newOpId(),
     });
     this.current = next;
+    this.accepted = accepted;
+    this.focusedTask = focusedTask;
+    this.previewingBase = false;
     this.appliedAll = [...this.appliedAll, ...changes];
     this.version += 1;
     this.lastOp = { id: this.undoStack[this.undoStack.length - 1].opId, label };
     return changes;
+  }
+
+  /** Record focus-only changes in chronological order with profile operations. */
+  setFocus(task: string | null): void {
+    if (task === this.focusedTask) return;
+    this.diffInto(this.current, task ? `Focus: ${task}` : "Exit task focus", this.accepted, task);
+    this.announce(task ? `Focused on task: ${task}.` : "Full page restored.");
+    this.emit();
   }
 
   undo(): AdaptationResult & { restored: boolean } {
@@ -252,19 +298,23 @@ export class AdaptationEngine {
     const restored = prev.profile;
     const after = flatten(restored);
     const changes: AppliedChange[] = [];
-    for (const [key, to] of after) {
+    for (const key of new Set([...before.keys(), ...after.keys()])) {
+      const to = after.has(key) ? after.get(key) : null;
       const from = before.has(key) ? before.get(key) : null;
       if (from !== to) {
         changes.push({
           key,
           kind: changeKind(key),
           from: from as string | number | boolean | null,
-          to: to as string | number | boolean,
-          explanation: `Reverted ${key} back to ${String(to)}.`,
+          to: to as string | number | boolean | null,
+          explanation: to === null ? `Restored ${key} to the page default.` : `Reverted ${key} back to ${String(to)}.`,
         });
       }
     }
     this.current = restored;
+    this.accepted = prev.accepted;
+    this.focusedTask = prev.focusedTask;
+    this.previewingBase = false;
     this.stats.refinements += 1;
     this.version += 1;
     this.lastOp = { id: prev.opId, label: `Undo: ${prev.label}` };
@@ -285,10 +335,15 @@ export class AdaptationEngine {
     const hadChanges = Object.keys(this.current).length > 0;
     this.undoStack.push({
       profile: structuredClone(this.current),
+      accepted: structuredClone(this.accepted),
+      focusedTask: this.focusedTask,
       label: "reset",
       opId: newOpId(),
     });
     this.current = {};
+    this.accepted = {};
+    this.focusedTask = null;
+    this.previewingBase = false;
     this.version += 1;
     this.lastOp = { id: newOpId(), label: "Reset to normal view" };
     this.announce("All adaptations removed. Normal view restored.");

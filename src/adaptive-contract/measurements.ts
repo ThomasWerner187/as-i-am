@@ -298,7 +298,10 @@ function collectRenderedSignals(
 
   on("interaction.keyboard_first", "keyboard-first");
   attr("interaction.focus_strength", "focus");
-  attr("interaction.cursor_size", "cursor-size");
+  const cursorSize = root.getAttribute("data-aia-cursor-size");
+  if (cursorSize !== null && Number.isFinite(Number(cursorSize))) {
+    signals["interaction.cursor_size"] = Number(cursorSize);
+  }
   on("interaction.drag_alternatives", "no-drag");
   on("interaction.double_click_disabled", "no-dblclick");
 
@@ -527,7 +530,8 @@ export function verifyFit(
       }
       case "motion_media.disable_animation":
       case "motion_media.reduce_motion": {
-        if (m.animations_running === 0) satisfied.push(key);
+        if (want === false) verifySignal(key, want);
+        else if (m.animations_running === 0) satisfied.push(key);
         else {
           markPartial(key, `${m.animations_running} animations still running`, "force-stop remaining page animations");
         }

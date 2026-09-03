@@ -98,7 +98,7 @@ function visit(
   }
   for (const [key, child] of Object.entries(object)) {
     const childPath = path ? `${path}.${key}` : key;
-    const childSchema = properties[key];
+    const childSchema = Object.hasOwn(properties, key) ? properties[key] : undefined;
     if (!childSchema) {
       if (schema.additionalProperties === false) {
         issues.push({ path: childPath, message: "is not an accepted argument" });

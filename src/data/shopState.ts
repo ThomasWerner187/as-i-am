@@ -4,6 +4,7 @@
  */
 
 import { useSyncExternalStore } from "react";
+import { engine } from "../engine/adaptationEngine";
 import { PRODUCTS, findProduct, type Product } from "./products";
 
 export interface CartItem {
@@ -232,37 +233,23 @@ export function focusRegionForTask(taskId: FocusTaskId | null): FocusRegion | nu
   }
 }
 
-let focusedTask: FocusTaskId | null = null;
-let focusHistory: Array<FocusTaskId | null> = [];
-const focusListeners = new Set<() => void>();
+/** Focus and profile changes share the engine's chronological undo history. */
 export const focusStore = {
   subscribe(l: () => void) {
-    focusListeners.add(l);
-    return () => {
-      focusListeners.delete(l);
-    };
+    return engine.subscribe(l);
   },
-  get() { return focusedTask; },
+  get() { return engine.getSnapshot().focusedTask as FocusTaskId | null; },
   set(taskId: string | null): boolean {
     const normalized = normalizeFocusTask(taskId);
     if (normalized === undefined) return false;
-    if (normalized === focusedTask) return true;
-    focusHistory = [...focusHistory, focusedTask].slice(-20);
-    focusedTask = normalized;
-    for (const l of focusListeners) l();
+    engine.setFocus(normalized);
     return true;
   },
   undo(): boolean {
-    if (focusHistory.length === 0) return false;
-    focusedTask = focusHistory[focusHistory.length - 1];
-    focusHistory = focusHistory.slice(0, -1);
-    for (const l of focusListeners) l();
-    return true;
+    return engine.undo().restored;
   },
   reset(): void {
-    focusedTask = null;
-    focusHistory = [];
-    for (const l of focusListeners) l();
+    engine.setFocus(null);
   },
 };
 export function useFocusedTask() {

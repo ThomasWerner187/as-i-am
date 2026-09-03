@@ -126,7 +126,7 @@ describe("capabilities", () => {
     expect(a.capabilities.some((capability) => capability.key === "cognitive.plain_error_messages")).toBe(false);
     expect(landing.unsupported_domains).toEqual(expect.arrayContaining(["cognitive", "reading", "safety"]));
     expect(a.capabilities.find((capability) => capability.key === "safety.complete_price_totals")?.status).toBe("inherent");
-    expect(a.capabilities.find((capability) => capability.key === "cognitive.confirmation_level")?.supported_values).toEqual(["confirm-all"]);
+    expect(a.capabilities.find((capability) => capability.key === "cognitive.confirmation_level")?.supported_values).toEqual(["normal", "confirm-risky", "confirm-all"]);
   });
 
   it("requestedKeys flattens profiles", () => {
