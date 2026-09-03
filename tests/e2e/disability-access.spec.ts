@@ -121,6 +121,12 @@ test("pointing support keeps selected seats and keyboard navigation when map con
   await run(page, "apply_adaptation_profile", { profile: { version: "0.1", ...profiles[1].profile } });
   await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
   await page.keyboard.press("Tab");
+  await expect(page.getByRole("combobox", { name: "Film date" })).toBeFocused();
+  for (const time of ["17:30", "20:15", "21:30"]) {
+    await page.keyboard.press("Tab");
+    await expect(page.getByRole("button", { name: time, exact: true })).toBeFocused();
+  }
+  await page.keyboard.press("Tab");
   const pair = page.getByRole("button", { name: /Row F · Seats 6 \+ 7/ });
   await expect(pair).toBeFocused();
   await page.keyboard.press("Enter");

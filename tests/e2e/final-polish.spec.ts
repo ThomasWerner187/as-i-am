@@ -134,7 +134,7 @@ test("the enlarged seat map scrolls within its own region and keeps every seat r
     await page.evaluate(() => document.documentElement.scrollWidth),
   ).toBeLessThanOrEqual(391);
   const lastSeat = page.getByRole("button", {
-    name: "Row H, seat 12, €12",
+    name: "Row H, seat 12, €12, aisle",
     exact: true,
   });
   await lastSeat.focus();
