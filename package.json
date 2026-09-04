@@ -1,0 +1,43 @@
+{
+  "name": "as-i-am",
+  "private": true,
+  "version": "0.1.0",
+  "description": "As I Am — Adaptive WebMCP contract for personalized, private and portable web accessibility",
+  "type": "module",
+  "scripts": {
+    "dev": "node tools/dev-experience.mjs",
+    "dev:experience": "node tools/dev-experience.mjs",
+    "dev:site": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:recording": "node --test tools/clickthru/*.test.mjs",
+    "check": "npm run typecheck && npm test && npm run test:recording && npm run test:e2e && npm run build",
+    "test:smoke": "vitest run tests/unit/tool-smoke.test.ts"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
+    "@fontsource/instrument-sans": "^5.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.49.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "axe-core": "^4.10.2",
+    "jsdom": "^25.0.1",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.3",
+    "vitest": "^3.2.7"
+  }
+}

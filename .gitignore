@@ -15,3 +15,15 @@ dist/
 build/
 .next/
 DerivedData/
+.playwright-cli/
+.impeccable/
+output/playwright/
+playwright-report/
+test-results/
+output/
+
+# Local QA captures; curated screenshots belong in docs/screenshots/.
+/shots/
+
+# clickthru recordings (regenerable, too big for git)
+tools/clickthru/out/

@@ -1,0 +1,42 @@
+[
+  {
+    "chapter": "Opening",
+    "sourceChapter": null,
+    "text": "Two seats together. A night out with friends. For disabled people, the booking page can be the first barrier. As I Am starts with the access you choose."
+  },
+  {
+    "chapter": "Choose support",
+    "sourceChapter": "Choose support",
+    "text": "Someone with hand tremor may want larger targets. Someone with low vision may want larger text. With cognitive overload or fatigue, less to process can matter. Different people need different combinations."
+  },
+  {
+    "chapter": "Native adaptation",
+    "sourceChapter": "Native adaptation",
+    "text": "Here, the person asks for easier pointing and less to process. A real external agent discovers what LUNA supports, sends those functional preferences, and the page changes. Then the agent calls the measurement tool. We can inspect the actual target size and any unmet request. The website keeps its own controls and design."
+  },
+  {
+    "chapter": "Keep the choice",
+    "sourceChapter": "Keep the choice",
+    "text": "With Help me choose, the person explores the clearer page. Prepare for me can research options and stage a review. Either way, their seats stay selected, the original remains reachable, and they confirm the demo tickets."
+  },
+  {
+    "chapter": "Carry support",
+    "sourceChapter": "Carry support",
+    "text": "With permission, the agent exports the functional receipt and imports it at OLIVA. The restaurant accepts what it supports, in its own design. The receipt contains interface preferences, not a diagnosis or booking history. The person does not have to explain that request again."
+  },
+  {
+    "chapter": "Plan dinner",
+    "sourceChapter": "Plan dinner",
+    "text": "Planning dinner is secondary help. The confirmed film starts at eight fifteen. The available six o’clock table leaves time to eat and walk, arriving thirty minutes early. The proposed table still needs confirmation."
+  },
+  {
+    "chapter": "Change needs",
+    "sourceChapter": "Change needs",
+    "text": "Now the person adds Easier reading. Larger readable text joins the pointing changes; the existing choices remain. The agent applies the supported values and checks the result again. The full menu stays available. What helps today can change, and choosing a clearer view should not hand over the decision."
+  },
+  {
+    "chapter": "Participation",
+    "sourceChapter": "Participation",
+    "text": "This free, MIT-licensed prototype uses fictional bookings and two sites we built. Technical checks are not user validation. Testing with disabled people comes next. The goal is participation on your terms. As I Am. The web adapts. You don’t have to."
+  }
+]

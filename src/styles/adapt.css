@@ -1,0 +1,138 @@
+/* The adaptation surface: every preference from the contract becomes a
+   controlled change to tokens, flags or structure. Nothing else. */
+
+html { font-size: calc(16px * var(--aia-text-scale)); }
+
+/* Key information (prices, totals, primary headings) scales extra. */
+[data-aia="price"], .aia-important {
+  font-size: calc(1em * var(--aia-important-scale));
+}
+
+/* Contrast schemes */
+[data-aia-contrast="high"] {
+  --paper: #fdfbf5;
+  --paper-raised: #ffffff;
+  --ink: #14120d;
+  --ink-soft: #333024;
+  --ink-faint: #4c4738;
+  --line: #b9b09a;
+}
+[data-aia-contrast="maximum"] {
+  --paper: #ffffff;
+  --paper-raised: #ffffff;
+  --ink: #000000;
+  --ink-soft: #111111;
+  --ink-faint: #222222;
+  --line: #000000;
+  --accent: #000000;
+  --accent-ink: #000000;
+}
+
+/* Low glare: soften whites, mute saturation */
+[data-aia-glare="low"] {
+  --paper: #ecebe6;
+  --paper-raised: #f4f2ec;
+  --ink: #2c2a24;
+}
+
+/* Colour vision modes: remap accent + status tokens to safe palettes.
+   This is a design adaptation, not a CSS filter — contrast is re-checked. */
+[data-aia-color-mode="grayscale"] { filter: grayscale(1); }
+[data-aia-color-mode="invert"] { filter: invert(1) hue-rotate(180deg); }
+[data-aia-color-mode="protanopia-safe"],
+[data-aia-color-mode="deuteranopia-safe"] {
+  --accent: #155f8b; --accent-ink: #0d4766; --accent-soft: #dbeaf4;
+  --ok: #0b6a8c; --ok-soft: #ddeef5;
+  --danger: #c25a00; --danger-soft: #fbe8d8;
+  --warn: #9c6a00; --warn-soft: #f4ead1;
+}
+[data-aia-color-mode="tritanopia-safe"] {
+  --accent: #b0512b; --accent-ink: #8f3f1f; --accent-soft: #f3e2d7;
+  --ok: #6a7d1f; --ok-soft: #eef1d9;
+  --danger: #ad1030; --danger-soft: #f6dde3;
+  --warn: #9c6a00; --warn-soft: #f4ead1;
+}
+
+/* Readable typeface */
+[data-aia-font-style="readable"] body {
+  font-family: var(--font-readable);
+  word-spacing: 0.06em;
+}
+
+/* Motion & autoplay */
+[data-aia-motion="off"] *, [data-aia-motion="off"] *::before, [data-aia-motion="off"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Brightness */
+[data-aia-brightness] body { filter: brightness(var(--aia-brightness-value, 1)); }
+
+
+/* Density: reduced/minimal compresses promotional noise via spacing + order,
+   hide_nonessential removes nonessential blocks from the layout
+   (they stay in the DOM under [hidden], restorable by Undo). */
+[data-aia-density="reduced"] .aia-promo,
+[data-aia-density="reduced"] .aia-ticker { display: none; }
+[data-aia-density="minimal"] .aia-promo,
+[data-aia-density="minimal"] .aia-ticker,
+[data-aia-density="minimal"] .aia-aside-block,
+[data-aia-density="minimal"] .aia-secondary-nav { display: none; }
+[data-aia-hide-nonessential="on"] [data-aia-essential="false"] { display: none !important; }
+
+/* Persistent labels: icon-only controls reveal their text label. */
+.aia-label-always { display: none; }
+[data-aia-labels="on"] .aia-label-always { display: inline; }
+[data-aia-labels="on"] .aia-icon-only { min-inline-size: max-content; }
+
+/* Keyboard-first: prominent skip links and shortcut hints */
+[data-aia-keyboard-first="on"] .skip-link { inset-block-start: 0.5rem; }
+[data-aia-keyboard-first="on"] .kbd-hint { display: inline-block; }
+.kbd-hint { display: none; font-size: 0.72rem; color: var(--ink-faint); border: 1px solid var(--line); border-radius: 4px; padding: 0 0.3em; }
+
+/* Targets: enforce minimum size & gap on ALL interactive elements. */
+[data-aia-target] a, [data-aia-target] button { min-block-size: var(--aia-target-min); }
+
+/* Structural helpers used by React components */
+[data-aia-status-labels="on"] .aia-status[data-tone="warn"] { background-image: repeating-linear-gradient(45deg, transparent 0 6px, rgba(0,0,0,0.07) 6px 12px); }
+[data-aia-status-labels="on"] .aia-status[data-tone="danger"] { background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.08) 0 4px, transparent 4px 8px); }
+[data-aia-status-labels="on"] .aia-status[data-tone="ok"] { background-image: repeating-linear-gradient(90deg, transparent 0 8px, rgba(0,0,0,0.05) 8px 10px); }
+[data-aia-status-labels="on"] .price-delta { font-variant-numeric: tabular-nums; }
+
+/* Captions / transcripts blocks */
+.media-transcript { display: none; }
+[data-aia-transcripts="on"] .media-transcript { display: block; }
+
+/* Cursor enlargement (SVG data-URI cursor, scaled). */
+[data-aia-cursor-size] body, [data-aia-cursor-size] button, [data-aia-cursor-size] a {
+  cursor: crosshair;
+}
+
+/* Stepped mode: sections beyond the current step are collapsed, not lost. */
+.aia-step-panel[hidden] { display: none; }
+
+/* The transformation moment: gentle emphasis when a new state lands. */
+html.aia-morph [data-aia] { animation: aia-settle 0.5s ease; }
+@keyframes aia-settle { from { opacity: 0.85; } to { opacity: 1; } }
+[data-aia-motion="off"] .aia-morph * { animation: none !important; }
+
+/* Minimum target size: enforced on every interactive element when the
+   interaction profile requests it — measured, not promised. */
+html[data-aia-min-target="on"] :is(button, select, summary),
+html[data-aia-min-target="on"] nav a,
+html[data-aia-min-target="on"] [data-aia="actions"] a,
+html[data-aia-min-target="on"] .utility-nav a,
+html[data-aia-min-target="on"] .gov-nav a,
+html[data-aia-min-target="on"] footer a {
+  min-inline-size: var(--aia-target-min);
+  min-block-size: var(--aia-target-min);
+}
+html[data-aia-min-target="on"] label:has(> input[type="checkbox"]),
+html[data-aia-min-target="on"] label:has(> input[type="radio"]) {
+  min-inline-size: var(--aia-target-min);
+  min-block-size: var(--aia-target-min);
+}
+html[data-aia-min-target="on"] input[type="checkbox"],
+html[data-aia-min-target="on"] input[type="radio"] {
+  accent-color: var(--accent);
+}
