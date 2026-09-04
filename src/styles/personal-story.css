@@ -7,10 +7,16 @@
 .personal-experience :focus-visible { outline:3px solid #cfbe91; outline-offset:5px; }
 .personal-skip { position:absolute; top:-100px; left:20px; z-index:30; padding:12px; background:#e7dec8; color:#18241d; }
 .personal-skip:focus { top:14px; }
-.personal-header { height:88px; display:flex; align-items:center; gap:30px; padding:0 4vw; border-bottom:1px solid #ffffff15; }
+.personal-header { min-height:88px; display:flex; flex-wrap:wrap; align-items:center; gap:18px 30px; padding:16px 4vw; border-bottom:1px solid #ffffff15; }
 .personal-brand { color:#e8e6da; text-decoration:none; font-family:"Fraunces Variable",serif; font-weight:550; font-size:31px; letter-spacing:-1.1px; }
 .personal-brand span { color:#c6b58c; }
-.personal-header-note { color:#a5b2a9; font-size:14px; flex:1; }
+.personal-experience-nav { display:flex; flex:1; flex-wrap:wrap; align-items:center; gap:8px 26px; }
+.personal-experience-modes,.personal-original-sites { display:flex; flex-wrap:wrap; align-items:center; gap:8px 20px; }
+.personal-experience-nav a { display:flex; align-items:center; min-height:44px; color:#b9c5ba; text-decoration:none; text-underline-offset:7px; font-size:13px; line-height:1.4; }
+.personal-experience-nav a[aria-current="page"] { color:#e8e6da; text-decoration:underline; text-decoration-color:#c6b58c; text-decoration-thickness:2px; }
+.personal-experience-nav .personal-try-link { color:#e6d9b9; font-weight:600; }
+.personal-original-sites { border-left:1px solid #ffffff26; padding-left:26px; }
+.personal-experience-nav a:hover { color:#f2e4c2; text-decoration:underline; }
 .personal-text-button { color:#bcc7bd; background:none; border:0; padding:12px 0; text-align:left; font:inherit; font-size:13px; min-height:44px; text-decoration:underline; text-underline-offset:5px; }
 .personal-header>.personal-text-button { margin-left:auto; }
 .personal-layout { display:grid; grid-template-columns:300px minmax(0,1fr); max-width:1600px; margin:auto; min-height:calc(100vh - 88px); }
@@ -54,6 +60,17 @@
 .personal-opening-images figure:first-child img { object-position:center 41%; }
 .personal-opening-images figure:after { content:""; position:absolute; inset:50% 0 0; background:linear-gradient(transparent,#101b17ce); }
 .personal-opening-images figcaption { position:absolute; bottom:19px; left:21px; z-index:1; color:#f0e8d5; font-family:"Fraunces Variable",serif; font-size:24px; }
+.personal-explore { margin-top:30px; padding-top:26px; border-top:1px solid #ffffff26; }
+.personal-explore-choice { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:18px 24px; }
+.personal-explore h2 { margin:0; color:#e8e6da; font-family:"Fraunces Variable",serif; font-size:clamp(24px,2.2vw,30px); font-weight:450; line-height:1.2; letter-spacing:-.02em; text-wrap:balance; }
+.personal-explore p { max-width:54ch; margin:8px 0 0; color:#b9c5ba; font-size:13px; line-height:1.6; }
+.personal-explore-action { display:inline-flex; align-items:center; justify-content:space-between; gap:20px; min-height:48px; padding:12px 16px; border:1px solid #8b977f; border-radius:8px; color:#e6d9b9; font-size:14px; font-weight:600; text-decoration:none; }
+.personal-explore-action:hover { color:#f4e8cc; background:#26362d; border-color:#d0c3a0; }
+.personal-explore-sites { margin-top:18px; }
+.personal-explore-sites nav { display:flex; flex-wrap:wrap; gap:4px 24px; margin-top:2px; }
+.personal-explore-sites a { display:inline-flex; align-items:center; min-height:44px; color:#d7c69f; font-size:14px; text-decoration:underline; text-underline-offset:5px; }
+.personal-explore-sites a:hover { color:#f4e8cc; }
+.personal-explore-sites .personal-explore-note { margin:0; font-size:12px; }
 .personal-frame-wrap { width:100%; border:1px solid #526153; border-radius:12px; overflow:hidden; background:#17221b; }
 .personal-frame-wrap[hidden] { display:none; }
 .personal-frame-wrap iframe { display:block; width:100%; border:0; min-height:550px; }
@@ -85,4 +102,6 @@
 .booking-body:has(.restaurant-menu--personal)>.venue-story { display:none; }
 .restaurant-menu--personal .menu-choices { grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr)); }
 @media(max-width:850px) { .personal-layout { grid-template-columns:250px minmax(0,1fr); } .personal-companion { padding:25px 20px; } .personal-venue { padding:15px; } .personal-opening { padding:20px 10px; } .personal-opening-images { gap:12px; height:220px; } .personal-opening-images figcaption { font-size:19px; left:12px; } }
-@media(max-width:650px) { .personal-header { height:72px; padding:0 20px; gap:15px; } .personal-header-note { display:none; } .personal-brand { font-size:27px; } .personal-layout { display:flex; flex-direction:column; } .personal-companion { border-right:0; padding:24px; gap:20px; } .personal-companion-footer { padding-top:0; margin-top:8px; flex-direction:row; align-items:center; justify-content:space-between; } .personal-opening { min-height:0; padding:8px 10px 25px; } .personal-opening-type h1 { font-size:50px; } .personal-opening-images { height:225px; } .personal-step-welcome .personal-venue { order:-1; } .personal-step-welcome .personal-opening-type { display:none; } .personal-step-welcome .personal-opening-images { height:190px; } .personal-step-welcome .personal-companion { padding-top:0; } .personal-step-welcome .personal-earlier { margin:0; } .personal-step-seats .personal-companion,.personal-step-dinner .personal-companion { gap:13px; } .personal-response { font-size:27px; } .personal-timeline { flex-direction:row; gap:14px; flex-wrap:wrap; } .personal-timeline li { display:block; flex:1; } .personal-timeline li:after { display:none; } .personal-timeline li>span { display:block; margin-top:6px; } .personal-timeline li:nth-child(2) { display:none; } }
+@media(max-width:650px) { .personal-brand { font-size:27px; } .personal-layout { display:flex; flex-direction:column; } .personal-companion { border-right:0; padding:24px; gap:20px; } .personal-companion-footer { padding-top:0; margin-top:8px; flex-direction:row; align-items:center; justify-content:space-between; } .personal-opening { min-height:0; padding:8px 10px 25px; } .personal-opening-type h1 { font-size:50px; } .personal-opening-images { height:225px; } .personal-step-welcome .personal-venue { order:-1; } .personal-step-welcome .personal-opening-type { display:none; } .personal-step-welcome .personal-opening-images { height:190px; } .personal-step-welcome .personal-companion { padding-top:0; } .personal-step-welcome .personal-earlier { margin:0; } .personal-step-seats .personal-companion,.personal-step-dinner .personal-companion { gap:13px; } .personal-response { font-size:27px; } .personal-timeline { flex-direction:row; gap:14px; flex-wrap:wrap; } .personal-timeline li { display:block; flex:1; } .personal-timeline li:after { display:none; } .personal-timeline li>span { display:block; margin-top:6px; } .personal-timeline li:nth-child(2) { display:none; } }
+@media(max-width:1050px) { .personal-experience-nav { order:3; flex-basis:100%; justify-content:space-between; } .personal-header>.personal-text-button { margin-left:auto; } }
+@media(max-width:650px) { .personal-header { height:auto; padding:12px 24px 8px; gap:6px 20px; } .personal-experience-nav { gap:0; } .personal-experience-modes { gap:24px; flex-basis:100%; } .personal-original-sites { gap:22px; border-left:0; padding-left:0; } .personal-original-sites a { font-size:12px; } .personal-explore { margin-top:22px; padding-top:22px; } .personal-explore-choice { gap:15px; } .personal-explore-action { width:100%; } .personal-explore-sites { margin-top:14px; } }

@@ -1,0 +1,39 @@
+.experience-top a { color: inherit; text-underline-offset: .25em; }
+.experience-top .aia-wordmark { text-decoration: none; }
+.evening-playground .experience-intro { padding-block: 24px; }
+.evening-playground .experience-intro h1 { font-size: clamp(32px, 4vw, 52px); }
+.playground-sites { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; max-width: 1440px; margin: 0 auto; padding: 0 4vw 24px; color: #3b4f40; font-size: 14px; }
+.playground-sites a { min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; color: #294b37; text-underline-offset: 5px; }
+.playground-sites .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.playground-session-note { flex-basis: 100%; color: #59615d; font-size: 12px; }
+.playground-comfort { border-bottom: 1px solid var(--line); margin-block: 4px 8px; }
+.playground-comfort > summary { cursor: pointer; padding: 16px 0; font-size: 15px; font-weight: 600; color: #2e463b; }
+.playground-comfort > summary span { font-weight: 400; font-size: 13px; margin-left: 12px; color: #59615d; }
+.playground-comfort .access-needs { margin: 4px 0 20px; }
+.evening-playground .example-allergens { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.evening-playground .example-allergens legend { margin-bottom: 10px; }
+.evening-playground .example-allergens label { min-height: 44px; display: flex; gap: 8px; align-items: center; }
+.evening-playground .example-allergens p { flex-basis: 100%; }
+.evening-playground .example-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+.evening-playground .example-fields select, .evening-playground .example-fields input[type="number"] { min-width: 0; width: 100%; }
+.evening-playground .experience-links { flex-wrap: wrap; }
+.evening-playground ::selection { background: #cfc2a1; color: #18241d; }
+@media (max-width: 650px) {
+  .evening-playground .experience-top { flex-wrap: wrap; gap: 12px; }
+  .evening-playground .experience-links { gap: 12px; }
+  .evening-playground .experience-links .connection-status { display: none; }
+  .playground-sites { padding-inline: 20px; }
+  .evening-playground .help-choice { flex-direction: column; align-items: stretch; gap: 14px; }
+  .evening-playground .help-modes button { flex: 1; }
+}
+@media (max-width: 680px) {
+  .evening-playground .agent-dock .shell-primary {
+    position: static;
+    inset: auto;
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    width: 100%;
+    min-height: 48px;
+    box-shadow: none;
+  }
+}

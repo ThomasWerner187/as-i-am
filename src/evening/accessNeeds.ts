@@ -1,6 +1,6 @@
 import { CONTRACT_VERSION, type FunctionalProfile } from "../adaptive-contract/schema";
 
-export type AccessNeed = "pointing" | "reading" | "focus";
+export type AccessNeed = "pointing" | "reading" | "focus" | "calm";
 
 export const DEFAULT_ACCESS_NEEDS: AccessNeed[] = ["pointing", "focus"];
 
@@ -10,6 +10,12 @@ export const ACCESS_NEEDS: readonly {
   description: string;
   request: string;
 }[] = [
+  {
+    id: "calm",
+    label: "A quieter screen for me",
+    description: "Dark appearance, less glare, and still visuals.",
+    request: "Use a dark appearance, lower glare, and stop animations.",
+  },
   {
     id: "pointing",
     label: "Make pointing easier for me",
@@ -46,6 +52,10 @@ export function buildAccessProfile(ids: readonly AccessNeed[]): FunctionalProfil
   if (ids.includes("focus")) {
     profile.cognitive = { step_by_step: true, hide_nonessential: true };
     profile.motion_media = { reduce_motion: true };
+  }
+  if (ids.includes("calm")) {
+    profile.visual = { ...profile.visual, color_scheme: "dark", glare: "low" };
+    profile.motion_media = { ...profile.motion_media, reduce_motion: true, disable_animation: true };
   }
   return profile;
 }

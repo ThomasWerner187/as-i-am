@@ -35,9 +35,12 @@ test("the mobile primary action is visible and precedes the website in keyboard 
     page.getByRole("link", { name: "Skip to adaptation" }),
   ).toBeFocused();
   const controlsBeforeTheWebsite = [
+    page.getByRole("link", { name: "As I Am", exact: true }),
+    page.getByRole("link", { name: "Guided demo", exact: true }),
     page.getByRole("button", { name: "Use WebMCP ↗", exact: true }),
     page.getByRole("button", { name: "Help me choose", exact: true }),
     page.getByRole("button", { name: "Prepare for me", exact: true }),
+    page.getByRole("checkbox", { name: "A quieter screen for me", exact: true }),
     page.getByRole("checkbox", { name: "Make pointing easier for me" }),
     page.getByRole("checkbox", { name: "Make reading easier for me" }),
     page.getByRole("checkbox", { name: "Give me less to process" }),

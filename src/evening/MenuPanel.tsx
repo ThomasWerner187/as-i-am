@@ -90,6 +90,7 @@ export default function MenuPanel() {
   const [diet, setDiet] = useState<MenuCriteria["diet"]>(menu.criteria.diet);
   const [budget, setBudget] = useState(menu.criteria.max_price?.toString() ?? "");
   const [avoided, setAvoided] = useState<string[]>(menu.criteria.avoid_allergens ?? []);
+  const [favorite, setFavorite] = useState(menu.criteria.favorite_dish_id ?? "");
   const [error, setError] = useState("");
   const [showPreferences, setShowPreferences] = useState(false);
   const resultsHeading = useRef<HTMLHeadingElement>(null);
@@ -98,6 +99,7 @@ export default function MenuPanel() {
     setDiet(menu.criteria.diet);
     setBudget(menu.criteria.max_price?.toString() ?? "");
     setAvoided(menu.criteria.avoid_allergens ?? []);
+    setFavorite(menu.criteria.favorite_dish_id ?? "");
     setError("");
   }, [menu.criteria]);
 
@@ -117,12 +119,19 @@ export default function MenuPanel() {
       return;
     }
     setError("");
-    menuStore.present({
-      ...menu.criteria,
-      diet,
-      max_price: maxPrice,
-      avoid_allergens: avoided,
-    }, "focused");
+    const shortlist = (event.nativeEvent as SubmitEvent).submitter?.getAttribute("data-shortlist") === "true";
+    try {
+      menuStore.present({
+        diet,
+        max_price: maxPrice,
+        avoid_allergens: avoided,
+        ...(favorite ? { favorite_dish_id: favorite } : {}),
+        ...(shortlist ? { limit: 3 } : {}),
+      }, "focused");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not update the menu. Check your choices and try again.");
+      return;
+    }
     requestAnimationFrame(() => resultsHeading.current?.focus({ preventScroll: true }));
   }
 
@@ -160,6 +169,13 @@ export default function MenuPanel() {
             />
           </label>
         </div>
+        <label className="menu-favorite-preference">
+          <span>Favorite dish, if you have one</span>
+          <select value={favorite} onChange={(event) => setFavorite(event.target.value)}>
+            <option value="">No favorite</option>
+            {MENU.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+          </select>
+        </label>
         <details className="menu-allergen-filter">
           <summary>Check declared allergens{avoided.length ? ` (${avoided.length} selected)` : ""}</summary>
           <fieldset>
@@ -184,6 +200,7 @@ export default function MenuPanel() {
         {error && <p id="menu-budget-error" className="menu-source-warning" role="alert">{error}</p>}
         <div className="menu-filter-actions" data-aia="actions">
           <button className="booking-primary" type="submit">Find dishes for me</button>
+          <button className="booking-link" type="submit" data-shortlist="true">Show three suggestions</button>
           {(menu.criteria.diet !== "any" || menu.criteria.max_price !== undefined || Boolean(menu.criteria.avoid_allergens?.length)) && (
             <button className="booking-link" type="button" onClick={() => menuStore.present({ diet: "any", avoid_allergens: [] }, "full")}>
               Clear preferences
