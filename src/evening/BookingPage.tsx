@@ -6,6 +6,7 @@ import { registerTools } from "../webmcp/register";
 import { AGENT_ORIGIN } from "./config";
 import { connectDemoBridge } from "./bridge";
 import MenuPanel from "./MenuPanel";
+import VenuePreferences from "./VenuePreferences";
 import { menuStore, useMenu } from "./menuState";
 import "../styles/menu.css";
 import {
@@ -32,11 +33,14 @@ export function BookingPage({ site }: { site: EveningSite }) {
   const [showAll, setShowAll] = useState(false);
   const [originalLayout, setOriginalLayout] = useState(false);
   const [native, setNative] = useState(false);
+  const [nativeCount, setNativeCount] = useState(0);
   const heading = useRef<HTMLHeadingElement>(null);
   const bookingRoot = useRef<HTMLElement>(null);
   const tableTab = useRef<HTMLButtonElement>(null);
   const menuTab = useRef<HTMLButtonElement>(null);
   const cinema = site === "cinema";
+  const personalStory = window.parent !== window && !new URLSearchParams(location.search).has("explore");
+  const companion = personalStory ? "Your wife" : "Your companion";
   const stage = cinema ? booking.cinemaStage : booking.restaurantStage;
   const selectedTable = TABLES.find((table) => table.id === booking.tableId);
   const largeTargets =
@@ -91,10 +95,10 @@ export function BookingPage({ site }: { site: EveningSite }) {
   const options = tableOptions(booking.showing.time, { date: booking.tableDate ?? booking.showing.date, today: booking.today });
   const bookingDate = formatBookingDate(cinema ? booking.showing.date : booking.tableDate ?? booking.showing.date);
   const seatPlacement = booking.seatAssignments ? (
-    <div className="personal-seat-placement" aria-label={`Aisle, you in ${booking.seatAssignments.user}, your wife in ${booking.seatAssignments.spouse}`} data-testid="personal-seat-placement" style={booking.seatAssignments.user.endsWith("12") ? { flexDirection: "row-reverse" } : undefined}>
+    <div className="personal-seat-placement" aria-label={`Aisle, you in ${booking.seatAssignments.user}, ${companion.toLowerCase()} in ${booking.seatAssignments.spouse}`} data-testid="personal-seat-placement" style={booking.seatAssignments.user.endsWith("12") ? { flexDirection: "row-reverse" } : undefined}>
       <span className="placement-aisle">Aisle</span>
       <span><strong>You</strong><small>{booking.seatAssignments.user}</small></span>
-      <span><strong>Your wife</strong><small>{booking.seatAssignments.spouse}</small></span>
+      <span><strong>{companion}</strong><small>{booking.seatAssignments.spouse}</small></span>
       <span className="placement-others" aria-hidden="true">○ ○ ○</span>
     </div>
   ) : null;
@@ -173,6 +177,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
     ).then((result) => {
       if (cancelled) return;
       setNative(result.registered > 0);
+      setNativeCount(result.registered);
       if (window.parent !== window)
         window.parent.postMessage(
           { channel: "as-i-am-ready", site, native: result.registered > 0 },
@@ -230,6 +235,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
       <a className="skip-link" href="#main">
         Skip to selection
       </a>
+      <VenuePreferences site={site} nativeCount={nativeCount} />
       <main id="main" className="booking" tabIndex={-1} ref={bookingRoot}>
         <header className="booking-masthead">
           <span className="venue-logo">
@@ -450,6 +456,22 @@ export function BookingPage({ site }: { site: EveningSite }) {
                   </p>
                 </div>
 
+                {!cinema && (
+                  <label className="restaurant-date-select">
+                    <span>Dinner date</span>
+                    <select
+                      value={booking.tableDate ?? booking.showing.date}
+                      onChange={(event) => {
+                        // Until a table is chosen, the page's showing provides its
+                        // date anchor. Listed table availability is identical by date.
+                        if (booking.tableTime) eveningStore.selectTable(booking.tableTime, booking.tableId ?? undefined, event.target.value);
+                        else eveningStore.selectShowing(event.target.value, booking.showing.time);
+                      }}
+                    >
+                      {nextWeekDates(booking.today).map((date) => <option key={date} value={date}>{formatBookingDate(date)}</option>)}
+                    </select>
+                  </label>
+                )}
                 {cinema && (
                   <div className="showing-choice" aria-label="Choose a showing">
                     <label>
@@ -550,7 +572,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                                     key={seat.id}
                                     className={`seat${!seat.available ? " is-taken" : ""}${booking.selectedSeats.includes(seat.id) ? " is-selected" : ""}`}
                                     disabled={!seat.available}
-                                    aria-label={`Row ${seat.row}, seat ${seat.number}, ${seat.available ? money(seat.price) : "unavailable"}${seat.aisle ? ", aisle" : ""}${booking.seatAssignments?.user === seat.id ? ", You" : booking.seatAssignments?.spouse === seat.id ? ", Your wife" : ""}`}
+                                    aria-label={`Row ${seat.row}, seat ${seat.number}, ${seat.available ? money(seat.price) : "unavailable"}${seat.aisle ? ", aisle" : ""}${booking.seatAssignments?.user === seat.id ? ", You" : booking.seatAssignments?.spouse === seat.id ? `, ${companion}` : ""}`}
                                     aria-pressed={booking.selectedSeats.includes(
                                       seat.id,
                                     )}
@@ -570,7 +592,7 @@ export function BookingPage({ site }: { site: EveningSite }) {
                                           ? "✓"
                                           : ""}
                                     </span>
-                                    {(booking.seatAssignments?.user === seat.id || booking.seatAssignments?.spouse === seat.id) && <span className="seat-person">{booking.seatAssignments.user === seat.id ? "You" : "Wife"}</span>}
+                                    {(booking.seatAssignments?.user === seat.id || booking.seatAssignments?.spouse === seat.id) && <span className="seat-person">{booking.seatAssignments.user === seat.id ? "You" : personalStory ? "Wife" : "Companion"}</span>}
                                   </button>
                                 ),
                               )}
