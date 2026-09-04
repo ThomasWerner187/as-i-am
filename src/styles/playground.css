@@ -26,3 +26,14 @@
   .evening-playground .help-choice { flex-direction: column; align-items: stretch; gap: 14px; }
   .evening-playground .help-modes button { flex: 1; }
 }
+@media (max-width: 680px) {
+  .evening-playground .agent-dock .shell-primary {
+    position: static;
+    inset: auto;
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    width: 100%;
+    min-height: 48px;
+    box-shadow: none;
+  }
+}

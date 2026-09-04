@@ -52,6 +52,9 @@ test("custom controls and original-site links remain reachable on a phone", asyn
   await expect(page.getByRole("button", { name: "Prepare my seats →", exact: true })).toBeEnabled();
   await expect(page.frameLocator('iframe[title="LUNA Cinema"]').getByRole("heading", { name: "Where would you like to sit?", exact: true })).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
+  const action = await page.getByRole("button", { name: "Prepare my seats →", exact: true }).boundingBox();
+  const venue = await page.locator('iframe[title="LUNA Cinema"]').boundingBox();
+  expect(action!.y + action!.height).toBeLessThanOrEqual(venue!.y);
   await expect(page.getByRole("link", { name: "LUNA Cinema (opens a new tab)", exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: "output/jury-review/try-mobile.png", fullPage: true });
