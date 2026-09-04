@@ -8,7 +8,8 @@ in public recordings. A local installation needs no login or API key.
 Alex and Lea, their shared history, bookings and menu are fictional. Reload the
 experience to begin a fresh session. See [hosting.md](hosting.md) for the live
 checks, [verification.md](verification.md) for engineering evidence, and
-[the demo film](https://youtu.be/VCrRYQfJxus) for the short story.
+[the unchanged 98-second demo film](https://youtu.be/VCrRYQfJxus) for the scripted story.
+Use `/try` to explore a different request with your own explicit preferences.
 
 ## Entry points
 
@@ -18,6 +19,7 @@ The hosted entry points are on `https://asiam.wernerverse.de`. Locally, use Node
 | Experience | Hosted URL | Development URL |
 | --- | --- | --- |
 | A night for two — primary story | [Home](https://asiam.wernerverse.de/) | `http://localhost:5273/` |
+| Your own preferences | [Try](https://asiam.wernerverse.de/try) | `http://localhost:5273/try` |
 | Advanced access choices | [Guided](https://asiam.wernerverse.de/guided) | `http://localhost:5273/guided` |
 | Direct LUNA Cinema | [Cinema](https://asiam.wernerverse.de/cinema) | `http://localhost:5274/cinema` |
 | Direct OLIVA Restaurant | [Restaurant](https://asiam.wernerverse.de/restaurant) | `http://localhost:5275/restaurant` |
@@ -46,7 +48,41 @@ to open each venue directly for native tool discovery.
 
 The home walkthrough executes labelled presets. It is not an embedded autonomous model.
 **How this works** shows actual tool results and their transport. A demo-bridge result is not
-native WebMCP execution. The next section tests a real external agent against the page tools.
+native WebMCP execution. The native walkthrough below tests a real external agent against the page tools.
+
+## Explore your own request
+
+Open `/try`. It starts with no chosen comfort or food preferences; the Alex/Lea
+example is not applied to you. Choose the settings you want to test. The ticket
+budget is **Maximum for two tickets (€)**, not a per-seat price. The food budget
+is per dish. `/guided` keeps its separate example defaults.
+
+The direct `/cinema` and `/restaurant` pages also offer local comfort controls and
+navigation. Use the cinema’s actual date/showing selector; use the restaurant’s
+date, favorite and menu controls to inspect its own responses.
+
+### Variant 1: vegan dinner, another row and showing
+
+1. In `/try`, choose vegan food with a maximum of **€18 per dish**. Explicitly add
+   any ingredient exclusions you want to test. Select your comfort options and a
+   row other than the story’s starting row, with **€30 for both tickets**.
+2. On the cinema page select an available date and the **21:30** showing. Prepare
+   and review the pair, check the total price and aisle assignment if requested,
+   then confirm the demo tickets yourself.
+3. Continue to dinner. Its plan must use that confirmed date and **21:30**, rather
+   than the story’s 20:15. Inspect vegan dishes at or below €18. Choosing the €22
+   risotto as a favorite must not lift it above your budget. Review the table
+   and confirm only through the visible button.
+
+### Variant 2: no match within the budget
+
+1. Start a fresh `/try` session. Set the meal budget to **€5** and search. The menu
+   should report no matching dishes instead of quietly increasing the budget or
+   removing exclusions.
+2. Set **€5 for both tickets** and request a pair. Inspect the no-match response;
+   it must not confirm a booking. Raise the budget and try again to check recovery.
+
+The tested revision and recorded results are tracked in [verification](verification.md).
 
 ## Native external-agent walkthrough
 
@@ -222,5 +258,8 @@ Keep those values out of this public guide. The following text describes the tes
 > ingredient details and full menu, then confirm the table yourself. How this works exposes
 > actual results and direct venue links for native WebMCP testing. The walkthrough is a labelled
 > preset; real external agents use the direct cinema and restaurant tools. Alex and Lea, their
-> history and all bookings are fictional. Use /guided for advanced access choices. The linked
+> history and all bookings are fictional. Open /try for your own explicit comfort, seating and
+> meal preferences; it starts without inferred needs. Try vegan food up to €18, another row
+> and a 21:30 showing, then a €5 budget to inspect a no-match result. The ticket budget is for
+> both seats; the meal budget is per dish. /guided retains its example defaults. The linked
 > judge guide, verification report and recording report provide exact inputs and current evidence.
