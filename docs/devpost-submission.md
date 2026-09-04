@@ -37,6 +37,11 @@ Alex’s favorite mushroom risotto. Ingredient exclusions remain visible, and
 uncertain kitchen information stays a question. Alex can inspect the full menu,
 change the proposal and confirm the table.
 
+You can also leave the story and open `/try` with no preferences preselected.
+Choose your own comfort settings, seats, pair budget and meal requirements, or
+explore the original cinema and restaurant directly. Dinner follows the date and
+time you actually confirmed at the cinema.
+
 ## Why WebMCP
 
 Personal context becomes useful when an agent can act on the page. WebMCP exposes
@@ -56,10 +61,11 @@ React, TypeScript and Vite power two participating venues. Their tools use
 for the visible interface and agent calls. The hosted version has separate cinema
 and restaurant pages on one HTTPS origin.
 
-The home experience is a labelled preset walkthrough. A real external agent can
-read the supplied example context and call the native tools directly. Both paths
-have been tested on the deployed site; the repository includes reproducible inputs
-and results.
+The home experience is a labelled preset walkthrough; `/try` uses your form inputs.
+Neither contains a language model or production memory service. A real external
+agent can call the native page tools directly. The repository records the tested
+revisions, reproducible inputs and results. The 98-second film still demonstrates
+the original story.
 
 ## What I learned
 
@@ -85,8 +91,10 @@ retain their own license notices.
 Open https://asiam.wernerverse.de/ with the jury login supplied privately in the
 entry. Inspect **Saved preferences**, then **Plan our evening**. Try **One row
 further back**, confirm the demo tickets and continue to dinner. Review the three
-menu cards and confirm the table. Use `/guided` for additional access choices and
-`/cinema` or `/restaurant` for native external-agent testing.
+menu cards and confirm the table. Open `/try` to choose your own preferences: try
+vegan dishes up to €18, a different row and showing, then a low-budget no-match
+case. Ticket budgets cover both seats; meal budgets are per dish. `/cinema` and
+`/restaurant` also work directly for manual or native external-agent testing.
 
 The [judge guide](judge-testing.md) contains the complete native walkthrough.
 [Hosting evidence](hosting.md) and [recording notes](recording.md) identify the

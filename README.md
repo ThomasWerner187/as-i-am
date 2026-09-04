@@ -14,10 +14,16 @@ Lea’s peanut and avocado exclusions remain visible, along with questions for t
 
 ![The deployed restaurant view: three pictured dishes, ingredient information and a dinner-before-cinema itinerary.](docs/screenshots/dinner-options.png)
 
-[Watch the 98-second demo](https://youtu.be/VCrRYQfJxus) · [Try it](https://asiam.wernerverse.de/) · [Judge walkthrough](docs/judge-testing.md)
+[Watch the 98-second demo](https://youtu.be/VCrRYQfJxus) · [Guided story](https://asiam.wernerverse.de/) · [Try your own preferences](https://asiam.wernerverse.de/try) · [Judge walkthrough](docs/judge-testing.md)
 
 The hosted demo uses the jury login supplied privately with the submission. Anyone
 can run the same app locally without an account, payment or API key.
+
+The home page follows Alex and Lea’s supplied example. **`/try` starts with no
+chosen preferences:** choose comfort settings, seat row and aisle preference,
+a maximum for two tickets, and your meal requirements. You can also open the
+original cinema or restaurant directly and use their local controls. All bookings
+remain synthetic; no diagnosis or allergy is inferred about you.
 
 ## Try it locally
 
@@ -38,6 +44,7 @@ separate local origins. The hosted version uses separate pages on one HTTPS orig
 | Page | Local URL | Hosted path |
 | --- | --- | --- |
 | A night for two | `http://localhost:5273/` | `/` |
+| Your own preferences | `http://localhost:5273/try` | `/try` |
 | More access choices | `http://localhost:5273/guided` | `/guided` |
 | LUNA Cinema | `http://localhost:5274/cinema` | `/cinema` |
 | OLIVA Restaurant | `http://localhost:5275/restaurant` | `/restaurant` |
@@ -80,6 +87,11 @@ walkthrough runs labelled presets; it does not contain a language model or a
 production memory service. Real external agents can discover and call the native
 page tools. The optional demo bridge is labelled separately.
 
+The editable planner uses your form inputs with the same validated handlers. Choose
+the date and showing on the cinema page; dinner uses the confirmed date and time.
+Diet, ingredient exclusions, favorite dish, price per dish and a quiet-table request
+are explicit choices. A favorite never overrides the food filters or budget.
+
 This contract is for websites that implement it. It does not restyle arbitrary
 sites. The display receipt contains functional preferences, not names, diagnoses,
 allergies or booking details. Food requirements and film times are separate task
@@ -111,6 +123,7 @@ and [verification](docs/verification.md) explain the implementation and existing
 
 The [98-second demo film](https://youtu.be/VCrRYQfJxus) has English narration and subtitles.
 It follows the evening, then briefly explains how the WebMCP tools make it work.
+The film demonstrates the scripted story; `/try` lets you explore other requests.
 The screenshots above and [cinema view](docs/screenshots/cinema-calm.png) were captured
 from the deployed application. Earlier shop and services examples remain under
 `/legacy`, `/shop` and `/services`; historical screenshots remain in `docs/screenshots/`.

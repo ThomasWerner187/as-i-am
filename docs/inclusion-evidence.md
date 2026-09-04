@@ -24,9 +24,9 @@ The example history is deliberately supplied by the prototype. It does not estab
 agent memory service or reveal facts about the person testing the app. Health context, food
 requirements and booking context stay outside the functional adaptation receipt.
 
-## Current technical evidence
+## Recorded story evidence
 
-Application revision **`75a7054`** is the basis for the latest run. See
+Application revision **`75a7054`** is the basis for the recorded story checks below. See
 [verification](verification.md) for the environment and detailed results, and
 [recording](recording.md) for media files and final playback checks.
 
@@ -37,13 +37,28 @@ Application revision **`75a7054`** is the basis for the latest run. See
 | Native seat correction | F1/F2 changed to G1/G2 while preserving the selected date/time and outside/inside assignment | Synthetic inventory, not real cinema tickets |
 | Planning and confirmation | Dinner was checked before ticket confirmation; the confirmed date and 20:15 time then informed the 18:00/T4 proposal | Cross-origin confirmation is not independently verified by the restaurant tool |
 | Native menu presentation | Three visual recommendations include the qualifying favorite; peanut/avocado exclusions and the kitchen check remain visible | Ingredient matches are not a guarantee against allergic reactions |
-| Media | A 112-second film has been rendered, with two voices, 101 spoken words, first speech at second 7 and 15 caption cues | A scripted demonstration with actual native tool execution, not an unscripted participant session |
+| Media | The final 98.221-second film preserves the 79.6-second story and adds a spoken WebMCP explanation; English captions cover both parts | A scripted demonstration with an explanatory ending, not an unscripted participant session; exact media proof is in [recording](recording.md) |
 
 The home walkthrough is a labelled preset. The external-agent native run uses the participating
 pages' real WebMCP tools. Both sites are controlled by this project and use synthetic inventory;
 this is not independent-operator interoperability or adaptation of arbitrary websites.
 
-## Other access choices remain available
+## Explore different access needs
+
+The `/try` planner starts without chosen comfort or food preferences. A tester
+explicitly chooses comfort settings, row/aisle preferences, a budget for two
+tickets, and diet, ingredient exclusions, favorite dish, meal budget or quiet table.
+Dates and showing times are selected on the cinema page. Dinner receives the
+confirmed date and time, rather than assuming the recorded story’s showing.
+
+The original cinema and restaurant remain directly usable, with local comfort
+controls and navigation. This gives testers a way to try different requests; it
+does not establish a benefit for disabled participants. All state is synthetic,
+and no diagnosis, allergy or production memory is inferred from a tester’s choices.
+New exploration checks and their final revision must be recorded separately in
+[verification](verification.md); the earlier pass counts above do not cover them.
+
+## Earlier access evidence
 
 The advanced journey at `/guided` retains pointing, reading and cognitive support choices.
 Earlier native evidence on application `db3b386` recorded targets increasing from 30px to 56px,
@@ -51,9 +66,9 @@ a six-preference receipt, and a menu text sample increasing from 9.9px to 12.9px
 historical observations from their stated viewport and state, not the current film's preference
 counts or current participant outcomes.
 
-The earlier zero-frame capture failure and the older film cuts are historical. The current
-film is rendered; see [recording](recording.md) rather than treating that old failure as a
-present capture blocker.
+The earlier 112-second cut, zero-frame capture failure and other previous films are
+historical. The selected 98-second video still demonstrates the story; it has not
+been re-recorded to present the new `/try` controls.
 
 ## What has not been established
 
