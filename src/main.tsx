@@ -26,5 +26,6 @@ const path = location.pathname.replace(/\/+$/, "");
 const experience = path === "/cinema" ? <BookingPage site="cinema" />
   : path === "/restaurant" ? <BookingPage site="restaurant" />
   : path === "" || path === "/personal" ? <PersonalEvening />
+  : path === "/try" ? <EveningShell playground />
   : path === "/guided" ? <EveningShell /> : <React.StrictMode><App /></React.StrictMode>;
 createRoot(document.getElementById("root")!).render(experience);

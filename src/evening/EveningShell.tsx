@@ -5,7 +5,9 @@ import type { EveningSite } from "./state";
 import type { AdaptationReceipt } from "../adaptive-contract/schema";
 import AccessNeeds from "./AccessNeedsControl";
 import { DEFAULT_ACCESS_NEEDS, buildAccessProfile, accessNeedsRequest, type AccessNeed } from "./accessNeeds";
+import { ALLERGENS, MENU } from "./menu";
 import "../styles/journey.css";
+import "../styles/playground.css";
 
 type AssistanceMode = "choose" | "prepare";
 interface ExampleRequest {
@@ -13,12 +15,20 @@ interface ExampleRequest {
   maxPrice: number;
   quietTable: boolean;
   avoidAllergens: string[];
+  seatRow: string;
+  preferAisle: boolean;
+  maxTicketTotal: number;
+  favoriteDishId: string;
 }
 const EXAMPLE_REQUEST: ExampleRequest = {
   diet: "vegan",
   maxPrice: 20,
   quietTable: true,
   avoidAllergens: [],
+  seatRow: "any",
+  preferAisle: false,
+  maxTicketTotal: 40,
+  favoriteDishId: "",
 };
 
 interface Trace {
@@ -31,17 +41,17 @@ interface Trace {
 }
 const SITES: EveningSite[] = ["cinema", "restaurant"];
 function makeAgentPrompt(request: ExampleRequest, mode: AssistanceMode, needs: AccessNeed[]) {
-  return `Help me plan a cinema-and-dinner evening using this editable example request. ${accessNeedsRequest(needs)} Use only the functional preferences I choose. Do not infer or ask me to disclose a diagnosis. The requested profile is ${JSON.stringify(buildAccessProfile(needs))}. ${mode === "choose" ? "Help me choose: adapt the pages so I can make my own choices." : "Prepare for me: research the available options and prepare booking reviews, preserving any choices I have already made."} Open LUNA at ${siteUrl("cinema", false)} as a top-level page and discover its native WebMCP tools. Apply supported functional preferences and verify the rendered result. Read my booking state and available seat pairs. Never confirm a booking for me. Once I have confirmed my tickets, use their actual film time to plan dinner. I authorize transferring my functional adaptation receipt and only the film start time needed for planning to OLIVA at ${siteUrl("restaurant", false)}. Discover its tools and get a dinner plan allowing 90 minutes to eat, a 15-minute walk and at least 15 minutes before the film. ${request.quietTable ? "Prefer a table listed as quiet by the restaurant." : "I have no table-location preference."} For the menu, my explicit example preference is ${request.diet === "any" ? "no dietary restriction" : request.diet}, at most EUR ${request.maxPrice} per dish. ${request.avoidAllergens.length ? `I explicitly ask to avoid these declared allergens: ${request.avoidAllergens.join(", ")}.` : "No food allergies have been shared. Do not infer any."} Read the restaurant's ingredient and allergen information. Keep any additional allergen constraints I have explicitly selected on the restaurant page. Vegan does not mean allergen-free; surface possible cross-contact or incomplete information and ask the restaurant instead of claiming safety. Present the matching dishes clearly on the actual page. Explain the timing and what is still uncertain. Dietary details are separate task inputs and must never be added to my adaptation receipt. Do not send my identity, diagnosis, seat numbers or other cinema booking details to the restaurant. Leave the final confirmation to me.`;
+  return `Help me plan a cinema-and-dinner evening using this editable example request. ${accessNeedsRequest(needs)} Use only the functional preferences I choose. Do not infer or ask me to disclose a diagnosis. The requested profile is ${JSON.stringify(buildAccessProfile(needs))}. ${mode === "choose" ? "Help me choose: adapt the pages so I can make my own choices." : "Prepare for me: research the available options and prepare booking reviews, preserving any choices I have already made."} For two tickets, my total budget is EUR ${request.maxTicketTotal}. ${request.seatRow === "any" ? "Any row is fine." : `Prefer row ${request.seatRow}.`} ${request.preferAisle ? "Put one of us at the aisle, beside the other." : "There is no aisle preference."} Use the date and showing I select on the cinema page; keep my existing choices unless I ask to change them. ${request.favoriteDishId ? `My favorite dish is ${MENU.find(item => item.id === request.favoriteDishId)?.name}; only suggest it if it fits all my other preferences.` : "No favorite dish has been chosen."} Open LUNA at ${siteUrl("cinema", false)} as a top-level page and discover its native WebMCP tools. Apply supported functional preferences and verify the rendered result. Read my booking state and available seat pairs. Never confirm a booking for me. Once I have confirmed my tickets, use their actual film time to plan dinner. I authorize transferring my functional adaptation receipt and the confirmed film date and start time needed for planning to OLIVA at ${siteUrl("restaurant", false)}. Discover its tools and get a dinner plan allowing 90 minutes to eat, a 15-minute walk and at least 15 minutes before the film. ${request.quietTable ? "Prefer a table listed as quiet by the restaurant." : "I have no table-location preference."} For the menu, my explicit example preference is ${request.diet === "any" ? "no dietary restriction" : request.diet}, at most EUR ${request.maxPrice} per dish. ${request.avoidAllergens.length ? `I explicitly ask to avoid these declared allergens: ${request.avoidAllergens.join(", ")}.` : "No food allergies have been shared. Do not infer any."} Read the restaurant's ingredient and allergen information. Keep any additional allergen constraints I have explicitly selected on the restaurant page. Vegan does not mean allergen-free; surface possible cross-contact or incomplete information and ask the restaurant instead of claiming safety. Present the matching dishes clearly on the actual page. Explain the timing and what is still uncertain. Dietary details are separate task inputs and must never be added to my adaptation receipt. Do not send my identity, diagnosis, seat numbers or other cinema booking details to the restaurant. Leave the final confirmation to me.`;
 }
 
-export default function EveningShell() {
-  const [accessNeeds, setAccessNeeds] = useState<AccessNeed[]>(DEFAULT_ACCESS_NEEDS);
+export default function EveningShell({ playground = false }: { playground?: boolean }) {
+  const [accessNeeds, setAccessNeeds] = useState<AccessNeed[]>(playground ? [] : DEFAULT_ACCESS_NEEDS);
   const [appliedNeeds, setAppliedNeeds] = useState<{ cinema: string | null; restaurant: string | null }>({ cinema: null, restaurant: null });
   const needsKey = [...accessNeeds].sort().join(",");
   const requestedProfile = buildAccessProfile(accessNeeds);
   const [site, setSite] = useState<EveningSite>("cinema");
-  const [mode, setMode] = useState<AssistanceMode>("choose");
-  const [example, setExample] = useState<ExampleRequest>(EXAMPLE_REQUEST);
+  const [mode, setMode] = useState<AssistanceMode>(playground ? "prepare" : "choose");
+  const [example, setExample] = useState<ExampleRequest>(playground ? { ...EXAMPLE_REQUEST, diet: "any", maxPrice: 24, quietTable: false } : EXAMPLE_REQUEST);
   const [requestOpen, setRequestOpen] = useState(false);
   const [dinnerPlan, setDinnerPlan] = useState<Record<string, any>>();
   const [menuResult, setMenuResult] = useState<Record<string, any>>();
@@ -82,7 +92,7 @@ export default function EveningShell() {
 
   useEffect(() => {
     document.documentElement.dataset.evening = "shell";
-    document.title = "As I Am — The web adapts. You don’t have to.";
+    document.title = playground ? "As I Am — Try it your way" : "As I Am — The web adapts. You don’t have to.";
     const listener = (event: MessageEvent) => {
       const from = SITES.find(
         (value) =>
@@ -168,6 +178,7 @@ export default function EveningShell() {
                   source:
                     "Editable, explicitly labelled demonstration request; not inferred personal information.",
                   assistance_mode: state.current.mode,
+                  seat_preferences: { row: state.current.example.seatRow, prefer_aisle: state.current.example.preferAisle, max_total: state.current.example.maxTicketTotal },
                   access_preferences: buildAccessProfile(state.current.accessNeeds),
                   dining_preferences: {
                     diet: state.current.example.diet,
@@ -176,6 +187,7 @@ export default function EveningShell() {
                       ? "quiet"
                       : "any",
                     avoid_allergens: state.current.example.avoidAllergens,
+                    favorite_dish_id: state.current.example.favoriteDishId || undefined,
                   },
                   allergy_inference:
                     "Never infer an allergy. No shared allergy information does not mean no allergy.",
@@ -456,7 +468,10 @@ export default function EveningShell() {
       return;
     }
     if (appliedNeeds.cinema !== needsKey) await apply("cinema");
-    const availability = await call("cinema", "get_available_seat_pairs");
+    const availability = await call("cinema", "get_available_seat_pairs", {
+      max_total: example.maxTicketTotal, prefer_aisle: example.preferAisle,
+      ...(example.seatRow !== "any" ? { row: example.seatRow } : {}),
+    });
     const chosenIds = (booking.seats ?? []).map(
       (seat: { id: string }) => seat.id,
     );
@@ -468,7 +483,7 @@ export default function EveningShell() {
     );
     if (!pair)
       throw new Error(
-        "Your selected seats cannot form an available adjacent pair. Choose the seats you want before preparing a review.",
+        availability.pairs.length ? "Your current seats do not match these preferences. Your choice has been kept; change or clear the seats on the cinema page to try another pair." : "No pair matches this row, aisle preference and budget. Your choices are kept. Try another row or a higher ticket budget.",
       );
     await call("cinema", "prepare_seat_selection", { pair_id: pair.id });
     setStatus(
@@ -497,6 +512,8 @@ export default function EveningShell() {
     setStatus("Finding a table with time to eat, walk and settle in…");
     const plan = await call("restaurant", "get_dinner_plan", {
       film_time: booking.film_time ?? booking.film.time,
+      date: booking.date,
+      plan_source: "confirmed",
       arrival_buffer_minutes: 15,
       table_preference: example.quietTable ? "quiet" : "any",
     });
@@ -512,6 +529,7 @@ export default function EveningShell() {
     const criteria = {
       diet: example.diet,
       max_price: example.maxPrice,
+      ...(playground ? { favorite_dish_id: example.favoriteDishId || undefined, limit: 3 } : {}),
       avoid_allergens: [
         ...new Set([...example.avoidAllergens, ...previousAllergens]),
       ],
@@ -521,6 +539,7 @@ export default function EveningShell() {
     if (prepare) {
       if (currentTable.stage !== "confirmed") {
         await call("restaurant", "prepare_table_selection", {
+          date: currentTable.time ? currentTable.date : plan.recommended.date,
           time: currentTable.time ?? plan.recommended.time,
           table_id: currentTable.table_id ?? plan.recommended.table_id,
         });
@@ -535,7 +554,7 @@ export default function EveningShell() {
       ...plan,
       kept_booking:
         currentTable.time &&
-        (currentTable.time !== plan.recommended.time ||
+        (currentTable.date !== plan.recommended.date || currentTable.time !== plan.recommended.time ||
           currentTable.table_id !== plan.recommended.table_id)
           ? currentTable
           : null,
@@ -554,11 +573,12 @@ export default function EveningShell() {
     }
     if (
       current.time &&
-      (current.time !== dinnerPlan.recommended.time ||
+      (current.date !== dinnerPlan.recommended.date || current.time !== dinnerPlan.recommended.time ||
         (current.table_id &&
           current.table_id !== dinnerPlan.recommended.table_id))
     ) {
       await call("restaurant", "prepare_table_selection", {
+        date: current.date,
         time: current.time,
         table_id: current.table_id,
       });
@@ -568,6 +588,7 @@ export default function EveningShell() {
       return;
     }
     await call("restaurant", "prepare_table_selection", {
+      date: dinnerPlan.recommended.date,
       time: dinnerPlan.recommended.time,
       table_id: dinnerPlan.recommended.table_id,
     });
@@ -628,18 +649,29 @@ export default function EveningShell() {
             : "Find dinner that fits →"
         : canCarry
           ? "Use my preferences here →"
-          : "Make it easier →";
+          : playground && !accessNeeds.length ? "Keep the original view" : "Make it easier →";
+
+  const comfortControls = <AccessNeeds
+    value={accessNeeds}
+    disabled={busy}
+    onChange={(next) => {
+      setAccessNeeds(next);
+      setCopied(false);
+      setStatus("Support choices updated. Apply them when you are ready.");
+    }}
+  />;
 
   return (
-    <div className="evening-shell">
+    <div className={`evening-shell${playground ? " evening-playground" : ""}`}>
       <a className="skip-link" href="#adaptation">
         Skip to adaptation
       </a>
       <header className="experience-top">
-        <span className="aia-wordmark">
+        <a href="/" className="aia-wordmark">
           As I Am<span aria-hidden="true">.</span>
-        </span>
+        </a>
         <div className="experience-links">
+          <a href="/">Guided demo</a>
           <span className="connection-status">{transport}</span>
           <button
             aria-expanded={agentOpen}
@@ -652,17 +684,18 @@ export default function EveningShell() {
       </header>
       <section className="experience-intro" aria-labelledby="experience-title">
         <h1 id="experience-title">
-          The web adapts.
-          <br />
-          <em>You don’t have to.</em>
+          {playground ? <>Your evening.<br /><em>Your way.</em></> : <>The web adapts.<br /><em>You don’t have to.</em></>}
         </h1>
         <p className="inclusion-intro">
-          <strong>Disability should never decide who gets to take part.</strong>
-          Small targets, hard-to-read text and crowded choices can make a night
-          out hard to plan. Choose support for your hands, eyes and attention.
-          Keep the decisions that matter.
+          {playground ? <>Try different preferences on the same working cinema and restaurant. Choose for yourself, prepare a suggestion, or bring your agent. All bookings are fictional.</> : <><strong>Disability should never decide who gets to take part.</strong>Small targets, hard-to-read text and crowded choices can make a night out hard to plan. Choose support for your hands, eyes and attention. Keep the decisions that matter.</>}
         </p>
       </section>
+      {playground && <nav className="playground-sites" aria-label="Open the original websites">
+        <span>Explore the original sites</span>
+        <a href={siteUrl("cinema", false)} target="_blank" rel="noreferrer">LUNA Cinema <span className="visually-hidden">(opens a new tab)</span></a>
+        <a href={siteUrl("restaurant", false)} target="_blank" rel="noreferrer">OLIVA Restaurant <span className="visually-hidden">(opens a new tab)</span></a>
+        <span className="playground-session-note">Each new tab starts a separate demo session.</span>
+      </nav>}
       {agentOpen && (
         <section className="agent-details" id="agent-details">
           <h2>Try it with your agent.</h2>
@@ -708,7 +741,7 @@ export default function EveningShell() {
           <div>
             <h2>You decide how much help.</h2>
             <p>
-              Make the page work for you, or ask your agent to prepare the next step.
+            {playground ? "These controls run the site's tools. Use WebMCP above to bring your own agent." : "Make the page work for you, or ask your agent to prepare the next step."}
             </p>
           </div>
           <div
@@ -738,15 +771,7 @@ export default function EveningShell() {
             </button>
           </div>
         </section>
-        <AccessNeeds
-          value={accessNeeds}
-          disabled={busy}
-          onChange={(next) => {
-            setAccessNeeds(next);
-            setCopied(false);
-            setStatus("Support choices updated. Apply them when you are ready.");
-          }}
-        />
+        {playground ? <details className="playground-comfort"><summary>Comfort settings <span>{accessNeeds.length ? `${accessNeeds.length} selected` : "Original appearance"}</span></summary>{comfortControls}</details> : comfortControls}
         <section
           className="example-request"
           aria-label="Editable example request"
@@ -759,7 +784,7 @@ export default function EveningShell() {
             onClick={() => setRequestOpen(!requestOpen)}
           >
             <span>
-              Example request{" "}
+              {playground ? "Your evening preferences" : "Example request"}{" "}
               <strong>
                 Two seats · {example.diet === "any" ? "any menu" : example.diet}{" "}
                 dinner · €{example.maxPrice} per dish
@@ -777,6 +802,20 @@ export default function EveningShell() {
                 choose here; it does not guess your needs.
               </p>
               <div className="example-fields">
+                {playground && <>
+                  <label>Preferred row
+                    <select disabled={busy} value={example.seatRow} onChange={event => updateExample({ seatRow: event.target.value })}>
+                      <option value="any">Any row</option>
+                      {"ABCDEFGH".split("").map(row => <option key={row} value={row}>Row {row}</option>)}
+                    </select>
+                  </label>
+                  <label>Maximum for two tickets (€)
+                    <input type="number" min="0" max="100" step="1" disabled={busy} value={example.maxTicketTotal} onChange={event => {
+                      if (Number.isFinite(event.target.valueAsNumber)) updateExample({ maxTicketTotal: Math.max(0, Math.min(100, event.target.valueAsNumber)) });
+                    }} />
+                  </label>
+                  <label className="example-check"><input type="checkbox" disabled={busy} checked={example.preferAisle} onChange={event => updateExample({ preferAisle: event.target.checked })} />One of us at the aisle</label>
+                </>}
                 <label>
                   Menu preference
                   <select
@@ -811,6 +850,12 @@ export default function EveningShell() {
                     }}
                   />
                 </label>
+                {playground && <label>Favorite dish
+                  <select disabled={busy} value={example.favoriteDishId} onChange={event => updateExample({ favoriteDishId: event.target.value })}>
+                    <option value="">No favorite</option>
+                    {MENU.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
+                  </select>
+                </label>}
                 <label className="example-check">
                   <input
                     disabled={busy}
@@ -827,10 +872,10 @@ export default function EveningShell() {
                 <legend>
                   Only if you choose to share an allergen to avoid
                 </legend>
-                {[
+                {(playground ? ALLERGENS.map(({ id, label }) => ({ code: id, label })) : [
                   { code: "milk", label: "Milk" },
                   { code: "tree_nuts", label: "Tree nuts" },
-                ].map(({ code, label }) => (
+                ]).map(({ code, label }) => (
                   <label key={code}>
                     <input
                       type="checkbox"
