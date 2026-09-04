@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import { mkdir } from "node:fs/promises";
 
 test("a custom evening carries the confirmed date and time and respects menu preferences", async ({ page }) => {
   await page.goto("/try");
@@ -55,7 +54,6 @@ test("custom controls and original-site links remain reachable on a phone", asyn
   await page.evaluate(() => document.fonts.ready);
   await expect(page.getByRole("link", { name: "LUNA Cinema (opens a new tab)", exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await mkdir("output/jury-review", { recursive: true });
   await page.screenshot({ path: "output/jury-review/try-mobile.png", fullPage: true });
   await page.getByRole("button", { name: /Your evening preferences/ }).click();
   await expect(page.getByRole("combobox", { name: "Preferred row", exact: true })).toBeVisible();
