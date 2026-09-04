@@ -166,7 +166,16 @@ export default function PersonalEvening() {
     <a className="personal-skip" href="#personal-main">Skip to your evening</a>
     <header className="personal-header">
       <a className="personal-brand" href="/">As I Am<span>.</span></a>
-      <span className="personal-header-note">A night for two</span>
+      <nav className="personal-experience-nav" aria-label="Explore As I Am">
+        <div className="personal-experience-modes">
+          <a href="/" aria-current="page">Guided demo</a>
+          <a className="personal-try-link" href="/try">Try it your way</a>
+        </div>
+        <div className="personal-original-sites">
+          <a href={siteUrl("cinema", false)}>LUNA Cinema</a>
+          <a href={siteUrl("restaurant", false)}>OLIVA Restaurant</a>
+        </div>
+      </nav>
       <button className="personal-text-button" onClick={() => showDetails(details === "preferences" ? null : "preferences")}>Saved preferences</button>
     </header>
     {details && <aside className="personal-details" onKeyDown={event => { if (event.key === "Escape") showDetails(null); }} aria-label={details === "preferences" ? "Fictional saved preferences" : "Actual tool results"}>
@@ -197,7 +206,22 @@ export default function PersonalEvening() {
         <footer className="personal-companion-footer"><button onClick={() => showDetails(details === "tools" ? null : "tools")}>How this works</button><span>Fictional bookings · Your final say</span></footer>
       </section>
       <section className="personal-venue" aria-label={step === "welcome" ? "Your next evening" : SITE_NAMES[site]}>
-        {step === "welcome" && <div className="personal-opening"><div className="personal-opening-type"><p className="personal-eyebrow">Something to look forward to</p><h1>Next Friday.<br/><em>Just us.</em></h1></div><div className="personal-opening-images"><figure><img src="/art/luna-poster.webp" alt="LUNA, a quiet science-fiction film"/><figcaption>A film.</figcaption></figure><figure><img src="/art/oliva-table.webp" alt="A restaurant table set for two"/><figcaption>A table for two.</figcaption></figure></div></div>}
+        {step === "welcome" && <div className="personal-opening"><div className="personal-opening-type"><p className="personal-eyebrow">Something to look forward to</p><h1>Next Friday.<br/><em>Just us.</em></h1></div><div className="personal-opening-images"><figure><img src="/art/luna-poster.webp" alt="LUNA, a quiet science-fiction film"/><figcaption>A film.</figcaption></figure><figure><img src="/art/oliva-table.webp" alt="A restaurant table set for two"/><figcaption>A table for two.</figcaption></figure></div>
+          <section className="personal-explore" aria-labelledby="personal-explore-title">
+            <div className="personal-explore-choice">
+              <div>
+                <h2 id="personal-explore-title">Make it your evening.</h2>
+                <p>Choose your own display, seating and menu preferences.</p>
+              </div>
+              <a className="personal-explore-action" href="/try">Try it your way<svg viewBox="0 0 20 20" width="20" height="20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></a>
+            </div>
+            <div className="personal-explore-sites">
+              <p>Or explore the original demo sites:</p>
+              <nav aria-label="Original participating sites"><a href={siteUrl("cinema", false)}>LUNA Cinema</a><a href={siteUrl("restaurant", false)}>OLIVA Restaurant</a></nav>
+              <p className="personal-explore-note">Use them yourself, or with an external agent.</p>
+            </div>
+          </section>
+        </div>}
         {SITES.map(value => <div key={value} className="personal-frame-wrap" hidden={step === "welcome" || site !== value}><iframe ref={node => { if (node) frames.current[value] = node; }} src={siteUrl(value)} title={SITE_NAMES[value]} style={{ height: heights[value] }} /></div>)}
       </section>
     </main>
