@@ -603,7 +603,7 @@ export default function EveningShell({ playground = false }: { playground?: bool
   const transport = ready[site]
     ? native[site] && document.modelContext?.executeTool
       ? "Native WebMCP ready"
-      : "Guided demo · fallback"
+      : playground ? "Interactive planner" : "Guided demo · fallback"
     : "Connecting…";
   const dinnerReady = Boolean(dinnerPlan?.recommended);
   function updateExample(patch: Partial<ExampleRequest>) {
@@ -1085,7 +1085,7 @@ export default function EveningShell({ playground = false }: { playground?: bool
               className="site-document"
               style={{ height: frameHeight[value] }}
               title={SITE_NAMES[value]}
-              src={siteUrl(value)}
+              src={playground ? `${siteUrl(value)}&explore=1` : siteUrl(value)}
               allow="tools"
             />
           ))}
